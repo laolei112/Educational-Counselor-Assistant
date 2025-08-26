@@ -1,0 +1,118 @@
+import { API_CONFIG } from './config'
+import type { ApiResponse } from './types'
+
+// HTTP请求错误类
+export class HttpError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+    public data?: any
+  ) {
+    super(message)
+    this.name = 'HttpError'
+  }
+}
+
+// 请求配置接口
+interface RequestConfig {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  headers?: Record<string, string>
+  body?: any
+  timeout?: number
+}
+
+// 构建完整URL
+function buildUrl(path: string, params?: Record<string, any>): string {
+  let url = `${API_CONFIG.BASE_URL}${path}`
+  
+  if (params) {
+    const searchParams = new URLSearchParams()
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        searchParams.append(key, String(value))
+      }
+    })
+    const queryString = searchParams.toString()
+    if (queryString) {
+      url += `?${queryString}`
+    }
+  }
+  
+  return url
+}
+
+// 通用请求函数
+async function request<T = any>(
+  path: string,
+  config: RequestConfig = {},
+  params?: Record<string, any>
+): Promise<ApiResponse<T>> {
+  const {
+    method = 'GET',
+    headers = {},
+    body,
+    timeout = API_CONFIG.TIMEOUT
+  } = config
+
+  const url = buildUrl(path, method === 'GET' ? params : undefined)
+  
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeout)
+  
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: {
+        ...API_CONFIG.HEADERS,
+        ...headers
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal
+    })
+    
+    clearTimeout(timeoutId)
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new HttpError(
+        response.status,
+        errorData.message || `HTTP Error: ${response.status}`,
+        errorData
+      )
+    }
+    
+    const data = await response.json()
+    return data
+    
+  } catch (error) {
+    clearTimeout(timeoutId)
+    
+    if (error instanceof HttpError) {
+      throw error
+    }
+    
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        throw new HttpError(408, '请求超时')
+      }
+      throw new HttpError(0, error.message)
+    }
+    
+    throw new HttpError(0, '未知错误')
+  }
+}
+
+// 导出具体的HTTP方法
+export const http = {
+  get: <T = any>(path: string, params?: Record<string, any>) =>
+    request<T>(path, { method: 'GET' }, params),
+    
+  post: <T = any>(path: string, data?: any, params?: Record<string, any>) =>
+    request<T>(path, { method: 'POST', body: data }, params),
+    
+  put: <T = any>(path: string, data?: any, params?: Record<string, any>) =>
+    request<T>(path, { method: 'PUT', body: data }, params),
+    
+  delete: <T = any>(path: string, params?: Record<string, any>) =>
+    request<T>(path, { method: 'DELETE' }, params)
+} 

@@ -1,0 +1,12 @@
+Django
+django-cors-headers
+django-ratelimit
+django-redis
+djangorestframework
+djangorestframework-jwt
+django-filter
+gunicorn
+whitenoise
+sqlalchemy
+mysqlclient
+drf_yasg

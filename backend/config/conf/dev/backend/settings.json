@@ -1,0 +1,18 @@
+{
+    "mysql": {
+        "user": "root",
+        "password": "fgdTv@4629uGdY",
+        "host": "127.0.0.1",
+        "port": 3306,
+        "db": "dev_yundisoft",
+        "charset": "utf8mb4",
+        "timezone": "asia/shanghai",
+        "init_command": ""
+    },
+    "redis": {
+        "host": "127.0.0.1",
+        "port": 6379,
+        "db": 0,
+        "password": "HaWSD*9265tZYj"
+    }
+}
