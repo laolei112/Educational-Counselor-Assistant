@@ -27,7 +27,7 @@ docker-compose up -d --build
 
 # 等待服务启动
 echo "⏳ 等待服务启动..."
-sleep 15
+sleep 20
 
 # 检查服务状态
 echo "📊 检查服务状态..."

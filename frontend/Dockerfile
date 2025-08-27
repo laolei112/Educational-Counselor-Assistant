@@ -1,4 +1,4 @@
-# 构建阶段
+# 构建阶段 - 只用于构建前端静态文件
 FROM node:18-alpine as build-stage
 
 # 设置工作目录
@@ -16,20 +16,28 @@ COPY . .
 # 构建应用（跳过类型检查以避免 Docker 构建问题）
 RUN npm run build:docker
 
-# 生产阶段 - 使用 nginx 提供静态文件服务
-FROM nginx:alpine as production-stage
+# 最终阶段 - 用最小镜像保存构建结果
+FROM alpine:latest
 
-# 删除默认的 nginx 静态资源
-RUN rm -rf /usr/share/nginx/html/*
+# 安装必要工具（可选）
+RUN apk add --no-cache rsync
 
-# 从构建阶段复制构建结果到 nginx 目录
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+# 创建目录
+RUN mkdir -p /app/dist
 
-# 复制自定义的 nginx 配置
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 从构建阶段复制构建结果
+COPY --from=build-stage /app/dist /tmp/dist
 
-# 暴露端口
-EXPOSE 80
+# 创建启动脚本来复制文件到共享卷
+RUN echo '#!/bin/sh\n\
+if [ -d "/tmp/dist" ] && [ "$(ls -A /tmp/dist)" ]; then\n\
+  echo "Copying frontend build files..."\n\
+  cp -r /tmp/dist/* /app/dist/\n\
+  echo "Frontend files copied successfully"\n\
+else\n\
+  echo "No build files found"\n\
+fi\n\
+tail -f /dev/null' > /entrypoint.sh && chmod +x /entrypoint.sh
 
-# 启动 nginx
-CMD ["nginx", "-g", "daemon off;"] 
+# 保持容器运行（作为数据容器）
+CMD ["/entrypoint.sh"] 
