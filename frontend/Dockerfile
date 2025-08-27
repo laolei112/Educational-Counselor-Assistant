@@ -16,28 +16,23 @@ COPY . .
 # 构建应用（跳过类型检查以避免 Docker 构建问题）
 RUN npm run build:docker
 
-# 最终阶段 - 用最小镜像保存构建结果
+# 最终阶段 - 直接将构建结果放到正确位置
 FROM alpine:latest
-
-# 安装必要工具（可选）
-RUN apk add --no-cache rsync
 
 # 创建目录
 RUN mkdir -p /app/dist
 
-# 从构建阶段复制构建结果
-COPY --from=build-stage /app/dist /tmp/dist
+# 直接从构建阶段复制构建结果到最终位置
+COPY --from=build-stage /app/dist /app/dist
 
-# 创建启动脚本来复制文件到共享卷
-RUN echo '#!/bin/sh\n\
-if [ -d "/tmp/dist" ] && [ "$(ls -A /tmp/dist)" ]; then\n\
-  echo "Copying frontend build files..."\n\
-  cp -r /tmp/dist/* /app/dist/\n\
-  echo "Frontend files copied successfully"\n\
-else\n\
-  echo "No build files found"\n\
-fi\n\
-tail -f /dev/null' > /entrypoint.sh && chmod +x /entrypoint.sh
+# 创建简单的启动脚本
+RUN echo '#!/bin/sh' > /entrypoint.sh && \
+    echo 'echo "Frontend container starting..."' >> /entrypoint.sh && \
+    echo 'echo "Files in /app/dist:"' >> /entrypoint.sh && \
+    echo 'ls -la /app/dist/' >> /entrypoint.sh && \
+    echo 'echo "Frontend container ready, keeping alive..."' >> /entrypoint.sh && \
+    echo 'tail -f /dev/null' >> /entrypoint.sh && \
+    chmod +x /entrypoint.sh
 
-# 保持容器运行（作为数据容器）
+# 保持容器运行
 CMD ["/entrypoint.sh"] 
