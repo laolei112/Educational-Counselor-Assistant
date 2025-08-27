@@ -20,13 +20,18 @@ from sqlalchemy import create_engine
 
 # ENV
 GPT_ENV = os.environ.get("GPT_ENV", "DEV")
+IS_DOCKER = os.environ.get("IS_DOCKER", "false").lower() == "true"
 
 from backend.basic_settings import *
 if GPT_ENV == "PRD":
     CONF_PATH = os.path.join(os.getcwd(), "config/conf/prd/backend/settings.json")
     from config.conf.prd.backend.sa_settings import *
 elif GPT_ENV == "DEV":
-    CONF_PATH = os.path.join(os.getcwd(), "config/conf/dev/backend/settings.json")
+    # Docker 环境使用特殊配置文件
+    if IS_DOCKER:
+        CONF_PATH = os.path.join(os.getcwd(), "config/conf/dev/backend/settings.docker.json")
+    else:
+        CONF_PATH = os.path.join(os.getcwd(), "config/conf/dev/backend/settings.json")
     from config.conf.dev.backend.sa_settings import *
 
 
