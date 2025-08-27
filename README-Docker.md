@@ -23,7 +23,7 @@ docker-compose logs -f backend
 ### 2. 访问服务
 - **后端 API**: http://localhost:8080
 - **MySQL**: localhost:3306
-- **Redis**: localhost:6379
+- **Redis**: localhost:6380
 
 ### 3. 测试 API
 ```bash
@@ -46,7 +46,7 @@ curl http://localhost:8080/api/schools/stats/
 
 ### Redis 缓存
 - **镜像**: redis:7-alpine
-- **端口**: 6379
+- **端口**: 6380
 - **密码**: HaWSD*9265tZYj
 - **数据持久化**: Docker volume `redis_data`
 
@@ -105,7 +105,7 @@ docker-compose exec backend bash
 docker-compose exec mysql mysql -u root -p
 
 # 进入 Redis 容器
-docker-compose exec redis redis-cli -a HaWSD*9265tZYj
+docker-compose exec redis redis-cli -p 6380 -a HaWSD*9265tZYj
 ```
 
 ## 🔍 故障排除
@@ -131,7 +131,7 @@ docker-compose build backend --no-cache
 ### 3. Redis 连接问题
 ```bash
 # 检查 Redis 状态
-docker-compose exec redis redis-cli -a HaWSD*9265tZYj ping
+docker-compose exec redis redis-cli -p 6380 -a HaWSD*9265tZYj ping
 ```
 
 ### 4. 端口冲突
