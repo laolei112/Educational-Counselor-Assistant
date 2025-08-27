@@ -27,7 +27,7 @@ docker-compose up -d --build
 
 # 等待服务启动
 echo "⏳ 等待服务启动..."
-sleep 10
+sleep 15
 
 # 检查服务状态
 echo "📊 检查服务状态..."
@@ -41,8 +41,9 @@ echo ""
 echo "🎉 启动完成！"
 echo "=================================="
 echo "服务访问地址："
-echo "- 后端 API: http://localhost:8080"
-echo "- API 文档: http://localhost:8080/swagger/"
+echo "- 前端应用: http://localhost"
+echo "- 后端 API: http://localhost/api/"
+echo "- API 文档: http://localhost/swagger/"
 echo "- MySQL: localhost:3306"
 echo "- Redis: localhost:6380"
 echo ""
@@ -52,4 +53,4 @@ echo "- 停止服务: docker-compose down"
 echo "- 重启服务: docker-compose restart"
 echo ""
 echo "测试 API："
-echo "curl http://localhost:8080/api/schools/" 
+echo "curl http://localhost/api/schools/" 

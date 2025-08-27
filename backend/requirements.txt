@@ -5,6 +5,7 @@ django-redis
 djangorestframework
 djangorestframework-jwt
 django-filter
+django-grip
 gunicorn
 whitenoise
 sqlalchemy

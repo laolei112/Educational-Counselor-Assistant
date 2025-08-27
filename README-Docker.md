@@ -1,4 +1,4 @@
-# 🐳 Docker 部署指南
+# 🐳 Docker 全栈部署指南 - 前后端分离
 
 ## 📋 前置要求
 
@@ -21,20 +21,58 @@ docker-compose logs -f backend
 ```
 
 ### 2. 访问服务
-- **后端 API**: http://localhost:8080
+- **前端应用**: http://localhost （Vue 3 + Vite SPA）
+- **后端 API**: http://localhost/api/ （Django REST API）
+- **API 文档**: http://localhost/swagger/ （Swagger UI）
 - **MySQL**: localhost:3306
 - **Redis**: localhost:6380
 
-### 3. 测试 API
+### 3. 测试应用
 ```bash
-# 获取学校列表
-curl http://localhost:8080/api/schools/
+# 访问前端应用
+open http://localhost
+
+# 测试 API 接口
+curl http://localhost/api/schools/
+
+# 查看 API 文档
+curl http://localhost/swagger/
 
 # 获取学校统计
-curl http://localhost:8080/api/schools/stats/
+curl http://localhost/api/schools/stats/
 ```
 
-## 🛠️ 服务说明
+## 🛠️ 服务架构
+
+本项目采用**前后端分离**架构，使用 **Nginx** 作为反向代理：
+
+```
+用户请求 → Nginx (80) → Frontend (Vue SPA) / Backend API (Django)
+                    ↓
+              MySQL (3306) + Redis (6380)
+```
+
+### Nginx 反向代理
+- **镜像**: nginx:alpine
+- **端口**: 80 (对外访问)
+- **功能**: 
+  - `/` → 前端 Vue 应用
+  - `/api/` → 后端 Django API
+  - `/swagger/` → API 文档
+- **配置**: `nginx/nginx.conf`
+
+### Frontend 应用 (Vue 3)
+- **技术栈**: Vue 3 + Vite + TypeScript
+- **构建**: 多阶段 Docker 构建 (`frontend/Dockerfile`)
+- **功能**: SPA 单页应用，路由支持
+- **部署**: Nginx 静态文件服务
+
+### Backend 应用 (Django)
+- **技术栈**: Django + Django REST Framework
+- **构建**: 基于 `backend/Dockerfile`
+- **端口**: 8080 (内部)
+- **环境**: 开发环境 (DEV)
+- **配置**: 使用 `settings.docker.json`
 
 ### MySQL 数据库
 - **镜像**: mysql:8.0
@@ -49,12 +87,6 @@ curl http://localhost:8080/api/schools/stats/
 - **端口**: 6380
 - **密码**: HaWSD*9265tZYj
 - **数据持久化**: Docker volume `redis_data`
-
-### Backend 应用
-- **构建**: 基于 `backend/Dockerfile`
-- **端口**: 8080
-- **环境**: 开发环境 (DEV)
-- **配置**: 使用 `settings.docker.json`
 
 ## 🔧 常用命令
 
@@ -79,11 +111,14 @@ docker-compose ps
 docker-compose logs
 
 # 查看特定服务日志
+docker-compose logs frontend
 docker-compose logs backend
+docker-compose logs nginx
 docker-compose logs mysql
 docker-compose logs redis
 
 # 实时查看日志
+docker-compose logs -f nginx
 docker-compose logs -f backend
 ```
 
@@ -98,6 +133,12 @@ docker-compose up -d --build backend
 
 ### 进入容器
 ```bash
+# 进入 nginx 容器
+docker-compose exec nginx sh
+
+# 进入 frontend 容器
+docker-compose exec frontend sh
+
 # 进入 backend 容器
 docker-compose exec backend bash
 

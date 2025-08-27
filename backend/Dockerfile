@@ -25,24 +25,11 @@ ENV GPT_ENV=DEV
 # 暴露端口
 EXPOSE 8080
 
-# 创建启动脚本
-RUN echo '#!/bin/bash\n\
-echo "Waiting for database..."\n\
-while ! nc -z mysql 3306; do\n\
-  sleep 0.1\n\
-done\n\
-echo "Database connected!"\n\
-\n\
-echo "Running migrations..."\n\
-python manage.py makemigrations\n\
-python manage.py migrate\n\
-\n\
-echo "Starting Django server..."\n\
-python manage.py runserver 0.0.0.0:8080' > start.sh
-
-RUN chmod +x start.sh
-
 # 安装netcat用于检查数据库连接
 RUN apt-get update && apt-get install -y netcat-traditional && rm -rf /var/lib/apt/lists/*
 
-CMD ["./start.sh"] 
+# 复制启动脚本
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
+CMD ["/app/docker-entrypoint.sh"] 
