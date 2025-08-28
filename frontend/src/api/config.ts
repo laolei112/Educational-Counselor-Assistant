@@ -1,7 +1,7 @@
 // API配置
 export const API_CONFIG = {
   // 开发环境API地址，您可以根据需要调整
-  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
+  BASE_URL: 'http://9.135.78.24/api',
   
   // 请求超时时间
   TIMEOUT: 10000,

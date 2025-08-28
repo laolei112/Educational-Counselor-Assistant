@@ -4,6 +4,14 @@ FROM node:18-alpine as build-stage
 # 设置工作目录
 WORKDIR /app
 
+# 声明构建时参数
+ARG VITE_API_BASE_URL
+ARG VITE_ENABLE_MOCK
+
+# 设置环境变量
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_ENABLE_MOCK=$VITE_ENABLE_MOCK
+
 # 复制 package.json 和 package-lock.json
 COPY package*.json ./
 
