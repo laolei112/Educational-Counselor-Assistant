@@ -2,7 +2,7 @@
     "mysql": {
         "user": "root",
         "password": "fgdTv@4629uGdY",
-        "host": "127.0.0.1",
+        "host": "mysql",
         "port": 3306,
         "db": "dev_yundisoft",
         "charset": "utf8mb4",
@@ -10,7 +10,7 @@
         "init_command": ""
     },
     "redis": {
-        "host": "127.0.0.1",
+        "host": "redis",
         "port": 6380,
         "db": 0,
         "password": "HaWSD*9265tZYj"
