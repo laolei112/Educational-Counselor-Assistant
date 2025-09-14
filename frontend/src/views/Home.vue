@@ -308,8 +308,8 @@ const handleRetry = async () => {
 }
 
 .type-btn.active {
-  background-color: #3b82f6;
-  color: white;
+  background-color: white;
+  color: #3b82f6;
   border-color: #3b82f6;
   z-index: 2;
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
@@ -765,10 +765,9 @@ const handleRetry = async () => {
     grid-template-columns: 1fr;
   }
   
-  .loading-indicator {
-    margin: 16px 0;
-    padding: 12px;
-    font-size: 13px;
+  .load-more-btn {
+    padding: 10px 24px;
+    font-size: 14px;
   }
   
   .no-more-data {
