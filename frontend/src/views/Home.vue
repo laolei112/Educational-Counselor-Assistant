@@ -103,15 +103,6 @@
               共找到 {{ pagination.total }} 所学校
               <span v-if="hasSearchResults">（搜索"{{ searchKeyword }}"）</span>
             </span>
-            <div class="page-size-selector">
-              <label>每页显示：</label>
-              <select v-model="pageSize" @change="handlePageSizeChange" class="page-size-select">
-                <option :value="10">10</option>
-                <option :value="20">20</option>
-                <option :value="50">50</option>
-                <option :value="100">100</option>
-              </select>
-            </div>
           </div>
           
           <!-- 学校卡片列表 -->
@@ -152,6 +143,19 @@
             >
               下一页
             </button>
+          </div>
+          
+          <!-- 页面大小选择器 -->
+          <div class="page-size-section">
+            <div class="page-size-selector">
+              <label>每页显示：</label>
+              <select v-model="pageSize" @change="handlePageSizeChange" class="page-size-select">
+                <option :value="10">10</option>
+                <option :value="20">20</option>
+                <option :value="50">50</option>
+                <option :value="100">100</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -603,6 +607,43 @@ const handleRetry = async () => {
   padding: 20px;
 }
 
+/* 页面大小选择器样式 */
+.page-size-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.page-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-size-selector label {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.page-size-select {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.page-size-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
 .page-btn {
   padding: 8px 16px;
   border: 1px solid #d1d5db;
@@ -685,6 +726,11 @@ const handleRetry = async () => {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
+  }
+  
+  .page-size-section {
+    margin-top: 12px;
+    padding: 12px;
   }
   
   .schools-grid {

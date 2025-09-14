@@ -258,7 +258,10 @@ export const useSchoolStore = defineStore('school', () => {
    */
   const searchSchools = async (keyword: string, query: PageQuery = {}) => {
     searchKeyword.value = keyword
-    pagination.value.page = 1 // 重置到第一页
+    // 只有在没有传入页码参数时才重置到第一页
+    if (!query.page) {
+      pagination.value.page = 1
+    }
 
     if (enableMock.value) {
       // Mock模式：本地搜索
@@ -337,10 +340,10 @@ export const useSchoolStore = defineStore('school', () => {
     
     if (searchKeyword.value) {
       console.log(`🔍 搜索模式：搜索关键词 "${searchKeyword.value}"`)
-      await searchSchools(searchKeyword.value)
+      await searchSchools(searchKeyword.value, { page })
     } else {
       console.log(`📋 列表模式：获取学校列表`)
-      await fetchSchools()
+      await fetchSchools({ page })
     }
   }
 

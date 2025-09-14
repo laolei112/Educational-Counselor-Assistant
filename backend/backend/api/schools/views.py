@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value, IntegerField
 from backend.models.tb_schools import TbSchools
 import json
 
@@ -68,6 +68,7 @@ def schools_list(request):
             queryset = queryset.filter(application_status=application_status)
             
         if keyword:
+            # 使用 Case 和 When 来实现排序：校名包含关键词的排在前面
             queryset = queryset.filter(
                 Q(name__icontains=keyword) | 
                 Q(district__icontains=keyword) |
@@ -76,7 +77,20 @@ def schools_list(request):
                 Q(religion__icontains=keyword) |
                 Q(net_name__icontains=keyword) |
                 Q(remarks__icontains=keyword)
-            )
+            ).annotate(
+                # 添加排序权重：校名包含关键词的权重最高
+                search_priority=Case(
+                    When(name__icontains=keyword, then=Value(1)),  # 校名包含关键词，优先级最高
+                    When(district__icontains=keyword, then=Value(2)),  # 地区包含关键词
+                    When(address__icontains=keyword, then=Value(3)),  # 地址包含关键词
+                    When(category__icontains=keyword, then=Value(4)),  # 分类包含关键词
+                    When(religion__icontains=keyword, then=Value(5)),  # 宗教包含关键词
+                    When(net_name__icontains=keyword, then=Value(6)),  # 校网包含关键词
+                    When(remarks__icontains=keyword, then=Value(7)),  # 备注包含关键词
+                    default=Value(8),
+                    output_field=IntegerField()
+                )
+            ).order_by('search_priority', 'name')  # 按优先级和校名排序
         
         # 分页
         paginator = Paginator(queryset, page_size)
@@ -190,6 +204,7 @@ def primary_schools_list(request):
             queryset = queryset.filter(application_status=application_status)
             
         if keyword:
+            # 使用 Case 和 When 来实现排序：校名包含关键词的排在前面
             queryset = queryset.filter(
                 Q(name__icontains=keyword) | 
                 Q(district__icontains=keyword) |
@@ -198,7 +213,20 @@ def primary_schools_list(request):
                 Q(religion__icontains=keyword) |
                 Q(net_name__icontains=keyword) |
                 Q(remarks__icontains=keyword)
-            )
+            ).annotate(
+                # 添加排序权重：校名包含关键词的权重最高
+                search_priority=Case(
+                    When(name__icontains=keyword, then=Value(1)),  # 校名包含关键词，优先级最高
+                    When(district__icontains=keyword, then=Value(2)),  # 地区包含关键词
+                    When(address__icontains=keyword, then=Value(3)),  # 地址包含关键词
+                    When(category__icontains=keyword, then=Value(4)),  # 分类包含关键词
+                    When(religion__icontains=keyword, then=Value(5)),  # 宗教包含关键词
+                    When(net_name__icontains=keyword, then=Value(6)),  # 校网包含关键词
+                    When(remarks__icontains=keyword, then=Value(7)),  # 备注包含关键词
+                    default=Value(8),
+                    output_field=IntegerField()
+                )
+            ).order_by('search_priority', 'name')  # 按优先级和校名排序
         
         # 分页
         paginator = Paginator(queryset, page_size)
@@ -266,6 +294,7 @@ def secondary_schools_list(request):
             queryset = queryset.filter(application_status=application_status)
             
         if keyword:
+            # 使用 Case 和 When 来实现排序：校名包含关键词的排在前面
             queryset = queryset.filter(
                 Q(name__icontains=keyword) | 
                 Q(district__icontains=keyword) |
@@ -274,7 +303,20 @@ def secondary_schools_list(request):
                 Q(religion__icontains=keyword) |
                 Q(net_name__icontains=keyword) |
                 Q(remarks__icontains=keyword)
-            )
+            ).annotate(
+                # 添加排序权重：校名包含关键词的权重最高
+                search_priority=Case(
+                    When(name__icontains=keyword, then=Value(1)),  # 校名包含关键词，优先级最高
+                    When(district__icontains=keyword, then=Value(2)),  # 地区包含关键词
+                    When(address__icontains=keyword, then=Value(3)),  # 地址包含关键词
+                    When(category__icontains=keyword, then=Value(4)),  # 分类包含关键词
+                    When(religion__icontains=keyword, then=Value(5)),  # 宗教包含关键词
+                    When(net_name__icontains=keyword, then=Value(6)),  # 校网包含关键词
+                    When(remarks__icontains=keyword, then=Value(7)),  # 备注包含关键词
+                    default=Value(8),
+                    output_field=IntegerField()
+                )
+            ).order_by('search_priority', 'name')  # 按优先级和校名排序
         
         # 分页
         paginator = Paginator(queryset, page_size)
