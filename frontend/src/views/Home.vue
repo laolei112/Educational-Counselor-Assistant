@@ -10,24 +10,6 @@
     </div>
 
     <div class="container">
-      <!-- 学校类型选择 -->
-      <div class="type-selector">
-        <button 
-          :class="['type-btn', { active: currentType === 'primary' }]"
-          :disabled="isLoading"
-          @click="handleTypeChange('primary')"
-        >
-          小学
-        </button>
-        <button 
-          :class="['type-btn', { active: currentType === 'secondary' }]"
-          :disabled="isLoading"
-          @click="handleTypeChange('secondary')"
-        >
-          中学
-        </button>
-      </div>
-
       <!-- 搜索框 -->
       <div class="search-section">
         <div class="search-container">
@@ -59,23 +41,44 @@
         </div>
       </div>
 
+      <!-- 学校类型选择 -->
+      <div class="type-selector">
+        <div class="type-buttons">
+          <button 
+            :class="['type-btn', { active: currentType === 'primary' }]"
+            :disabled="isLoading"
+            @click="handleTypeChange('primary')"
+          >
+            小学
+          </button>
+          <button 
+            :class="['type-btn', { active: currentType === 'secondary' }]"
+            :disabled="isLoading"
+            @click="handleTypeChange('secondary')"
+          >
+            中学
+          </button>
+        </div>
+        <!-- 统计信息 -->
+        <div class="stats-text">
+          <span class="stats-item">
+            <span class="stats-number">{{ stats.totalSchools }}</span>
+            <span class="stats-label">所学校</span>
+          </span>
+          <span class="stats-divider">|</span>
+          <span class="stats-item">
+            <span class="stats-number">{{ stats.openApplications }}</span>
+            <span class="stats-label">所开放申请</span>
+          </span>
+        </div>
+      </div>
+
       <!-- 开发模式指示器 -->
       <div v-if="enableMock" class="mock-indicator">
         <span class="mock-badge">Mock模式</span>
         <span class="mock-text">当前使用模拟数据</span>
       </div>
 
-      <!-- 统计信息 -->
-      <div class="stats-section">
-        <div class="stat-item">
-          <div class="stat-number">{{ stats.totalSchools }}</div>
-          <div class="stat-label">所学校</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">{{ stats.openApplications }}</div>
-          <div class="stat-label">所开放申请</div>
-        </div>
-      </div>
 
       <!-- 加载状态 -->
       <div v-if="isLoading" class="loading-state">
@@ -264,61 +267,81 @@ const handleRetry = async () => {
 
 .type-selector {
   display: flex;
-  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 24px;
-  justify-content: center;
-}
-
-.type-btn {
-  flex: 1;
-  max-width: 200px;
-  padding: 16px 32px;
-  border-radius: 16px;
-  border: none;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #e5e7eb;
-  color: #6b7280;
-}
-
-.type-btn.active {
+  padding: 16px 20px;
   background-color: white;
-  color: #1f2937;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.type-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.stats-section {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 32px;
-  padding: 24px;
-  background-color: white;
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
-.stat-item {
-  text-align: center;
+.type-buttons {
+  display: flex;
+  gap: 8px;
 }
 
-.stat-number {
-  font-size: 48px;
-  font-weight: bold;
-  color: #1f2937;
-  margin-bottom: 8px;
+.type-btn {
+  padding: 8px 20px;
+  border: 2px solid #e5e7eb;
+  background-color: white;
+  color: #6b7280;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.stat-label {
-  font-size: 16px;
+.type-btn:hover:not(:disabled) {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.type-btn.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.type-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 统计信息样式 */
+.stats-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
   color: #6b7280;
 }
+
+.stats-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stats-number {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 16px;
+}
+
+.stats-label {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.stats-divider {
+  color: #d1d5db;
+  font-weight: 300;
+}
+
+
+/* 移除统计模块样式，统计信息已移到类型选择器内 */
 
 .mock-indicator {
   display: flex;
@@ -439,10 +462,10 @@ const handleRetry = async () => {
 
 /* 搜索样式 */
 .search-section {
-  margin-bottom: 32px;
-  padding: 24px;
+  margin-bottom: 20px;
+  padding: 16px;
   background-color: white;
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -454,15 +477,15 @@ const handleRetry = async () => {
 .search-input-wrapper {
   position: relative;
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
 }
 
 .search-input {
   width: 100%;
-  padding: 16px 48px 16px 20px;
+  padding: 12px 40px 12px 16px;
   border: 2px solid #e5e7eb;
-  border-radius: 25px;
-  font-size: 16px;
+  border-radius: 20px;
+  font-size: 14px;
   background-color: #f9fafb;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -483,11 +506,11 @@ const handleRetry = async () => {
 
 .clear-icon {
   position: absolute;
-  right: 16px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -495,7 +518,7 @@ const handleRetry = async () => {
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   color: #6b7280;
 }
@@ -508,19 +531,19 @@ const handleRetry = async () => {
 
 .loading-icon {
   position: absolute;
-  right: 16px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .spinner {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border: 2px solid #e5e7eb;
   border-top: 2px solid #3b82f6;
   border-radius: 50%;
@@ -675,16 +698,28 @@ const handleRetry = async () => {
   }
   
   .type-selector {
-    gap: 8px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .type-buttons {
+    justify-content: center;
   }
   
   .type-btn {
-    padding: 12px 24px;
-    font-size: 16px;
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 14px;
   }
   
-  .stat-number {
-    font-size: 36px;
+  .stats-text {
+    justify-content: center;
+    font-size: 13px;
+  }
+  
+  .stats-number {
+    font-size: 15px;
   }
   
   .search-container {

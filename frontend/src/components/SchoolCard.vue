@@ -2,7 +2,10 @@
   <div class="school-card">
     <div class="card-header">
       <h3 class="school-name">{{ school.name }}</h3>
-      <span :class="['category-tag', `tag-${school.category}`]">
+      <span 
+        v-if="school.category === 'government'"
+        :class="['category-tag', `tag-${school.category}`]"
+      >
         {{ getCategoryLabel(school.category) }}
       </span>
     </div>
@@ -15,6 +18,12 @@
         >
           {{ getStatusLabel(school.applicationStatus) }}
         </span>
+        <span 
+          v-if="school.category !== 'government'"
+          :class="['category-tag', `tag-${school.category}`]"
+        >
+          {{ getCategoryLabel(school.category) }}
+        </span>
       </div>
 
       <div class="info-row">
@@ -26,12 +35,12 @@
 
       <div class="info-row">
         <div class="info-item">
-          <span class="icon">💰</span>
-          学费：${{ school.tuition.toLocaleString() }}/年
-        </div>
-        <div class="info-item">
           <span class="icon">👥</span>
           {{ getGenderLabel(school.gender) }}
+        </div>
+        <div class="info-item">
+          <span class="icon">💰</span>
+          学费：${{ school.tuition.toLocaleString() }}/年
         </div>
       </div>
 
@@ -98,7 +107,7 @@ const getGenderLabel = (gender: string) => {
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 16px;
 }
 
@@ -107,6 +116,8 @@ const getGenderLabel = (gender: string) => {
   font-weight: bold;
   color: #1f2937;
   margin: 0;
+  flex: 1;
+  margin-right: 12px;
 }
 
 .category-tag {
@@ -218,6 +229,8 @@ const getGenderLabel = (gender: string) => {
   }
   
   .school-name {
+    margin-right: 0;
+    margin-bottom: 4px;
     font-size: 18px;
   }
   
