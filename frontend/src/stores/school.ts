@@ -132,11 +132,9 @@ export const useSchoolStore = defineStore('school', () => {
   // 是否有搜索结果
   const hasSearchResults = computed(() => searchKeyword.value.length > 0)
   
-  // 当前页面数据
+  // 当前页面数据 - 直接使用 schools.value，因为 API 已经返回了分页后的数据
   const currentPageData = computed(() => {
-    const start = (pagination.value.page - 1) * pagination.value.pageSize
-    const end = start + pagination.value.pageSize
-    return filteredSchools.value.slice(start, end)
+    return schools.value
   })
 
   // Actions
@@ -170,15 +168,25 @@ export const useSchoolStore = defineStore('school', () => {
         ...searchFilters.value
       }
 
+      console.log(`📡 API 查询参数:`, apiQuery)
+
       let response: { success: boolean; data: PageData<School>; message?: string }
       
       if (currentType.value === 'primary') {
+        console.log(`🏫 调用小学 API`)
         response = await schoolApi.getPrimaryList(apiQuery)
       } else {
+        console.log(`🏫 调用中学 API`)
         response = await schoolApi.getSecondaryList(apiQuery)
       }
       
       if (response.success) {
+        console.log(`✅ API 响应成功:`, {
+          listLength: response.data.list.length,
+          page: response.data.page,
+          total: response.data.total,
+          totalPages: response.data.totalPages
+        })
         schools.value = response.data.list
         pagination.value = {
           page: response.data.page,
@@ -344,11 +352,14 @@ export const useSchoolStore = defineStore('school', () => {
   const goToPage = async (page: number) => {
     if (page < 1 || page > pagination.value.totalPages) return
     
+    console.log(`🔄 翻页到第 ${page} 页`)
     pagination.value.page = page
     
     if (searchKeyword.value) {
+      console.log(`🔍 搜索模式：搜索关键词 "${searchKeyword.value}"`)
       await searchSchools(searchKeyword.value)
     } else {
+      console.log(`📋 列表模式：获取学校列表`)
       await fetchSchools()
     }
   }
