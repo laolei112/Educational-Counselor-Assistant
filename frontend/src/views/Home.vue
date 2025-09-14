@@ -140,18 +140,6 @@
             <p>已加载全部 {{ pagination.total }} 所学校</p>
           </div>
           
-          <!-- 页面大小选择器 -->
-          <div class="page-size-section">
-            <div class="page-size-selector">
-              <label>每页显示：</label>
-              <select v-model="pageSize" @change="handlePageSizeChange" class="page-size-select">
-                <option :value="10">10</option>
-                <option :value="20">20</option>
-                <option :value="50">50</option>
-                <option :value="100">100</option>
-              </select>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -186,41 +174,12 @@ const {
   clearError, 
   searchSchools, 
   clearSearch, 
-  loadMore, 
-  setPageSize
+  loadMore
 } = schoolStore
 
-// 本地状态
-const pageSize = ref(20)
+// 移除本地状态，使用store中的固定页面大小
 
-// 计算可见的页码
-const visiblePages = computed(() => {
-  const current = pagination.value.page
-  const total = pagination.value.totalPages
-  const delta = 2
-  const range = []
-  const rangeWithDots = []
-
-  for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
-    range.push(i)
-  }
-
-  if (current - delta > 2) {
-    rangeWithDots.push(1, '...')
-  } else {
-    rangeWithDots.push(1)
-  }
-
-  rangeWithDots.push(...range)
-
-  if (current + delta < total - 1) {
-    rangeWithDots.push('...', total)
-  } else if (total > 1) {
-    rangeWithDots.push(total)
-  }
-
-  return rangeWithDots
-})
+// 移除分页相关计算属性，使用无限滚动
 
 // 组件挂载时获取数据
 onMounted(async () => {
@@ -276,10 +235,7 @@ const handleLoadMore = async () => {
   await loadMore()
 }
 
-// 处理页面大小变化
-const handlePageSizeChange = async () => {
-  await setPageSize(pageSize.value)
-}
+// 移除页面大小变化处理，使用固定页面大小
 
 // 重新加载数据
 const handleRetry = async () => {
@@ -709,42 +665,7 @@ const handleRetry = async () => {
   margin: 0;
 }
 
-/* 页面大小选择器样式 */
-.page-size-section {
-  display: flex;
-  justify-content: center;
-  margin-top: 16px;
-  padding: 16px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-}
-
-.page-size-selector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.page-size-selector label {
-  font-size: 14px;
-  color: #6b7280;
-  font-weight: 500;
-}
-
-.page-size-select {
-  padding: 6px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
-  background-color: white;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.page-size-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-}
+/* 移除页面大小选择器样式 */
 
 /* 移除分页相关样式，使用无限滚动 */
 
@@ -801,10 +722,7 @@ const handleRetry = async () => {
     align-items: flex-start;
   }
   
-  .page-size-section {
-    margin-top: 12px;
-    padding: 12px;
-  }
+  /* 移除页面大小选择器移动端样式 */
   
   .schools-grid {
     grid-template-columns: 1fr;

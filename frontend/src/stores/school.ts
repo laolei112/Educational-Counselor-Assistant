@@ -417,21 +417,7 @@ export const useSchoolStore = defineStore('school', () => {
     }
   }
 
-  /**
-   * 设置页面大小
-   */
-  const setPageSize = async (pageSize: number) => {
-    pagination.value.pageSize = pageSize
-    pagination.value.page = 1 // 重置到第一页
-    allSchools.value = [] // 清空所有学校数据
-    hasMore.value = true // 重置更多数据状态
-    
-    if (searchKeyword.value) {
-      await searchSchools(searchKeyword.value)
-    } else {
-      await fetchSchools()
-    }
-  }
+  // 移除setPageSize方法，使用固定的页面大小20
 
   /**
    * 重置错误状态
@@ -478,7 +464,6 @@ export const useSchoolStore = defineStore('school', () => {
     searchSchools,
     clearSearch,
     loadMore,
-    setPageSize,
     clearError,
     toggleMockMode
   }
