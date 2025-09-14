@@ -2,7 +2,7 @@ from django.db import models
 from .base import Base
 
 
-class TbSchools(Base):
+class TbSchools(models.Model, Base):
     """
     学校信息模型
     """    
