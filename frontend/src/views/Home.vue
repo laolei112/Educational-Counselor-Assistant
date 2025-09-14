@@ -290,7 +290,7 @@ const handleRetry = async () => {
 .type-btn {
   padding: 8px 20px;
   border: 2px solid #e5e7eb;
-  background-color: transparent;
+  background-color: white;
   color: #6b7280;
   border-radius: 6px;
   cursor: pointer;
