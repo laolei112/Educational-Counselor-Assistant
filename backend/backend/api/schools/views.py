@@ -158,6 +158,150 @@ def school_detail(request, school_id):
 
 @csrf_exempt
 @require_http_methods(["GET"])
+def primary_schools_list(request):
+    """
+    获取小学列表
+    GET /api/schools/primary
+    """
+    try:
+        # 获取查询参数
+        category = request.GET.get('category')
+        district = request.GET.get('district')
+        application_status = request.GET.get('applicationStatus')
+        keyword = request.GET.get('keyword')
+        page = int(request.GET.get('page', 1))
+        page_size = int(request.GET.get('pageSize', 20))
+        
+        # 构建查询条件 - 只查询小学
+        queryset = TbSchools.objects.filter(level='primary')
+        
+        # 应用过滤条件
+        if category:
+            queryset = queryset.filter(category=category)
+            
+        if district:
+            queryset = queryset.filter(district=district)
+            
+        if application_status:
+            queryset = queryset.filter(application_status=application_status)
+            
+        if keyword:
+            queryset = queryset.filter(
+                Q(name__icontains=keyword) | 
+                Q(district__icontains=keyword) |
+                Q(address__icontains=keyword)
+            )
+        
+        # 分页
+        paginator = Paginator(queryset, page_size)
+        schools_page = paginator.get_page(page)
+        
+        # 序列化数据
+        schools_data = [serialize_school(school) for school in schools_page]
+        
+        return JsonResponse({
+            "code": 200,
+            "message": "成功",
+            "success": True,
+            "data": {
+                "list": schools_data,
+                "total": paginator.count,
+                "page": page,
+                "pageSize": page_size,
+                "totalPages": paginator.num_pages
+            }
+        })
+        
+    except ValueError as e:
+        return JsonResponse({
+            "code": 400,
+            "message": f"参数错误: {str(e)}",
+            "success": False,
+            "data": None
+        })
+    except Exception as e:
+        return JsonResponse({
+            "code": 500,
+            "message": f"服务器错误: {str(e)}",
+            "success": False,
+            "data": None
+        })
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def secondary_schools_list(request):
+    """
+    获取中学列表
+    GET /api/schools/secondary
+    """
+    try:
+        # 获取查询参数
+        category = request.GET.get('category')
+        district = request.GET.get('district')
+        application_status = request.GET.get('applicationStatus')
+        keyword = request.GET.get('keyword')
+        page = int(request.GET.get('page', 1))
+        page_size = int(request.GET.get('pageSize', 20))
+        
+        # 构建查询条件 - 只查询中学
+        queryset = TbSchools.objects.filter(level='secondary')
+        
+        # 应用过滤条件
+        if category:
+            queryset = queryset.filter(category=category)
+            
+        if district:
+            queryset = queryset.filter(district=district)
+            
+        if application_status:
+            queryset = queryset.filter(application_status=application_status)
+            
+        if keyword:
+            queryset = queryset.filter(
+                Q(name__icontains=keyword) | 
+                Q(district__icontains=keyword) |
+                Q(address__icontains=keyword)
+            )
+        
+        # 分页
+        paginator = Paginator(queryset, page_size)
+        schools_page = paginator.get_page(page)
+        
+        # 序列化数据
+        schools_data = [serialize_school(school) for school in schools_page]
+        
+        return JsonResponse({
+            "code": 200,
+            "message": "成功",
+            "success": True,
+            "data": {
+                "list": schools_data,
+                "total": paginator.count,
+                "page": page,
+                "pageSize": page_size,
+                "totalPages": paginator.num_pages
+            }
+        })
+        
+    except ValueError as e:
+        return JsonResponse({
+            "code": 400,
+            "message": f"参数错误: {str(e)}",
+            "success": False,
+            "data": None
+        })
+    except Exception as e:
+        return JsonResponse({
+            "code": 500,
+            "message": f"服务器错误: {str(e)}",
+            "success": False,
+            "data": None
+        })
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
 def schools_stats(request):
     """
     获取学校统计信息

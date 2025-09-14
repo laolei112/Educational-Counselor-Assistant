@@ -6,12 +6,30 @@ import type { PageQuery, PageData } from './types'
 // 学校API服务类
 export class SchoolApi {
   /**
-   * 获取学校列表
+   * 获取学校列表（通用）
    * @param query 查询参数
    * @returns 学校列表和分页信息
    */
   static async getSchools(query: PageQuery = {}) {
     return http.get<PageData<School>>(API_PATHS.SCHOOLS.LIST, query)
+  }
+
+  /**
+   * 获取小学列表
+   * @param query 查询参数
+   * @returns 小学列表和分页信息
+   */
+  static async getPrimarySchools(query: PageQuery = {}) {
+    return http.get<PageData<School>>(API_PATHS.SCHOOLS.PRIMARY, query)
+  }
+
+  /**
+   * 获取中学列表
+   * @param query 查询参数
+   * @returns 中学列表和分页信息
+   */
+  static async getSecondarySchools(query: PageQuery = {}) {
+    return http.get<PageData<School>>(API_PATHS.SCHOOLS.SECONDARY, query)
   }
 
   /**
@@ -45,12 +63,44 @@ export class SchoolApi {
       keyword
     })
   }
+
+  /**
+   * 搜索小学
+   * @param keyword 关键词
+   * @param query 其他查询参数
+   * @returns 搜索结果
+   */
+  static async searchPrimarySchools(keyword: string, query: PageQuery = {}) {
+    return http.get<PageData<School>>(API_PATHS.SCHOOLS.PRIMARY, {
+      ...query,
+      keyword
+    })
+  }
+
+  /**
+   * 搜索中学
+   * @param keyword 关键词
+   * @param query 其他查询参数
+   * @returns 搜索结果
+   */
+  static async searchSecondarySchools(keyword: string, query: PageQuery = {}) {
+    return http.get<PageData<School>>(API_PATHS.SCHOOLS.SECONDARY, {
+      ...query,
+      keyword
+    })
+  }
 }
 
 // 导出便捷的函数接口
 export const schoolApi = {
   // 获取学校列表
   getList: SchoolApi.getSchools,
+  
+  // 获取小学列表
+  getPrimaryList: SchoolApi.getPrimarySchools,
+  
+  // 获取中学列表
+  getSecondaryList: SchoolApi.getSecondarySchools,
   
   // 获取学校详情
   getDetail: SchoolApi.getSchoolDetail,
@@ -61,9 +111,15 @@ export const schoolApi = {
   // 搜索学校
   search: SchoolApi.searchSchools,
   
+  // 搜索小学
+  searchPrimary: SchoolApi.searchPrimarySchools,
+  
+  // 搜索中学
+  searchSecondary: SchoolApi.searchSecondarySchools,
+  
   // 按类型获取学校
   getByType: (type: 'primary' | 'secondary', query: Omit<PageQuery, 'type'> = {}) =>
-    SchoolApi.getSchools({ ...query, type }),
+    type === 'primary' ? SchoolApi.getPrimarySchools(query) : SchoolApi.getSecondarySchools(query),
     
   // 按分类获取学校
   getByCategory: (category: string, query: Omit<PageQuery, 'category'> = {}) =>

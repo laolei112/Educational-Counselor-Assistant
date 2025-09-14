@@ -16,9 +16,11 @@ export const API_CONFIG = {
 export const API_PATHS = {
   // 学校相关接口
   SCHOOLS: {
-    LIST: '/schools/',           // GET 获取学校列表
-    DETAIL: '/schools/:id/',     // GET 获取学校详情
-    STATS: '/schools/stats/',    // GET 获取学校统计信息
+    LIST: '/schools/',                    // GET 获取学校列表（通用）
+    PRIMARY: '/schools/primary/',         // GET 获取小学列表
+    SECONDARY: '/schools/secondary/',     // GET 获取中学列表
+    DETAIL: '/schools/:id/',              // GET 获取学校详情
+    STATS: '/schools/stats/',             // GET 获取学校统计信息
   },
   
   // 其他可能的接口

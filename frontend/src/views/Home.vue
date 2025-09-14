@@ -28,6 +28,74 @@
         </button>
       </div>
 
+      <!-- 搜索和过滤 -->
+      <div class="search-section">
+        <div class="search-bar">
+          <input
+            v-model="searchKeyword"
+            type="text"
+            placeholder="搜索学校名称、地区或地址..."
+            class="search-input"
+            @keyup.enter="handleSearch"
+          />
+          <button 
+            class="search-btn"
+            @click="handleSearch"
+            :disabled="isLoading"
+          >
+            搜索
+          </button>
+          <button 
+            v-if="hasSearchResults"
+            class="clear-btn"
+            @click="handleClearSearch"
+            :disabled="isLoading"
+          >
+            清空
+          </button>
+        </div>
+        
+        <div class="filter-section">
+          <select v-model="searchFilters.category" class="filter-select" @change="handleFilterChange">
+            <option value="">所有分类</option>
+            <option value="elite">精英学校</option>
+            <option value="traditional">传统学校</option>
+            <option value="direct">直资学校</option>
+            <option value="government">政府学校</option>
+            <option value="private">私立学校</option>
+          </select>
+          
+          <select v-model="searchFilters.district" class="filter-select" @change="handleFilterChange">
+            <option value="">所有地区</option>
+            <option value="中西區">中西区</option>
+            <option value="灣仔區">湾仔区</option>
+            <option value="東區">东区</option>
+            <option value="南區">南区</option>
+            <option value="油尖旺區">油尖旺区</option>
+            <option value="深水埗區">深水埗区</option>
+            <option value="九龍城區">九龙城区</option>
+            <option value="黃大仙區">黄大仙区</option>
+            <option value="觀塘區">观塘区</option>
+            <option value="荃灣區">荃湾区</option>
+            <option value="屯門區">屯门区</option>
+            <option value="元朗區">元朗区</option>
+            <option value="北區">北区</option>
+            <option value="大埔區">大埔区</option>
+            <option value="沙田區">沙田区</option>
+            <option value="西貢區">西贡区</option>
+            <option value="葵青區">葵青区</option>
+            <option value="離島區">离岛区</option>
+          </select>
+          
+          <select v-model="searchFilters.applicationStatus" class="filter-select" @change="handleFilterChange">
+            <option value="">所有状态</option>
+            <option value="open">开放申请</option>
+            <option value="closed">关闭申请</option>
+            <option value="deadline">截止申请</option>
+          </select>
+        </div>
+      </div>
+
       <!-- 开发模式指示器 -->
       <div v-if="enableMock" class="mock-indicator">
         <span class="mock-badge">Mock模式</span>
@@ -65,21 +133,73 @@
         <div v-if="filteredSchools.length === 0" class="empty-state">
           <div class="empty-icon">📚</div>
           <h3>暂无学校信息</h3>
-          <p>当前类型下没有找到学校数据</p>
+          <p>{{ hasSearchResults ? '没有找到匹配的学校' : '当前类型下没有找到学校数据' }}</p>
         </div>
-        <SchoolCard 
-          v-else
-          v-for="school in filteredSchools" 
-          :key="school.id"
-          :school="school"
-        />
+        <div v-else>
+          <!-- 结果统计 -->
+          <div class="results-info">
+            <span class="results-count">
+              共找到 {{ pagination.total }} 所学校
+              <span v-if="hasSearchResults">（搜索"{{ searchKeyword }}"）</span>
+            </span>
+            <div class="page-size-selector">
+              <label>每页显示：</label>
+              <select v-model="pageSize" @change="handlePageSizeChange" class="page-size-select">
+                <option :value="10">10</option>
+                <option :value="20">20</option>
+                <option :value="50">50</option>
+                <option :value="100">100</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- 学校卡片列表 -->
+          <div class="schools-grid">
+            <SchoolCard 
+              v-for="school in currentPageData" 
+              :key="school.id"
+              :school="school"
+            />
+          </div>
+          
+          <!-- 分页组件 -->
+          <div v-if="pagination.totalPages > 1" class="pagination">
+            <button 
+              class="page-btn"
+              :disabled="pagination.page === 1 || isLoading"
+              @click="handlePageChange(pagination.page - 1)"
+            >
+              上一页
+            </button>
+            
+            <div class="page-numbers">
+              <button
+                v-for="page in visiblePages"
+                :key="page"
+                :class="['page-number', { active: page === pagination.page }]"
+                :disabled="isLoading"
+                @click="handlePageChange(page)"
+              >
+                {{ page }}
+              </button>
+            </div>
+            
+            <button 
+              class="page-btn"
+              :disabled="pagination.page === pagination.totalPages || isLoading"
+              @click="handlePageChange(pagination.page + 1)"
+            >
+              下一页
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSchoolStore } from '@/stores/school'
 import SchoolCard from '@/components/SchoolCard.vue'
@@ -92,9 +212,55 @@ const {
   isLoading, 
   hasError, 
   error,
-  enableMock 
+  enableMock,
+  pagination,
+  searchKeyword,
+  searchFilters,
+  hasSearchResults,
+  currentPageData
 } = storeToRefs(schoolStore)
-const { setSchoolType, fetchSchools, clearError } = schoolStore
+const { 
+  setSchoolType, 
+  fetchSchools, 
+  clearError, 
+  searchSchools, 
+  clearSearch, 
+  goToPage, 
+  setPageSize,
+  setSearchFilters
+} = schoolStore
+
+// 本地状态
+const pageSize = ref(20)
+
+// 计算可见的页码
+const visiblePages = computed(() => {
+  const current = pagination.value.page
+  const total = pagination.value.totalPages
+  const delta = 2
+  const range = []
+  const rangeWithDots = []
+
+  for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+    range.push(i)
+  }
+
+  if (current - delta > 2) {
+    rangeWithDots.push(1, '...')
+  } else {
+    rangeWithDots.push(1)
+  }
+
+  rangeWithDots.push(...range)
+
+  if (current + delta < total - 1) {
+    rangeWithDots.push('...', total)
+  } else if (total > 1) {
+    rangeWithDots.push(total)
+  }
+
+  return rangeWithDots
+})
 
 // 组件挂载时获取数据
 onMounted(async () => {
@@ -104,6 +270,42 @@ onMounted(async () => {
 // 处理学校类型切换
 const handleTypeChange = async (type: 'primary' | 'secondary') => {
   await setSchoolType(type)
+}
+
+// 处理搜索
+const handleSearch = async () => {
+  if (searchKeyword.value.trim()) {
+    await searchSchools(searchKeyword.value.trim())
+  } else {
+    await clearSearch()
+  }
+}
+
+// 处理清空搜索
+const handleClearSearch = async () => {
+  await clearSearch()
+}
+
+// 处理过滤器变化
+const handleFilterChange = async () => {
+  await setSearchFilters(searchFilters.value)
+  if (searchKeyword.value.trim()) {
+    await searchSchools(searchKeyword.value.trim())
+  } else {
+    await fetchSchools()
+  }
+}
+
+// 处理翻页
+const handlePageChange = async (page: number) => {
+  if (typeof page === 'number') {
+    await goToPage(page)
+  }
+}
+
+// 处理页面大小变化
+const handlePageSizeChange = async () => {
+  await setPageSize(pageSize.value)
 }
 
 // 重新加载数据
@@ -306,10 +508,201 @@ const handleRetry = async () => {
   font-size: 16px;
 }
 
-.schools-list {
+/* 搜索和过滤样式 */
+.search-section {
+  margin-bottom: 32px;
+  padding: 24px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.search-bar {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.search-btn, .clear-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-btn {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.search-btn:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.clear-btn {
+  background-color: #6b7280;
+  color: white;
+}
+
+.clear-btn:hover:not(:disabled) {
+  background-color: #4b5563;
+}
+
+.search-btn:disabled, .clear-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.filter-section {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* 结果信息样式 */
+.results-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+}
+
+.results-count {
+  font-size: 16px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.page-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-size-selector label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.page-size-select {
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+}
+
+/* 学校网格样式 */
+.schools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.schools-list {
+  margin-bottom: 40px;
+}
+
+/* 分页样式 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+  padding: 20px;
+}
+
+.page-btn {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: white;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  gap: 4px;
+}
+
+.page-number {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: white;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 40px;
+  text-align: center;
+}
+
+.page-number:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.page-number.active {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.page-number:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
@@ -328,6 +721,30 @@ const handleRetry = async () => {
   
   .stat-number {
     font-size: 36px;
+  }
+  
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-section {
+    flex-direction: column;
+  }
+  
+  .results-info {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .schools-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+    gap: 4px;
   }
 }
 </style> 
