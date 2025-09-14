@@ -30,30 +30,32 @@
 
       <!-- 搜索框 -->
       <div class="search-section">
-        <div class="search-bar">
-          <input
-            v-model="searchKeyword"
-            type="text"
-            placeholder="搜索学校名称、地区、地址、分类、宗教、校网等..."
-            class="search-input"
-            @keyup.enter="handleSearch"
-            @input="handleSearchInput"
-          />
-          <button 
-            class="search-btn"
-            @click="handleSearch"
-            :disabled="isLoading"
-          >
-            搜索
-          </button>
-          <button 
-            v-if="hasSearchResults"
-            class="clear-btn"
-            @click="handleClearSearch"
-            :disabled="isLoading"
-          >
-            清空
-          </button>
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <input
+              v-model="searchKeyword"
+              type="text"
+              placeholder="搜索学校名称、地区、地址、分类、宗教、校网等..."
+              class="search-input"
+              @input="handleSearchInput"
+              @focus="handleSearchFocus"
+              @blur="handleSearchBlur"
+            />
+            <div 
+              v-if="searchKeyword && !isLoading"
+              class="clear-icon"
+              @click="handleClearSearch"
+              title="清空搜索"
+            >
+              ✕
+            </div>
+            <div 
+              v-if="isLoading"
+              class="loading-icon"
+            >
+              <div class="spinner"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -235,15 +237,6 @@ const handleTypeChange = async (type: 'primary' | 'secondary') => {
   await setSchoolType(type)
 }
 
-// 处理搜索
-const handleSearch = async () => {
-  if (searchKeyword.value.trim()) {
-    await searchSchools(searchKeyword.value.trim())
-  } else {
-    await clearSearch()
-  }
-}
-
 // 处理实时搜索输入
 let searchTimeout: NodeJS.Timeout | null = null
 const handleSearchInput = () => {
@@ -252,14 +245,24 @@ const handleSearchInput = () => {
     clearTimeout(searchTimeout)
   }
   
-  // 设置新的定时器，延迟500ms执行搜索
+  // 设置新的定时器，延迟800ms执行搜索（增加延迟，避免频繁搜索）
   searchTimeout = setTimeout(async () => {
     if (searchKeyword.value.trim()) {
       await searchSchools(searchKeyword.value.trim())
     } else {
       await clearSearch()
     }
-  }, 500)
+  }, 800)
+}
+
+// 处理搜索框获得焦点
+const handleSearchFocus = () => {
+  // 可以在这里添加一些焦点状态的逻辑
+}
+
+// 处理搜索框失去焦点
+const handleSearchBlur = () => {
+  // 可以在这里添加一些失去焦点状态的逻辑
 }
 
 // 处理清空搜索
@@ -269,6 +272,7 @@ const handleClearSearch = async () => {
     clearTimeout(searchTimeout)
     searchTimeout = null
   }
+  searchKeyword.value = ''
   await clearSearch()
 }
 
@@ -484,7 +488,7 @@ const handleRetry = async () => {
   font-size: 16px;
 }
 
-/* 搜索和过滤样式 */
+/* 搜索样式 */
 .search-section {
   margin-bottom: 32px;
   padding: 24px;
@@ -493,58 +497,90 @@ const handleRetry = async () => {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
-.search-bar {
+.search-container {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-  align-items: center;
+  justify-content: center;
+}
+
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
 }
 
 .search-input {
-  flex: 1;
-  padding: 12px 16px;
+  width: 100%;
+  padding: 16px 48px 16px 20px;
   border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 25px;
   font-size: 16px;
-  transition: border-color 0.3s ease;
+  background-color: #f9fafb;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .search-input:focus {
   outline: none;
   border-color: #3b82f6;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
 }
 
-.search-btn, .clear-btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+.search-input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.clear-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e5e7eb;
+  border-radius: 50%;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: bold;
+  color: #6b7280;
 }
 
-.search-btn {
-  background-color: #3b82f6;
+.clear-icon:hover {
+  background-color: #dc2626;
   color: white;
+  transform: translateY(-50%) scale(1.1);
 }
 
-.search-btn:hover:not(:disabled) {
-  background-color: #2563eb;
+.loading-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.clear-btn {
-  background-color: #6b7280;
-  color: white;
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.clear-btn:hover:not(:disabled) {
-  background-color: #4b5563;
-}
-
-.search-btn:disabled, .clear-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* 移除过滤样式，因为不再需要 */
@@ -717,9 +753,33 @@ const handleRetry = async () => {
     font-size: 36px;
   }
   
-  .search-bar {
-    flex-direction: column;
-    align-items: stretch;
+  .search-container {
+    padding: 0 12px;
+  }
+  
+  .search-input-wrapper {
+    max-width: 100%;
+  }
+  
+  .search-input {
+    padding: 14px 44px 14px 18px;
+    font-size: 16px; /* 防止iOS缩放 */
+  }
+  
+  .clear-icon {
+    right: 14px;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+  
+  .loading-icon {
+    right: 14px;
+  }
+  
+  .spinner {
+    width: 14px;
+    height: 14px;
   }
   
   .results-info {
