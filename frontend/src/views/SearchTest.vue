@@ -62,7 +62,7 @@
       <h2>分页测试</h2>
       <div v-if="pagination.totalPages > 1" class="pagination">
         <button 
-          @click="goToPage(pagination.page - 1)"
+          @click="handleGoToPage(pagination.page - 1)"
           :disabled="pagination.page === 1 || isLoading"
           class="page-btn"
         >
@@ -72,7 +72,7 @@
           第 {{ pagination.page }} 页，共 {{ pagination.totalPages }} 页
         </span>
         <button 
-          @click="goToPage(pagination.page + 1)"
+          @click="handleGoToPage(pagination.page + 1)"
           :disabled="pagination.page === pagination.totalPages || isLoading"
           class="page-btn"
         >
@@ -128,7 +128,7 @@ const clearTest = async () => {
 }
 
 // 翻页
-const goToPage = async (page: number) => {
+const handleGoToPage = async (page: number) => {
   if (typeof page === 'number' && page >= 1 && page <= pagination.value.totalPages) {
     await schoolStore.goToPage(page)
     searchResults.value = currentPageData.value
