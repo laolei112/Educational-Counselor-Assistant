@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS tb_schools (
     remarks TEXT COMMENT '备注',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    INDEX idx_type (type),
+    INDEX idx_type (level),
     INDEX idx_district (district),
     INDEX idx_category (category),
     INDEX idx_gender (gender),

@@ -16,26 +16,22 @@ import json
 import os
 from urllib.parse import quote_plus as urlquote
 from sqlalchemy import create_engine
-
+from common.logger import loginfo
 
 # ENV
 GPT_ENV = os.environ.get("GPT_ENV", "DEV")
-IS_DOCKER = os.environ.get("IS_DOCKER", "false").lower() == "true"
-
 from backend.basic_settings import *
 if GPT_ENV == "PRD":
     CONF_PATH = os.path.join(os.getcwd(), "config/conf/prd/backend/settings.json")
     from config.conf.prd.backend.sa_settings import *
 elif GPT_ENV == "DEV":
     # Docker 环境使用特殊配置文件
-    if IS_DOCKER:
-        CONF_PATH = os.path.join(os.getcwd(), "config/conf/dev/backend/settings.docker.json")
-    else:
-        CONF_PATH = os.path.join(os.getcwd(), "config/conf/dev/backend/settings.json")
+    CONF_PATH = os.path.join(os.getcwd(), "config/conf/dev/backend/settings.json")
     from config.conf.dev.backend.sa_settings import *
 
 
 def load_config():
+    loginfo(f"load config from {CONF_PATH}")
     assert os.path.exists(CONF_PATH)
     with open(CONF_PATH, encoding='UTF-8') as f:
         cfg = json.load(f)
