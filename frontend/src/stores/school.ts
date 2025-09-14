@@ -23,6 +23,11 @@ export const useSchoolStore = defineStore('school', () => {
   // 搜索状态
   const searchKeyword = ref('')
   
+  // 无限滚动状态
+  const hasMore = ref(true)
+  const loadingMore = ref(false)
+  const allSchools = ref<School[]>([]) // 存储所有已加载的学校数据
+  
   // 是否启用Mock模式（当后端不可用时使用静态数据）
   const enableMock = ref(import.meta.env.VITE_ENABLE_MOCK === 'true' || false)
   
@@ -127,38 +132,55 @@ export const useSchoolStore = defineStore('school', () => {
   // 是否有搜索结果
   const hasSearchResults = computed(() => searchKeyword.value.length > 0)
   
-  // 当前页面数据 - 直接使用 schools.value，因为 API 已经返回了分页后的数据
+  // 当前页面数据 - 使用 allSchools.value 显示所有已加载的数据
   const currentPageData = computed(() => {
-    return schools.value
+    return allSchools.value
   })
+  
+  // 是否还有更多数据
+  const hasMoreData = computed(() => hasMore.value)
+  
+  // 是否正在加载更多
+  const isLoadingMore = computed(() => loadingMore.value)
 
   // Actions
   
   /**
-   * 获取学校列表
+   * 获取学校列表（支持无限滚动）
    */
-  const fetchSchools = async (query: PageQuery = {}) => {
+  const fetchSchools = async (query: PageQuery = {}, append: boolean = false) => {
     if (enableMock.value) {
       // Mock模式：使用静态数据
-      schools.value = mockSchools
+      const filteredSchools = mockSchools.filter(school => school.type === currentType.value)
+      if (append) {
+        allSchools.value = [...allSchools.value, ...filteredSchools]
+      } else {
+        allSchools.value = filteredSchools
+        schools.value = filteredSchools
+      }
       pagination.value = {
         page: 1,
         pageSize: 20,
-        total: mockSchools.filter(school => school.type === currentType.value).length,
-        totalPages: Math.ceil(mockSchools.filter(school => school.type === currentType.value).length / 20)
+        total: filteredSchools.length,
+        totalPages: Math.ceil(filteredSchools.length / 20)
       }
+      hasMore.value = false // Mock模式下没有更多数据
       await updateStats()
       return
     }
 
     try {
-      loading.value = true
+      if (append) {
+        loadingMore.value = true
+      } else {
+        loading.value = true
+      }
       error.value = null
 
       // 根据学校类型选择不同的API
       const apiQuery = {
         ...query,
-        page: pagination.value.page,
+        page: append ? pagination.value.page + 1 : pagination.value.page,
         pageSize: pagination.value.pageSize
       }
 
@@ -181,13 +203,25 @@ export const useSchoolStore = defineStore('school', () => {
           total: response.data.total,
           totalPages: response.data.totalPages
         })
-        schools.value = response.data.list
-        pagination.value = {
-          page: response.data.page,
-          pageSize: response.data.pageSize,
-          total: response.data.total,
-          totalPages: response.data.totalPages
+        
+        if (append) {
+          // 追加数据
+          allSchools.value = [...allSchools.value, ...response.data.list]
+          pagination.value.page = response.data.page
+        } else {
+          // 重置数据
+          allSchools.value = response.data.list
+          schools.value = response.data.list
+          pagination.value = {
+            page: response.data.page,
+            pageSize: response.data.pageSize,
+            total: response.data.total,
+            totalPages: response.data.totalPages
+          }
         }
+        
+        // 检查是否还有更多数据
+        hasMore.value = response.data.page < response.data.totalPages
       } else {
         throw new Error(response.message || '获取学校列表失败')
       }
@@ -196,16 +230,24 @@ export const useSchoolStore = defineStore('school', () => {
       error.value = err instanceof Error ? err.message : '获取学校列表失败'
       
       // 失败时回退到Mock数据
-      schools.value = mockSchools
+      const filteredSchools = mockSchools.filter(school => school.type === currentType.value)
+      if (append) {
+        allSchools.value = [...allSchools.value, ...filteredSchools]
+      } else {
+        allSchools.value = filteredSchools
+        schools.value = filteredSchools
+      }
       pagination.value = {
         page: 1,
         pageSize: 20,
-        total: mockSchools.filter(school => school.type === currentType.value).length,
-        totalPages: Math.ceil(mockSchools.filter(school => school.type === currentType.value).length / 20)
+        total: filteredSchools.length,
+        totalPages: Math.ceil(filteredSchools.length / 20)
       }
+      hasMore.value = false
       console.warn('已回退到Mock数据')
     } finally {
       loading.value = false
+      loadingMore.value = false
       await updateStats()
     }
   }
@@ -250,17 +292,20 @@ export const useSchoolStore = defineStore('school', () => {
     currentType.value = type
     pagination.value.page = 1 // 重置到第一页
     searchKeyword.value = '' // 清空搜索
+    allSchools.value = [] // 清空所有学校数据
+    hasMore.value = true // 重置更多数据状态
     await fetchSchools()
   }
 
   /**
-   * 搜索学校
+   * 搜索学校（支持无限滚动）
    */
-  const searchSchools = async (keyword: string, query: PageQuery = {}) => {
+  const searchSchools = async (keyword: string, query: PageQuery = {}, append: boolean = false) => {
     searchKeyword.value = keyword
     // 只有在没有传入页码参数时才重置到第一页
-    if (!query.page) {
+    if (!query.page && !append) {
       pagination.value.page = 1
+      allSchools.value = [] // 清空搜索结果
     }
 
     if (enableMock.value) {
@@ -272,24 +317,36 @@ export const useSchoolStore = defineStore('school', () => {
           school.address?.includes(keyword)
         )
       )
-      schools.value = filtered
+      
+      if (append) {
+        allSchools.value = [...allSchools.value, ...filtered]
+      } else {
+        allSchools.value = filtered
+        schools.value = filtered
+      }
+      
       pagination.value = {
         page: 1,
         pageSize: 20,
         total: filtered.length,
         totalPages: Math.ceil(filtered.length / 20)
       }
+      hasMore.value = false // Mock模式下没有更多数据
       return
     }
 
     try {
-      loading.value = true
+      if (append) {
+        loadingMore.value = true
+      } else {
+        loading.value = true
+      }
       error.value = null
 
       const apiQuery = {
         ...query,
         keyword,
-        page: pagination.value.page,
+        page: append ? pagination.value.page + 1 : pagination.value.page,
         pageSize: pagination.value.pageSize
       }
 
@@ -302,13 +359,24 @@ export const useSchoolStore = defineStore('school', () => {
       }
       
       if (response.success) {
-        schools.value = response.data.list
-        pagination.value = {
-          page: response.data.page,
-          pageSize: response.data.pageSize,
-          total: response.data.total,
-          totalPages: response.data.totalPages
+        if (append) {
+          // 追加搜索结果
+          allSchools.value = [...allSchools.value, ...response.data.list]
+          pagination.value.page = response.data.page
+        } else {
+          // 重置搜索结果
+          allSchools.value = response.data.list
+          schools.value = response.data.list
+          pagination.value = {
+            page: response.data.page,
+            pageSize: response.data.pageSize,
+            total: response.data.total,
+            totalPages: response.data.totalPages
+          }
         }
+        
+        // 检查是否还有更多数据
+        hasMore.value = response.data.page < response.data.totalPages
       } else {
         throw new Error(response.message || '搜索失败')
       }
@@ -317,6 +385,7 @@ export const useSchoolStore = defineStore('school', () => {
       error.value = err instanceof Error ? err.message : '搜索失败'
     } finally {
       loading.value = false
+      loadingMore.value = false
     }
   }
 
@@ -326,24 +395,25 @@ export const useSchoolStore = defineStore('school', () => {
   const clearSearch = async () => {
     searchKeyword.value = ''
     pagination.value.page = 1
+    allSchools.value = [] // 清空所有学校数据
+    hasMore.value = true // 重置更多数据状态
     await fetchSchools()
   }
 
   /**
-   * 翻页
+   * 加载更多数据（无限滚动）
    */
-  const goToPage = async (page: number) => {
-    if (page < 1 || page > pagination.value.totalPages) return
+  const loadMore = async () => {
+    if (!hasMore.value || loadingMore.value) return
     
-    console.log(`🔄 翻页到第 ${page} 页`)
-    pagination.value.page = page
+    console.log(`📄 加载更多数据，当前页: ${pagination.value.page}`)
     
     if (searchKeyword.value) {
-      console.log(`🔍 搜索模式：搜索关键词 "${searchKeyword.value}"`)
-      await searchSchools(searchKeyword.value, { page })
+      console.log(`🔍 搜索模式：加载更多搜索结果`)
+      await searchSchools(searchKeyword.value, {}, true)
     } else {
-      console.log(`📋 列表模式：获取学校列表`)
-      await fetchSchools({ page })
+      console.log(`📋 列表模式：加载更多学校列表`)
+      await fetchSchools({}, true)
     }
   }
 
@@ -353,6 +423,8 @@ export const useSchoolStore = defineStore('school', () => {
   const setPageSize = async (pageSize: number) => {
     pagination.value.pageSize = pageSize
     pagination.value.page = 1 // 重置到第一页
+    allSchools.value = [] // 清空所有学校数据
+    hasMore.value = true // 重置更多数据状态
     
     if (searchKeyword.value) {
       await searchSchools(searchKeyword.value)
@@ -386,6 +458,9 @@ export const useSchoolStore = defineStore('school', () => {
     enableMock,
     pagination,
     searchKeyword,
+    allSchools,
+    hasMore,
+    loadingMore,
     
     // 计算属性
     filteredSchools,
@@ -393,6 +468,8 @@ export const useSchoolStore = defineStore('school', () => {
     hasError,
     hasSearchResults,
     currentPageData,
+    hasMoreData,
+    isLoadingMore,
     
     // Actions
     fetchSchools,
@@ -400,7 +477,7 @@ export const useSchoolStore = defineStore('school', () => {
     setSchoolType,
     searchSchools,
     clearSearch,
-    goToPage,
+    loadMore,
     setPageSize,
     clearError,
     toggleMockMode

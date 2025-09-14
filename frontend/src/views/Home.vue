@@ -101,10 +101,16 @@
         <div v-else>
           <!-- 结果统计 -->
           <div class="results-info">
-            <span class="results-count">
-              共找到 {{ pagination.total }} 所学校
-              <span v-if="hasSearchResults">（搜索"{{ searchKeyword }}"）</span>
-            </span>
+            <div class="results-count">
+              <span class="count-number">{{ pagination.total }}</span>
+              <span class="count-label">所学校</span>
+              <span v-if="hasSearchResults" class="search-keyword">
+                搜索"{{ searchKeyword }}"
+              </span>
+            </div>
+            <div class="loaded-count">
+              已加载 <span class="loaded-number">{{ currentPageData.length }}</span> 所
+            </div>
           </div>
           
           <!-- 学校卡片列表 -->
@@ -116,35 +122,22 @@
             />
           </div>
           
-          <!-- 分页组件 -->
-          <div v-if="pagination.totalPages > 1" class="pagination">
+          <!-- 无限滚动加载更多 -->
+          <div v-if="hasMoreData" class="load-more-section">
             <button 
-              class="page-btn"
-              :disabled="pagination.page === 1 || isLoading"
-              @click="handlePageChange(pagination.page - 1)"
+              class="load-more-btn"
+              :disabled="isLoadingMore"
+              @click="handleLoadMore"
             >
-              上一页
+              <span v-if="isLoadingMore" class="loading-spinner-small"></span>
+              <span v-else>加载更多</span>
             </button>
-            
-            <div class="page-numbers">
-              <button
-                v-for="page in visiblePages"
-                :key="page"
-                :class="['page-number', { active: page === pagination.page }]"
-                :disabled="isLoading"
-                @click="handlePageChange(page)"
-              >
-                {{ page }}
-              </button>
-            </div>
-            
-            <button 
-              class="page-btn"
-              :disabled="pagination.page === pagination.totalPages || isLoading"
-              @click="handlePageChange(pagination.page + 1)"
-            >
-              下一页
-            </button>
+          </div>
+          
+          <!-- 没有更多数据提示 -->
+          <div v-else-if="currentPageData.length > 0" class="no-more-data">
+            <div class="no-more-icon">📚</div>
+            <p>已加载全部 {{ pagination.total }} 所学校</p>
           </div>
           
           <!-- 页面大小选择器 -->
@@ -183,7 +176,9 @@ const {
   pagination,
   searchKeyword,
   hasSearchResults,
-  currentPageData
+  currentPageData,
+  hasMoreData,
+  isLoadingMore
 } = storeToRefs(schoolStore)
 const { 
   setSchoolType, 
@@ -191,7 +186,7 @@ const {
   clearError, 
   searchSchools, 
   clearSearch, 
-  goToPage, 
+  loadMore, 
   setPageSize
 } = schoolStore
 
@@ -276,11 +271,9 @@ const handleClearSearch = async () => {
   await clearSearch()
 }
 
-// 处理翻页
-const handlePageChange = async (page: number) => {
-  if (typeof page === 'number') {
-    await goToPage(page)
-  }
+// 处理加载更多
+const handleLoadMore = async () => {
+  await loadMore()
 }
 
 // 处理页面大小变化
@@ -597,28 +590,41 @@ const handleRetry = async () => {
 }
 
 .results-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 16px;
   color: #374151;
   font-weight: 500;
 }
 
-.page-size-selector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.count-number {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 20px;
 }
 
-.page-size-selector label {
+.count-label {
+  color: #6b7280;
+}
+
+.search-keyword {
+  padding: 4px 8px;
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.loaded-count {
   font-size: 14px;
   color: #6b7280;
 }
 
-.page-size-select {
-  padding: 4px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 14px;
-  background-color: white;
+.loaded-number {
+  font-weight: 600;
+  color: #3b82f6;
 }
 
 /* 学校网格样式 */
@@ -633,14 +639,74 @@ const handleRetry = async () => {
   margin-bottom: 40px;
 }
 
-/* 分页样式 */
-.pagination {
+/* 无限滚动样式 */
+.load-more-section {
   display: flex;
   justify-content: center;
+  margin: 40px 0;
+  padding: 20px;
+}
+
+.load-more-btn {
+  display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 32px;
-  padding: 20px;
+  padding: 12px 32px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.load-more-btn:hover:not(:disabled) {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.load-more-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.no-more-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0;
+  padding: 40px 20px;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  border: 2px dashed #d1d5db;
+}
+
+.no-more-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.no-more-data p {
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
 }
 
 /* 页面大小选择器样式 */
@@ -680,60 +746,7 @@ const handleRetry = async () => {
   border-color: #3b82f6;
 }
 
-.page-btn {
-  padding: 8px 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background-color: white;
-  color: #374151;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-btn:hover:not(:disabled) {
-  background-color: #f3f4f6;
-  border-color: #9ca3af;
-}
-
-.page-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-numbers {
-  display: flex;
-  gap: 4px;
-}
-
-.page-number {
-  padding: 8px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background-color: white;
-  color: #374151;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 40px;
-  text-align: center;
-}
-
-.page-number:hover:not(:disabled) {
-  background-color: #f3f4f6;
-  border-color: #9ca3af;
-}
-
-.page-number.active {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
-  color: white;
-}
-
-.page-number:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+/* 移除分页相关样式，使用无限滚动 */
 
 @media (max-width: 768px) {
   .container {
@@ -797,9 +810,21 @@ const handleRetry = async () => {
     grid-template-columns: 1fr;
   }
   
-  .pagination {
-    flex-wrap: wrap;
-    gap: 4px;
+  .load-more-btn {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+  
+  .no-more-data {
+    padding: 30px 16px;
+  }
+  
+  .no-more-icon {
+    font-size: 36px;
+  }
+  
+  .no-more-data p {
+    font-size: 14px;
   }
 }
 </style> 
