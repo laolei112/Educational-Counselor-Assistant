@@ -1,97 +1,37 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.core.paginator import Paginator
+from django.db.models import Q
+from backend.models.tb_schools import TbSchools
 import json
 
-# Mock data - same as frontend for consistency
-MOCK_SCHOOLS = [
-    # 中学数据
-    {
-        "id": 1,
-        "name": "圣保罗男女中学",
-        "type": "secondary",
-        "category": "elite",
-        "band1Rate": 94,
-        "applicationStatus": "open",
-        "district": "中西区",
-        "schoolNet": "校网11",
-        "tuition": 36800,
-        "gender": "coed",
-        "feederSchools": ["圣保罗书院"],
-        "linkedUniversities": ["香港大学"]
-    },
-    {
-        "id": 2,
-        "name": "喇沙书院",
-        "type": "secondary",
-        "category": "traditional",
-        "band1Rate": 88,
-        "applicationStatus": "closed",
-        "district": "九龙城",
-        "schoolNet": "校网41",
-        "tuition": 28500,
-        "gender": "boys",
-        "feederSchools": ["喇沙小学"],
-        "linkedUniversities": ["香港中文大学"]
-    },
-    {
-        "id": 3,
-        "name": "拔萃女书院",
-        "type": "secondary",
-        "category": "direct",
-        "band1Rate": 96,
-        "applicationStatus": "open",
-        "district": "九龙城",
-        "schoolNet": "校网41",
-        "tuition": 42000,
-        "gender": "girls",
-        "feederSchools": ["拔萃女小学"],
-        "linkedUniversities": ["香港大学", "香港中文大学"]
-    },
-    # 小学数据
-    {
-        "id": 4,
-        "name": "拔萃女小学",
-        "type": "primary",
-        "category": "direct",
-        "band1Rate": 98,
-        "applicationStatus": "open",
-        "district": "九龙城",
-        "schoolNet": "校网41",
-        "tuition": 38000,
-        "gender": "girls",
-        "feederSchools": [],
-        "linkedUniversities": ["拔萃女书院"]
-    },
-    {
-        "id": 5,
-        "name": "圣保罗男女中学附属小学",
-        "type": "primary",
-        "category": "elite",
-        "band1Rate": 95,
-        "applicationStatus": "open",
-        "district": "南区",
-        "schoolNet": "校网18",
-        "tuition": 32000,
-        "gender": "coed",
-        "feederSchools": [],
-        "linkedUniversities": ["圣保罗男女中学"]
-    },
-    {
-        "id": 6,
-        "name": "喇沙小学",
-        "type": "primary",
-        "category": "traditional",
-        "band1Rate": 92,
-        "applicationStatus": "closed",
-        "district": "九龙城",
-        "schoolNet": "校网41",
-        "tuition": 0,
-        "gender": "boys",
-        "feederSchools": [],
-        "linkedUniversities": ["喇沙书院"]
+
+def serialize_school(school):
+    """
+    序列化学校数据为前端需要的格式
+    """
+    return {
+        "id": school.id,
+        "name": school.name,
+        "type": school.level,  # 使用 level 字段映射到 type
+        "category": school.category,
+        "band1Rate": school.promotion_rate.get('band1_rate', 0) if school.promotion_rate else 0,
+        "applicationStatus": school.application_status,
+        "district": school.district,
+        "schoolNet": school.net_name,  # 使用 net_name 字段映射到 schoolNet
+        "tuition": float(school.tuition) if school.tuition else 0,
+        "gender": school.gender,
+        "feederSchools": school.promotion_rate.get('feeder_schools', []) if school.promotion_rate else [],
+        "linkedUniversities": school.promotion_rate.get('linked_universities', []) if school.promotion_rate else [],
+        "url": school.url,
+        "religion": school.religion,
+        "address": school.address,
+        "officialWebsite": school.official_website,
+        "remarks": school.remarks,
+        "createdAt": school.created_at.isoformat() if school.created_at else None,
+        "updatedAt": school.updated_at.isoformat() if school.updated_at else None
     }
-]
 
 
 @csrf_exempt
@@ -111,43 +51,46 @@ def schools_list(request):
         page = int(request.GET.get('page', 1))
         page_size = int(request.GET.get('pageSize', 20))
         
-        # 过滤数据
-        filtered_schools = MOCK_SCHOOLS.copy()
+        # 构建查询条件
+        queryset = TbSchools.objects.all()
         
+        # 应用过滤条件
         if school_type:
-            filtered_schools = [s for s in filtered_schools if s['type'] == school_type]
+            queryset = queryset.filter(level=school_type)
         
         if category:
-            filtered_schools = [s for s in filtered_schools if s['category'] == category]
+            queryset = queryset.filter(category=category)
             
         if district:
-            filtered_schools = [s for s in filtered_schools if s['district'] == district]
+            queryset = queryset.filter(district=district)
             
         if application_status:
-            filtered_schools = [s for s in filtered_schools if s['applicationStatus'] == application_status]
+            queryset = queryset.filter(application_status=application_status)
             
         if keyword:
-            filtered_schools = [s for s in filtered_schools 
-                              if keyword.lower() in s['name'].lower() or keyword.lower() in s['district'].lower()]
+            queryset = queryset.filter(
+                Q(name__icontains=keyword) | 
+                Q(district__icontains=keyword) |
+                Q(address__icontains=keyword)
+            )
         
         # 分页
-        total = len(filtered_schools)
-        start_index = (page - 1) * page_size
-        end_index = start_index + page_size
-        schools_page = filtered_schools[start_index:end_index]
+        paginator = Paginator(queryset, page_size)
+        schools_page = paginator.get_page(page)
         
-        total_pages = (total + page_size - 1) // page_size
+        # 序列化数据
+        schools_data = [serialize_school(school) for school in schools_page]
         
         return JsonResponse({
             "code": 200,
             "message": "成功",
             "success": True,
             "data": {
-                "list": schools_page,
-                "total": total,
+                "list": schools_data,
+                "total": paginator.count,
                 "page": page,
                 "pageSize": page_size,
-                "totalPages": total_pages
+                "totalPages": paginator.num_pages
             }
         })
         
@@ -176,9 +119,10 @@ def school_detail(request, school_id):
     """
     try:
         school_id = int(school_id)
-        school = next((s for s in MOCK_SCHOOLS if s['id'] == school_id), None)
         
-        if not school:
+        try:
+            school = TbSchools.objects.get(id=school_id)
+        except TbSchools.DoesNotExist:
             return JsonResponse({
                 "code": 404,
                 "message": "学校不存在",
@@ -186,11 +130,14 @@ def school_detail(request, school_id):
                 "data": None
             })
         
+        # 序列化学校数据
+        school_data = serialize_school(school)
+        
         return JsonResponse({
             "code": 200,
             "message": "成功",
             "success": True,
-            "data": school
+            "data": school_data
         })
         
     except ValueError:
@@ -219,14 +166,34 @@ def schools_stats(request):
     try:
         school_type = request.GET.get('type')
         
-        # 过滤数据
-        filtered_schools = MOCK_SCHOOLS.copy()
+        # 构建查询条件
+        queryset = TbSchools.objects.all()
         if school_type:
-            filtered_schools = [s for s in filtered_schools if s['type'] == school_type]
+            queryset = queryset.filter(level=school_type)
         
         # 计算统计信息
-        total_schools = len(filtered_schools)
-        open_applications = len([s for s in filtered_schools if s['applicationStatus'] == 'open'])
+        total_schools = queryset.count()
+        open_applications = queryset.filter(application_status='open').count()
+        
+        # 按类型统计
+        type_stats = {}
+        for level, _ in TbSchools.LEVEL_CHOICES:
+            count = queryset.filter(level=level).count()
+            type_stats[level] = count
+        
+        # 按地区统计
+        district_stats = {}
+        districts = queryset.values_list('district', flat=True).distinct()
+        for district in districts:
+            if district:
+                count = queryset.filter(district=district).count()
+                district_stats[district] = count
+        
+        # 按分类统计
+        category_stats = {}
+        for category, _ in TbSchools.CATEGORY_CHOICES:
+            count = queryset.filter(category=category).count()
+            category_stats[category] = count
         
         return JsonResponse({
             "code": 200,
@@ -234,7 +201,10 @@ def schools_stats(request):
             "success": True,
             "data": {
                 "totalSchools": total_schools,
-                "openApplications": open_applications
+                "openApplications": open_applications,
+                "typeStats": type_stats,
+                "districtStats": district_stats,
+                "categoryStats": category_stats
             }
         })
         

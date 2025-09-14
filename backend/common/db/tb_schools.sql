@@ -1,0 +1,25 @@
+-- 创建学校表
+CREATE TABLE IF NOT EXISTS tb_schools (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL COMMENT '学校名称',
+    level ENUM('primary', 'secondary') NOT NULL COMMENT '学校级别',
+    url VARCHAR(500) COMMENT '学校信息页面URL',
+    category ENUM('elite', 'traditional', 'direct', 'government', 'private') COMMENT '学校分类',
+    net_name VARCHAR(100) COMMENT '校网',
+    religion VARCHAR(50) COMMENT '宗教背景',
+    gender ENUM('coed', 'boys', 'girls') COMMENT '性别：男女校/男校/女校',
+    address VARCHAR(500) COMMENT '学校地址',
+    district VARCHAR(100) COMMENT '所属地区',
+    official_website VARCHAR(500) COMMENT '官方网站',
+    promotion_rate JSON COMMENT '升学比例(JSON数组)',
+    application_status ENUM('open', 'closed', 'deadline') DEFAULT 'open' COMMENT '申请状态',
+    tuition DECIMAL(10,2) DEFAULT 0 COMMENT '学费',
+    remarks TEXT COMMENT '备注',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    INDEX idx_type (type),
+    INDEX idx_district (district),
+    INDEX idx_category (category),
+    INDEX idx_gender (gender),
+    INDEX idx_application_status (application_status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='学校信息表';
