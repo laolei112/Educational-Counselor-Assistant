@@ -102,7 +102,7 @@ class TbSchools(Base):
     
     level = models.CharField(
         max_length=20,
-        choices=SCHOOL_LEVEL_CHOICES,
+        choices=LEVEL_CHOICES,
         verbose_name='学校级别',
         help_text='学校的级别'
     )
@@ -163,7 +163,7 @@ class TbSchools(Base):
         
         # 添加索引
         indexes = [
-            models.Index(fields=['type'], name='idx_type'),
+            models.Index(fields=['level'], name='idx_level'),
             models.Index(fields=['district'], name='idx_district'),
             models.Index(fields=['category'], name='idx_category'),
             models.Index(fields=['gender'], name='idx_gender'),
@@ -171,7 +171,7 @@ class TbSchools(Base):
         ]
     
     def __str__(self):
-        return f"{self.name} ({self.get_type_display()})"
+        return f"{self.name} ({self.get_level_display()})"
     
     def get_full_info(self):
         """
