@@ -112,20 +112,14 @@
             />
           </div>
           
-          <!-- 无限滚动加载更多 -->
-          <div v-if="hasMoreData" class="load-more-section">
-            <button 
-              class="load-more-btn"
-              :disabled="isLoadingMore"
-              @click="handleLoadMore"
-            >
-              <span v-if="isLoadingMore" class="loading-spinner-small"></span>
-              <span v-else>加载更多</span>
-            </button>
+          <!-- 加载状态指示器 -->
+          <div v-if="isLoadingMore" class="loading-indicator">
+            <div class="loading-spinner-small"></div>
+            <span>正在加载更多...</span>
           </div>
           
           <!-- 没有更多数据提示 -->
-          <div v-else-if="currentPageData.length > 0" class="no-more-data">
+          <div v-else-if="!hasMoreData && currentPageData.length > 0" class="no-more-data">
             <div class="no-more-icon">📚</div>
             <p>已加载全部 {{ pagination.total }} 所学校</p>
           </div>
@@ -137,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, ref } from 'vue'
+import { onMounted, onUnmounted, computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSchoolStore } from '@/stores/school'
 import SchoolCard from '@/components/SchoolCard.vue'
@@ -171,9 +165,37 @@ const {
 
 // 移除分页相关计算属性，使用无限滚动
 
-// 组件挂载时获取数据
+// 滚动加载相关
+let isLoadingMoreData = false
+
+// 滚动检测函数
+const handleScroll = async () => {
+  if (isLoadingMoreData || !hasMoreData.value) return
+  
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+  const windowHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
+  
+  // 当滚动到距离底部100px时触发加载
+  if (scrollTop + windowHeight >= documentHeight - 100) {
+    isLoadingMoreData = true
+    try {
+      await loadMore()
+    } finally {
+      isLoadingMoreData = false
+    }
+  }
+}
+
+// 组件挂载时获取数据并添加滚动监听
 onMounted(async () => {
   await fetchSchools()
+  window.addEventListener('scroll', handleScroll)
+})
+
+// 组件卸载时移除滚动监听
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 
 // 处理学校类型切换
@@ -220,10 +242,7 @@ const handleClearSearch = async () => {
   await clearSearch()
 }
 
-// 处理加载更多
-const handleLoadMore = async () => {
-  await loadMore()
-}
+// 移除手动加载更多方法，改为自动滚动加载
 
 // 移除页面大小变化处理，使用固定页面大小
 
@@ -271,7 +290,7 @@ const handleRetry = async () => {
 .type-btn {
   padding: 8px 20px;
   border: 2px solid #e5e7eb;
-  background-color: white;
+  background-color: transparent;
   color: #6b7280;
   border-radius: 6px;
   cursor: pointer;
@@ -618,47 +637,23 @@ const handleRetry = async () => {
   margin-bottom: 40px;
 }
 
-/* 无限滚动样式 */
-.load-more-section {
+/* 自动滚动加载样式 */
+.loading-indicator {
   display: flex;
   justify-content: center;
-  margin: 40px 0;
-  padding: 20px;
-}
-
-.load-more-btn {
-  display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 32px;
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
-}
-
-.load-more-btn:hover:not(:disabled) {
-  background-color: #2563eb;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
-}
-
-.load-more-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+  margin: 20px 0;
+  padding: 16px;
+  color: #6b7280;
+  font-size: 14px;
 }
 
 .loading-spinner-small {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top: 2px solid white;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -770,9 +765,10 @@ const handleRetry = async () => {
     grid-template-columns: 1fr;
   }
   
-  .load-more-btn {
-    padding: 10px 24px;
-    font-size: 14px;
+  .loading-indicator {
+    margin: 16px 0;
+    padding: 12px;
+    font-size: 13px;
   }
   
   .no-more-data {
