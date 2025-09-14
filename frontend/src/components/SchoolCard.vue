@@ -3,7 +3,7 @@
     <div class="card-header">
       <h3 class="school-name">{{ school.name }}</h3>
       <span 
-        v-if="school.category === 'government'"
+        v-if="school.category"
         :class="['category-tag', `tag-${school.category}`]"
       >
         {{ getCategoryLabel(school.category) }}
@@ -17,12 +17,6 @@
           :class="['status-tag', `status-${school.applicationStatus}`]"
         >
           {{ getStatusLabel(school.applicationStatus) }}
-        </span>
-        <span 
-          v-if="school.category !== 'government'"
-          :class="['category-tag', `tag-${school.category}`]"
-        >
-          {{ getCategoryLabel(school.category) }}
         </span>
       </div>
 
@@ -109,6 +103,7 @@ const getGenderLabel = (gender: string) => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  gap: 12px;
 }
 
 .school-name {
@@ -117,7 +112,7 @@ const getGenderLabel = (gender: string) => {
   color: #1f2937;
   margin: 0;
   flex: 1;
-  margin-right: 12px;
+  min-width: 0; /* 允许文本截断 */
 }
 
 .category-tag {
@@ -125,6 +120,8 @@ const getGenderLabel = (gender: string) => {
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
+  white-space: nowrap; /* 防止标签换行 */
+  flex-shrink: 0; /* 防止标签被压缩 */
 }
 
 .tag-elite {
@@ -223,15 +220,19 @@ const getGenderLabel = (gender: string) => {
   }
   
   .card-header {
-    flex-direction: column;
+    flex-direction: row; /* 保持水平布局 */
     gap: 8px;
-    align-items: flex-start;
+    align-items: center;
   }
   
   .school-name {
-    margin-right: 0;
-    margin-bottom: 4px;
     font-size: 18px;
+    min-width: 0; /* 允许文本截断 */
+  }
+  
+  .category-tag {
+    font-size: 11px; /* 稍微减小标签字体 */
+    padding: 3px 8px; /* 稍微减小标签内边距 */
   }
   
   .info-row {

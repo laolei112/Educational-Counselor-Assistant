@@ -10,14 +10,15 @@
     </div>
 
     <div class="container">
-      <!-- 搜索框 -->
-      <div class="search-section">
+      <!-- 搜索和类型选择统一区域 -->
+      <div class="search-type-section">
+        <!-- 搜索框 -->
         <div class="search-container">
           <div class="search-input-wrapper">
             <input
               v-model="searchKeyword"
               type="text"
-              placeholder="搜索学校名称、地区、地址、分类、宗教、校网等..."
+              placeholder="搜索学校名称、地区、校网等..."
               class="search-input"
               @input="handleSearchInput"
               @focus="handleSearchFocus"
@@ -39,37 +40,37 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- 学校类型选择 -->
-      <div class="type-selector">
-        <div class="type-buttons">
-          <button 
-            :class="['type-btn', { active: currentType === 'primary' }]"
-            :disabled="isLoading"
-            @click="handleTypeChange('primary')"
-          >
-            小学
-          </button>
-          <button 
-            :class="['type-btn', { active: currentType === 'secondary' }]"
-            :disabled="isLoading"
-            @click="handleTypeChange('secondary')"
-          >
-            中学
-          </button>
-        </div>
-        <!-- 统计信息 -->
-        <div class="stats-text">
-          <span class="stats-item">
-            <span class="stats-number">{{ stats.totalSchools }}</span>
-            <span class="stats-label">所学校</span>
-          </span>
-          <span class="stats-divider">|</span>
-          <span class="stats-item">
-            <span class="stats-number">{{ stats.openApplications }}</span>
-            <span class="stats-label">所开放申请</span>
-          </span>
+        <!-- 学校类型选择和统计信息 -->
+        <div class="type-selector">
+          <div class="type-buttons">
+            <button 
+              :class="['type-btn', { active: currentType === 'primary' }]"
+              :disabled="isLoading"
+              @click="handleTypeChange('primary')"
+            >
+              小学
+            </button>
+            <button 
+              :class="['type-btn', { active: currentType === 'secondary' }]"
+              :disabled="isLoading"
+              @click="handleTypeChange('secondary')"
+            >
+              中学
+            </button>
+          </div>
+          <!-- 统计信息 -->
+          <div class="stats-text">
+            <span class="stats-item">
+              <span class="stats-number">{{ stats.totalSchools }}</span>
+              <span class="stats-label">所学校</span>
+            </span>
+            <span class="stats-divider">|</span>
+            <span class="stats-item">
+              <span class="stats-number">{{ stats.openApplications }}</span>
+              <span class="stats-label">所开放申请</span>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -101,21 +102,7 @@
           <h3>暂无学校信息</h3>
           <p>{{ hasSearchResults ? '没有找到匹配的学校' : '当前类型下没有找到学校数据' }}</p>
         </div>
-        <div v-else>
-          <!-- 结果统计 -->
-          <div class="results-info">
-            <div class="results-count">
-              <span class="count-number">{{ pagination.total }}</span>
-              <span class="count-label">所学校</span>
-              <span v-if="hasSearchResults" class="search-keyword">
-                搜索"{{ searchKeyword }}"
-              </span>
-            </div>
-            <div class="loaded-count">
-              已加载 <span class="loaded-number">{{ currentPageData.length }}</span> 所
-            </div>
-          </div>
-          
+        <div v-else>          
           <!-- 学校卡片列表 -->
           <div class="schools-grid">
             <SchoolCard 
@@ -269,16 +256,16 @@ const handleRetry = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding: 16px 20px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .type-buttons {
   display: flex;
-  gap: 8px;
+  gap: 12px;
+  position: relative;
 }
 
 .type-btn {
@@ -291,17 +278,27 @@ const handleRetry = async () => {
   transition: all 0.3s ease;
   font-size: 14px;
   font-weight: 600;
+  position: relative;
+  z-index: 1;
 }
 
 .type-btn:hover:not(:disabled) {
   border-color: #3b82f6;
   color: #3b82f6;
+  background-color: #f8fafc;
 }
 
 .type-btn.active {
   background-color: #3b82f6;
   color: white;
   border-color: #3b82f6;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.type-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .type-btn:disabled {
@@ -460,13 +457,16 @@ const handleRetry = async () => {
   font-size: 16px;
 }
 
-/* 搜索样式 */
-.search-section {
-  margin-bottom: 20px;
-  padding: 16px;
+/* 搜索和类型选择统一区域样式 */
+.search-type-section {
+  margin-bottom: 24px;
+  padding: 20px;
   background-color: white;
-  border-radius: 12px;
+  border-radius: 16px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .search-container {
@@ -705,12 +705,14 @@ const handleRetry = async () => {
   
   .type-buttons {
     justify-content: center;
+    gap: 8px;
   }
   
   .type-btn {
     flex: 1;
     padding: 10px 16px;
     font-size: 14px;
+    min-width: 0;
   }
   
   .stats-text {
@@ -722,8 +724,13 @@ const handleRetry = async () => {
     font-size: 15px;
   }
   
+  .search-type-section {
+    padding: 16px;
+    gap: 12px;
+  }
+  
   .search-container {
-    padding: 0 12px;
+    padding: 0;
   }
   
   .search-input-wrapper {
