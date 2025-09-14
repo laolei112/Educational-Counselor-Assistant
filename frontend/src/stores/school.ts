@@ -22,11 +22,6 @@ export const useSchoolStore = defineStore('school', () => {
   
   // 搜索状态
   const searchKeyword = ref('')
-  const searchFilters = ref({
-    category: '',
-    district: '',
-    applicationStatus: ''
-  })
   
   // 是否启用Mock模式（当后端不可用时使用静态数据）
   const enableMock = ref(import.meta.env.VITE_ENABLE_MOCK === 'true' || false)
@@ -164,8 +159,7 @@ export const useSchoolStore = defineStore('school', () => {
       const apiQuery = {
         ...query,
         page: pagination.value.page,
-        pageSize: pagination.value.pageSize,
-        ...searchFilters.value
+        pageSize: pagination.value.pageSize
       }
 
       console.log(`📡 API 查询参数:`, apiQuery)
@@ -293,8 +287,7 @@ export const useSchoolStore = defineStore('school', () => {
         ...query,
         keyword,
         page: pagination.value.page,
-        pageSize: pagination.value.pageSize,
-        ...searchFilters.value
+        pageSize: pagination.value.pageSize
       }
 
       let response: { success: boolean; data: PageData<School>; message?: string }
@@ -325,23 +318,10 @@ export const useSchoolStore = defineStore('school', () => {
   }
 
   /**
-   * 设置搜索过滤器
-   */
-  const setSearchFilters = (filters: Partial<typeof searchFilters.value>) => {
-    searchFilters.value = { ...searchFilters.value, ...filters }
-    pagination.value.page = 1 // 重置到第一页
-  }
-
-  /**
    * 清空搜索
    */
   const clearSearch = async () => {
     searchKeyword.value = ''
-    searchFilters.value = {
-      category: '',
-      district: '',
-      applicationStatus: ''
-    }
     pagination.value.page = 1
     await fetchSchools()
   }
@@ -403,7 +383,6 @@ export const useSchoolStore = defineStore('school', () => {
     enableMock,
     pagination,
     searchKeyword,
-    searchFilters,
     
     // 计算属性
     filteredSchools,
@@ -417,7 +396,6 @@ export const useSchoolStore = defineStore('school', () => {
     updateStats,
     setSchoolType,
     searchSchools,
-    setSearchFilters,
     clearSearch,
     goToPage,
     setPageSize,

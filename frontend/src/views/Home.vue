@@ -28,15 +28,16 @@
         </button>
       </div>
 
-      <!-- 搜索和过滤 -->
+      <!-- 搜索框 -->
       <div class="search-section">
         <div class="search-bar">
           <input
             v-model="searchKeyword"
             type="text"
-            placeholder="搜索学校名称、地区或地址..."
+            placeholder="搜索学校名称、地区、地址、分类、宗教、校网等..."
             class="search-input"
             @keyup.enter="handleSearch"
+            @input="handleSearchInput"
           />
           <button 
             class="search-btn"
@@ -53,46 +54,6 @@
           >
             清空
           </button>
-        </div>
-        
-        <div class="filter-section">
-          <select v-model="searchFilters.category" class="filter-select" @change="handleFilterChange">
-            <option value="">所有分类</option>
-            <option value="elite">精英学校</option>
-            <option value="traditional">传统学校</option>
-            <option value="direct">直资学校</option>
-            <option value="government">政府学校</option>
-            <option value="private">私立学校</option>
-          </select>
-          
-          <select v-model="searchFilters.district" class="filter-select" @change="handleFilterChange">
-            <option value="">所有地区</option>
-            <option value="中西區">中西区</option>
-            <option value="灣仔區">湾仔区</option>
-            <option value="東區">东区</option>
-            <option value="南區">南区</option>
-            <option value="油尖旺區">油尖旺区</option>
-            <option value="深水埗區">深水埗区</option>
-            <option value="九龍城區">九龙城区</option>
-            <option value="黃大仙區">黄大仙区</option>
-            <option value="觀塘區">观塘区</option>
-            <option value="荃灣區">荃湾区</option>
-            <option value="屯門區">屯门区</option>
-            <option value="元朗區">元朗区</option>
-            <option value="北區">北区</option>
-            <option value="大埔區">大埔区</option>
-            <option value="沙田區">沙田区</option>
-            <option value="西貢區">西贡区</option>
-            <option value="葵青區">葵青区</option>
-            <option value="離島區">离岛区</option>
-          </select>
-          
-          <select v-model="searchFilters.applicationStatus" class="filter-select" @change="handleFilterChange">
-            <option value="">所有状态</option>
-            <option value="open">开放申请</option>
-            <option value="closed">关闭申请</option>
-            <option value="deadline">截止申请</option>
-          </select>
         </div>
       </div>
 
@@ -215,7 +176,6 @@ const {
   enableMock,
   pagination,
   searchKeyword,
-  searchFilters,
   hasSearchResults,
   currentPageData
 } = storeToRefs(schoolStore)
@@ -226,8 +186,7 @@ const {
   searchSchools, 
   clearSearch, 
   goToPage, 
-  setPageSize,
-  setSearchFilters
+  setPageSize
 } = schoolStore
 
 // 本地状态
@@ -281,19 +240,32 @@ const handleSearch = async () => {
   }
 }
 
-// 处理清空搜索
-const handleClearSearch = async () => {
-  await clearSearch()
+// 处理实时搜索输入
+let searchTimeout: NodeJS.Timeout | null = null
+const handleSearchInput = () => {
+  // 清除之前的定时器
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+  
+  // 设置新的定时器，延迟500ms执行搜索
+  searchTimeout = setTimeout(async () => {
+    if (searchKeyword.value.trim()) {
+      await searchSchools(searchKeyword.value.trim())
+    } else {
+      await clearSearch()
+    }
+  }, 500)
 }
 
-// 处理过滤器变化
-const handleFilterChange = async () => {
-  await setSearchFilters(searchFilters.value)
-  if (searchKeyword.value.trim()) {
-    await searchSchools(searchKeyword.value.trim())
-  } else {
-    await fetchSchools()
+// 处理清空搜索
+const handleClearSearch = async () => {
+  // 清除定时器
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+    searchTimeout = null
   }
+  await clearSearch()
 }
 
 // 处理翻页
@@ -571,26 +543,7 @@ const handleRetry = async () => {
   cursor: not-allowed;
 }
 
-.filter-section {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.filter-select {
-  padding: 8px 12px;
-  border: 2px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 14px;
-  background-color: white;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-}
+/* 移除过滤样式，因为不再需要 */
 
 /* 结果信息样式 */
 .results-info {
@@ -726,10 +679,6 @@ const handleRetry = async () => {
   .search-bar {
     flex-direction: column;
     align-items: stretch;
-  }
-  
-  .filter-section {
-    flex-direction: column;
   }
   
   .results-info {

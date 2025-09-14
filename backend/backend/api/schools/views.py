@@ -71,7 +71,11 @@ def schools_list(request):
             queryset = queryset.filter(
                 Q(name__icontains=keyword) | 
                 Q(district__icontains=keyword) |
-                Q(address__icontains=keyword)
+                Q(address__icontains=keyword) |
+                Q(category__icontains=keyword) |
+                Q(religion__icontains=keyword) |
+                Q(net_name__icontains=keyword) |
+                Q(remarks__icontains=keyword)
             )
         
         # 分页
@@ -189,7 +193,11 @@ def primary_schools_list(request):
             queryset = queryset.filter(
                 Q(name__icontains=keyword) | 
                 Q(district__icontains=keyword) |
-                Q(address__icontains=keyword)
+                Q(address__icontains=keyword) |
+                Q(category__icontains=keyword) |
+                Q(religion__icontains=keyword) |
+                Q(net_name__icontains=keyword) |
+                Q(remarks__icontains=keyword)
             )
         
         # 分页
@@ -261,7 +269,11 @@ def secondary_schools_list(request):
             queryset = queryset.filter(
                 Q(name__icontains=keyword) | 
                 Q(district__icontains=keyword) |
-                Q(address__icontains=keyword)
+                Q(address__icontains=keyword) |
+                Q(category__icontains=keyword) |
+                Q(religion__icontains=keyword) |
+                Q(net_name__icontains=keyword) |
+                Q(remarks__icontains=keyword)
             )
         
         # 分页
