@@ -1,5 +1,5 @@
 # 并行工作进程数
-workers = 4
+workers = 2
 # 指定每个工作者的线程数
 threads = 16
 
