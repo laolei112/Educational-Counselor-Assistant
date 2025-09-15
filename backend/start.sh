@@ -1,15 +1,15 @@
 #!/bin/bash
 
-GPT_HOME_DIR="$HOME/gpt/py-gpt/"
-GPT_RUN_DIR="$GPT_HOME_DIR/run"
-GPT_LOG_DIR="$GPT_RUN_DIR/log"
-mkdir -p $GPT_RUN_DIR
-mkdir -p $GPT_LOG_DIR
+EDU_HOME_DIR="$HOME/edu"
+EDU_RUN_DIR="$EDU_HOME_DIR/run"
+EDU_LOG_DIR="$EDU_RUN_DIR/log"
+mkdir -p $EDU_RUN_DIR
+mkdir -p $EDU_LOG_DIR
 
 export PATH=$HOME/.local/bin:$PATH
 
 if [ ! -e "log" ]; then
-    ln -s "${GPT_LOG_DIR}" log
+    ln -s "${EDU_LOG_DIR}" log
     if [ "$?" != 0 ]; then
         echo "ln -s log dir error!"
         exit 2
@@ -25,19 +25,19 @@ action=$1
 
 start_prd()
 {
-    export GPT_ENV="PRD"
+    export EDU_ENV="PRD"
     start
 }
 
 start_dev()
 {
-    export GPT_ENV="DEV"
+    export EDU_ENV="DEV"
     start
 }
 
 start_test()
 {
-    export GPT_ENV="TEST"
+    export EDU_ENV="TEST"
     start
 }
 
@@ -58,7 +58,7 @@ function stop() {
   $SUPERVISOR_CTRL_PATH -c "config/supervisord/supervisord.conf" shutdown
   RESULT=$?
   if [ "RESULT" != "0" ];then
-      PIDFILE="${GPT_RUN_DIR}/supervisord.pid"
+      PIDFILE="${EDU_RUN_DIR}/supervisord.pid"
       if [ -f "$PIDFILE" ];then
           cat $PIDFILE | xargs -I{} kill -9 {}
       fi
