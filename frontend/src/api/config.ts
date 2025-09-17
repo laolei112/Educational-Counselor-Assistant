@@ -1,7 +1,7 @@
 // API配置
 export const API_CONFIG = {
   // 开发环境API地址，您可以根据需要调整
-  BASE_URL: 'http://9.135.78.24/api',
+  BASE_URL: 'http://42.194.224.95/api',
   
   // 请求超时时间
   TIMEOUT: 10000,
