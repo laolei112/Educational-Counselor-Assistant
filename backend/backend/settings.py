@@ -19,12 +19,12 @@ from sqlalchemy import create_engine
 from common.logger import loginfo
 
 # ENV
-GPT_ENV = os.environ.get("GPT_ENV", "DEV")
+EDU_ENV = os.environ.get("EDU_ENV", "DEV")
 from backend.basic_settings import *
-if GPT_ENV == "PRD":
+if EDU_ENV == "PRD":
     CONF_PATH = os.path.join(os.getcwd(), "config/conf/prd/backend/settings.json")
     from config.conf.prd.backend.sa_settings import *
-elif GPT_ENV == "DEV":
+elif EDU_ENV == "DEV":
     # Docker 环境使用特殊配置文件
     CONF_PATH = os.path.join(os.getcwd(), "config/conf/dev/backend/settings.json")
     from config.conf.dev.backend.sa_settings import *

@@ -11,3 +11,5 @@ whitenoise
 sqlalchemy
 mysqlclient
 drf_yasg
+supervisor
+gevent
