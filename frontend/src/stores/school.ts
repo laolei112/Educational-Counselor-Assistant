@@ -38,15 +38,36 @@ export const useSchoolStore = defineStore('school', () => {
       id: 1,
       name: '圣保罗男女中学',
       type: 'secondary',
-      category: 'elite',
+      category: 'direct',
       band1Rate: 94,
       applicationStatus: 'open',
-      district: '中西区',
-      schoolNet: '校网11',
-      tuition: 36800,
+      district: '港岛区',
+      schoolNet: 11,
+      tuition: 55000,
       gender: 'coed',
       feederSchools: ['圣保罗书院'],
-      linkedUniversities: ['香港大学']
+      linkedUniversities: ['香港大学'],
+      schoolScale: {
+        classes: 24,
+        students: 720
+      },
+      teachingLanguage: '主要英语授课',
+      curriculum: ['DSE', 'IB'],
+      schoolType: 'direct',
+      features: [
+        'STEM 创客空间及机器人项目',
+        '国际交换生计划',
+        '领导力培养课程',
+        '音乐艺术专修计划',
+        '多元文化学习环境',
+        '全英语教学环境'
+      ],
+      contact: {
+        address: '香港岛中区麦当劳道33号',
+        phone: '2523-xxxx',
+        email: 'info@spcs.edu.hk',
+        website: 'www.spcs.edu.hk'
+      }
     },
     {
       id: 2,
@@ -56,11 +77,13 @@ export const useSchoolStore = defineStore('school', () => {
       band1Rate: 88,
       applicationStatus: 'closed',
       district: '九龙城',
-      schoolNet: '校网41',
+      schoolNet: 41,
       tuition: 28500,
       gender: 'boys',
       feederSchools: ['喇沙小学'],
-      linkedUniversities: ['香港中文大学']
+      linkedUniversities: ['香港中文大学'],
+      religion: '天主教',
+      schoolType: 'aided'
     },
     {
       id: 3,
@@ -70,36 +93,55 @@ export const useSchoolStore = defineStore('school', () => {
       band1Rate: 96,
       applicationStatus: 'open',
       district: '九龙城',
-      schoolNet: '校网41',
+      schoolNet: 41,
       tuition: 42000,
       gender: 'girls',
       feederSchools: ['拔萃女小学'],
-      linkedUniversities: ['香港大学', '香港中文大学']
+      linkedUniversities: ['香港大学', '香港中文大学'],
+      schoolType: 'direct'
     },
     // 小学数据
     {
       id: 4,
+      name: '维多利亚小学',
+      type: 'primary',
+      category: 'private',
+      band1Rate: 92,
+      applicationStatus: 'open',
+      district: '港岛（中西区）',
+      schoolNet: 11,
+      tuition: 20000,
+      gender: 'coed',
+      feederSchools: [],
+      linkedUniversities: [],
+      linkedSchools: ['维多利亚中学'],
+      religion: '基督教',
+      schoolType: 'private',
+      applicationDeadline: '2025-10-15'
+    },
+    {
+      id: 5,
       name: '拔萃女小学',
       type: 'primary',
       category: 'direct',
       band1Rate: 98,
       applicationStatus: 'open',
       district: '九龙城',
-      schoolNet: '校网41',
+      schoolNet: 41,
       tuition: 38000,
       gender: 'girls',
       feederSchools: [],
       linkedUniversities: ['拔萃女书院']
     },
     {
-      id: 5,
+      id: 6,
       name: '圣保罗男女中学附属小学',
       type: 'primary',
       category: 'elite',
       band1Rate: 95,
       applicationStatus: 'open',
       district: '南区',
-      schoolNet: '校网18',
+      schoolNet: 18,
       tuition: 32000,
       gender: 'coed',
       feederSchools: [],
@@ -314,7 +356,7 @@ export const useSchoolStore = defineStore('school', () => {
         school.type === currentType.value && (
           school.name.includes(keyword) || 
           school.district.includes(keyword) ||
-          school.address?.includes(keyword)
+          school.contact?.address?.includes(keyword)
         )
       )
       

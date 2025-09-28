@@ -24,10 +24,28 @@ def serialize_school(school):
         "gender": school.gender,
         "feederSchools": school.promotion_rate.get('feeder_schools', []) if school.promotion_rate else [],
         "linkedUniversities": school.promotion_rate.get('linked_universities', []) if school.promotion_rate else [],
-        "url": school.url,
+        "linkedSchools": school.promotion_rate.get('linked_schools', []) if school.promotion_rate else [],
+        
+        # 新增字段
         "religion": school.religion,
-        "address": school.address,
-        "officialWebsite": school.official_website,
+        "schoolType": school.category,  # 映射到schoolType字段
+        "teachingLanguage": school.promotion_rate.get('teaching_language', '中英并重') if school.promotion_rate else '中英并重',
+        "curriculum": school.promotion_rate.get('curriculum', ['DSE']) if school.promotion_rate else ['DSE'],
+        "applicationDeadline": school.promotion_rate.get('application_deadline') if school.promotion_rate else None,
+        "schoolScale": {
+            "classes": school.promotion_rate.get('classes', 0) if school.promotion_rate else 0,
+            "students": school.promotion_rate.get('students', 0) if school.promotion_rate else 0
+        } if school.promotion_rate else None,
+        "features": school.promotion_rate.get('features', []) if school.promotion_rate else [],
+        "contact": {
+            "address": school.address,
+            "phone": school.promotion_rate.get('phone') if school.promotion_rate else None,
+            "email": school.promotion_rate.get('email') if school.promotion_rate else None,
+            "website": school.official_website
+        },
+        
+        # 保留的原有字段
+        "url": school.url,
         "remarks": school.remarks,
         "createdAt": school.created_at.isoformat() if school.created_at else None,
         "updatedAt": school.updated_at.isoformat() if school.updated_at else None

@@ -109,6 +109,7 @@
               v-for="school in currentPageData" 
               :key="school.id"
               :school="school"
+              @click="handleSchoolClick"
             />
           </div>
           
@@ -127,6 +128,14 @@
         </div>
       </div>
     </div>
+    
+    <!-- 学校详情弹窗 -->
+    <SchoolDetailModal 
+      v-if="selectedSchool" 
+      :school="selectedSchool" 
+      :visible="showDetailModal" 
+      @close="handleCloseModal" 
+    />
   </div>
 </template>
 
@@ -135,6 +144,8 @@ import { onMounted, onUnmounted, computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSchoolStore } from '@/stores/school'
 import SchoolCard from '@/components/SchoolCard.vue'
+import SchoolDetailModal from '@/components/SchoolDetailModal.vue'
+import type { School } from '@/types/school'
 
 const schoolStore = useSchoolStore()
 const { 
@@ -164,6 +175,10 @@ const {
 // 移除本地状态，使用store中的固定页面大小
 
 // 移除分页相关计算属性，使用无限滚动
+
+// 学校详情弹窗相关
+const selectedSchool = ref<School | null>(null)
+const showDetailModal = ref(false)
 
 // 滚动加载相关
 let isLoadingMoreData = false
@@ -203,8 +218,22 @@ const handleTypeChange = async (type: 'primary' | 'secondary') => {
   await setSchoolType(type)
 }
 
+// 处理学校卡片点击
+const handleSchoolClick = (school: School) => {
+  selectedSchool.value = school
+  showDetailModal.value = true
+}
+
+// 处理关闭弹窗
+const handleCloseModal = () => {
+  showDetailModal.value = false
+  setTimeout(() => {
+    selectedSchool.value = null
+  }, 300) // 延迟清空，让动画完成
+}
+
 // 处理实时搜索输入
-let searchTimeout: NodeJS.Timeout | null = null
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
 const handleSearchInput = () => {
   // 清除之前的定时器
   if (searchTimeout) {

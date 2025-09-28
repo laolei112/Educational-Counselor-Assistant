@@ -1,46 +1,46 @@
 <template>
-  <div class="school-card">
+  <div class="school-card" @click="handleCardClick">
     <div class="card-header">
       <h3 class="school-name">{{ school.name }}</h3>
       <span 
-        v-if="school.category"
-        :class="['category-tag', `tag-${school.category}`]"
+        :class="['school-type-tag', `type-${school.schoolType || school.category}`]"
       >
-        {{ getCategoryLabel(school.category) }}
+        {{ getSchoolTypeLabel(school.schoolType || school.category) }}
       </span>
     </div>
 
     <div class="card-content">
-      <div class="tags-row">
-        <span class="band-tag">Band1比例 {{ school.band1Rate }}%</span>
-        <span 
-          :class="['status-tag', `status-${school.applicationStatus}`]"
-        >
-          {{ getStatusLabel(school.applicationStatus) }}
-        </span>
+      <div class="location-info">
+        <span>{{ school.district }}</span>
+        <span v-if="school.schoolNet" class="school-net">校网：{{ school.schoolNet }}</span>
+        <span v-if="school.religion">{{ school.religion }}</span>
       </div>
 
-      <div class="info-row">
-        <div class="info-item">
-          <span class="icon">📍</span>
-          {{ school.district }} | {{ school.schoolNet }}
-        </div>
+      <div class="basic-info">
+        <span class="gender">{{ getGenderLabel(school.gender) }}</span>
+        <span class="tuition">学费：{{ school.tuition.toLocaleString() }}港元/年</span>
       </div>
 
-      <div class="info-row">
-        <div class="info-item">
-          <span class="icon">👥</span>
-          {{ getGenderLabel(school.gender) }}
-        </div>
-        <div class="info-item">
-          <span class="icon">💰</span>
-          学费：${{ school.tuition.toLocaleString() }}/年
-        </div>
+      <div v-if="school.linkedSchools && school.linkedSchools.length" class="linked-schools">
+        直属中学：{{ school.linkedSchools.join('、') }}
       </div>
 
-      <div class="feeder-info">
-        <span class="icon">🎓</span>
-        衔接：{{ [...school.feederSchools, ...school.linkedUniversities].join('、') }}
+      <div class="bottom-row">
+        <div class="status-info">
+          <span 
+            :class="['status-badge', `status-${school.applicationStatus}`]"
+          >
+            {{ getStatusLabel(school.applicationStatus) }}
+          </span>
+          <span v-if="school.applicationDeadline" class="deadline">
+            截止：{{ school.applicationDeadline }}
+          </span>
+        </div>
+        
+        <div class="band-rate">
+          <span class="rate-circle">升Band 1比例：{{ school.band1Rate }}%</span>
+          <span class="arrow">→</span>
+        </div>
       </div>
     </div>
   </div>
@@ -53,16 +53,27 @@ interface Props {
   school: School
 }
 
-defineProps<Props>()
+interface Emits {
+  (e: 'click', school: School): void
+}
 
-const getCategoryLabel = (category: string) => {
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
+
+const handleCardClick = () => {
+  emit('click', props.school)
+}
+
+const getSchoolTypeLabel = (type: string) => {
   const labels = {
     elite: '名校联盟',
     traditional: '传统名校',
     direct: '直资学校',
-    government: '官立学校'
+    government: '官立学校',
+    private: '私立学校',
+    aided: '资助学校'
   }
-  return labels[category as keyof typeof labels] || category
+  return labels[type as keyof typeof labels] || type
 }
 
 const getStatusLabel = (status: string) => {
@@ -87,61 +98,65 @@ const getGenderLabel = (gender: string) => {
 <style scoped>
 .school-card {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  border: 1px solid #f1f3f4;
 }
 
 .school-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 16px;
   gap: 12px;
 }
 
 .school-name {
-  font-size: 20px;
-  font-weight: bold;
-  color: #1f2937;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
   margin: 0;
   flex: 1;
-  min-width: 0; /* 允许文本截断 */
+  line-height: 1.3;
 }
 
-.category-tag {
-  padding: 4px 12px;
-  border-radius: 12px;
+.school-type-tag {
+  padding: 6px 12px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  white-space: nowrap; /* 防止标签换行 */
-  flex-shrink: 0; /* 防止标签被压缩 */
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: #f0f9ff;
+  color: #0369a1;
 }
 
-.tag-elite {
-  background-color: #dbeafe;
-  color: #1d4ed8;
+.type-private {
+  background: #f0f9ff;
+  color: #0369a1;
 }
 
-.tag-traditional {
-  background-color: #fef3c7;
-  color: #d97706;
+.type-direct {
+  background: #fef3e2;
+  color: #ea580c;
 }
 
-.tag-direct {
-  background-color: #fce7f3;
-  color: #be185d;
-}
-
-.tag-government {
-  background-color: #f3f4f6;
+.type-government {
+  background: #f3f4f6;
   color: #374151;
+}
+
+.type-aided {
+  background: #f0fdf4;
+  color: #166534;
 }
 
 .card-content {
@@ -150,41 +165,109 @@ const getGenderLabel = (gender: string) => {
   gap: 12px;
 }
 
-.tags-row {
+.location-info {
   display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.school-net {
+  font-weight: 500;
+}
+
+.basic-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #374151;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.gender {
+  font-weight: 500;
+}
+
+.tuition {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.linked-schools {
+  color: #4338ca;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
   gap: 12px;
-  flex-wrap: wrap;
 }
 
-.band-tag {
-  background-color: #10b981;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 14px;
-  font-weight: 600;
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
 }
 
-.status-tag {
-  padding: 6px 12px;
+.status-badge {
+  padding: 4px 12px;
   border-radius: 16px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .status-open {
-  background-color: #10b981;
-  color: white;
+  background: #d1fae5;
+  color: #065f46;
 }
 
 .status-closed {
-  background-color: #ef4444;
-  color: white;
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .status-deadline {
-  background-color: #f59e0b;
-  color: white;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.deadline {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.band-rate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.rate-circle {
+  background: #fbbf24;
+  color: #92400e;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.arrow {
+  font-size: 16px;
+  color: #9ca3af;
+  font-weight: bold;
 }
 
 .info-row {
