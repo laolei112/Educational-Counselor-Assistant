@@ -18,7 +18,7 @@
 
       <div class="basic-info">
         <span class="gender">{{ getGenderLabel(school.gender) }}</span>
-        <span class="tuition">学费：{{ school.tuition.toLocaleString() }}港元/年</span>
+        <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
       </div>
 
       <div v-if="school.linkedSchools && school.linkedSchools.length" class="linked-schools">
@@ -28,6 +28,7 @@
       <div class="bottom-row">
         <div class="status-info">
           <span 
+            v-if="school.applicationStatus"
             :class="['status-badge', `status-${school.applicationStatus}`]"
           >
             {{ getStatusLabel(school.applicationStatus) }}
@@ -37,8 +38,13 @@
           </span>
         </div>
         
-        <div class="band-rate">
+        <!-- 小学显示升学比例，中学显示学校组别 -->
+        <div v-if="school.type === 'primary' && school.band1Rate !== undefined" class="band-rate">
           <span class="rate-circle">升Band 1比例：{{ school.band1Rate }}%</span>
+          <span class="arrow">→</span>
+        </div>
+        <div v-else-if="school.type === 'secondary' && school.schoolGroup" class="school-group">
+          <span class="group-badge">{{ school.schoolGroup }}</span>
           <span class="arrow">→</span>
         </div>
       </div>
@@ -89,9 +95,39 @@ const getGenderLabel = (gender: string) => {
   const labels = {
     coed: '男女校',
     boys: '男校',
-    girls: '女校'
+    girls: '女校',
+    '男': '男校',
+    '女': '女校',
+    '男女': '男女校'
   }
   return labels[gender as keyof typeof labels] || gender
+}
+
+const formatTuition = (tuition: number | string | undefined) => {
+  if (tuition === undefined || tuition === null) {
+    return '未提供'
+  }
+  
+  // 如果是数字，格式化为千分位
+  if (typeof tuition === 'number') {
+    return `${tuition.toLocaleString()}港元/年`
+  }
+  
+  // 如果是字符串，直接返回（中学数据可能是字符串格式）
+  if (typeof tuition === 'string') {
+    // 如果已经包含货币符号或"免费"等字样，直接返回
+    if (tuition.includes('$') || tuition.includes('免费') || tuition.includes('港元')) {
+      return tuition
+    }
+    // 否则尝试解析为数字
+    const num = parseFloat(tuition)
+    if (!isNaN(num)) {
+      return `${num.toLocaleString()}港元/年`
+    }
+    return tuition
+  }
+  
+  return '未提供'
 }
 </script>
 
@@ -262,6 +298,25 @@ const getGenderLabel = (gender: string) => {
   font-weight: 600;
   font-size: 13px;
   white-space: nowrap;
+}
+
+.school-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.group-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 .arrow {
