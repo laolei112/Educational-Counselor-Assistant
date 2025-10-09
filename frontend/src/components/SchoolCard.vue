@@ -31,8 +31,10 @@
           <span class="divider">｜</span>
           <span class="gender">{{ getGenderLabel(school.gender) }}</span>
         </template>
-        <span class="divider">｜</span>
-        <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
+        <template v-if="school.tuition"> 
+          <span class="divider">｜</span>
+          <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
+        </template>
       </div>
 
       <div v-if="school.linkedSchools && school.linkedSchools.length" class="linked-schools">
@@ -183,8 +185,8 @@ const formatTuition = (tuition: number | string | undefined) => {
 }
 
 .group-badge-inline {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #fbbf24;
+  color: #92400e;
   padding: 4px 10px;
   border-radius: 12px;
   font-weight: 700;
