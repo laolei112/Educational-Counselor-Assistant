@@ -1,0 +1,29 @@
+-- 创建中学信息表
+CREATE TABLE IF NOT EXISTS tb_secondary_schools (
+    id INT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    school_name VARCHAR(100) NOT NULL COMMENT '学校名称',
+    district VARCHAR(50) COMMENT '区域',
+    school_net VARCHAR(50) COMMENT '对应校网',
+    religion VARCHAR(50) COMMENT '宗教',
+    student_gender VARCHAR(20) COMMENT '学生性别',
+    tuition VARCHAR(200) COMMENT '学费（相同的概括，不同的独立罗列）',
+    school_category VARCHAR(50) COMMENT '学校类别',
+    school_group VARCHAR(20) COMMENT '学校组别',
+    transfer_open_time VARCHAR(100) COMMENT '插班开放时间',
+    total_classes INT COMMENT '全校总班数',
+    admission_info TEXT COMMENT '入学信息',
+    school_curriculum TEXT COMMENT '课程设置',
+    address VARCHAR(200) COMMENT '学校地址',
+    phone VARCHAR(20) COMMENT '联系电话',
+    email VARCHAR(100) COMMENT '电子邮箱',
+    website VARCHAR(200) COMMENT '官方网站',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    INDEX idx_school_name (school_name),
+    INDEX idx_district (district),
+    INDEX idx_school_category (school_category),
+    INDEX idx_school_group (school_group),
+    INDEX idx_student_gender (student_gender),
+    INDEX idx_religion (religion)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='香港中学信息表';
+
