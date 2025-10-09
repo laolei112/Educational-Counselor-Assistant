@@ -1,7 +1,15 @@
 <template>
   <div class="school-card" @click="handleCardClick">
     <div class="card-header">
-      <h3 class="school-name">{{ school.name }}</h3>
+      <div class="title-row">
+        <h3 class="school-name">{{ school.name }}</h3>
+        <span 
+          v-if="school.type === 'secondary' && school.schoolGroup"
+          class="group-badge-inline"
+        >
+          {{ school.schoolGroup }}
+        </span>
+      </div>
       <span 
         :class="['school-type-tag', `type-${school.schoolType || school.category}`]"
       >
@@ -12,8 +20,14 @@
     <div class="card-content">
       <div class="location-info">
         <span>{{ school.district }}</span>
-        <span v-if="school.schoolNet" class="school-net">校网：{{ school.schoolNet }}</span>
-        <span v-if="school.religion">{{ school.religion }}</span>
+        <template v-if="school.schoolNet">
+          <span class="divider">｜</span>
+          <span class="school-net">校网：{{ school.schoolNet }}</span>
+        </template>
+        <template v-if="school.religion">
+          <span class="divider">｜</span>
+          <span>{{ school.religion }}</span>
+        </template>
       </div>
 
       <div class="basic-info">
@@ -38,13 +52,9 @@
           </span>
         </div>
         
-        <!-- 小学显示升学比例，中学显示学校组别 -->
+        <!-- 小学显示升学比例 -->
         <div v-if="school.type === 'primary' && school.band1Rate !== undefined" class="band-rate">
           <span class="rate-circle">升Band 1比例：{{ school.band1Rate }}%</span>
-          <span class="arrow">→</span>
-        </div>
-        <div v-else-if="school.type === 'secondary' && school.schoolGroup" class="school-group">
-          <span class="group-badge">{{ school.schoolGroup }}</span>
           <span class="arrow">→</span>
         </div>
       </div>
@@ -155,13 +165,34 @@ const formatTuition = (tuition: number | string | undefined) => {
   gap: 12px;
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
 .school-name {
   font-size: 22px;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
-  flex: 1;
   line-height: 1.3;
+  min-width: 0;
+}
+
+.group-badge-inline {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
+  flex-shrink: 0;
 }
 
 .school-type-tag {
@@ -208,6 +239,12 @@ const formatTuition = (tuition: number | string | undefined) => {
   color: #6b7280;
   font-size: 14px;
   margin-bottom: 4px;
+}
+
+.divider {
+  color: #d1d5db;
+  font-weight: 300;
+  user-select: none;
 }
 
 .school-net {
@@ -363,9 +400,19 @@ const formatTuition = (tuition: number | string | undefined) => {
     align-items: center;
   }
   
+  .title-row {
+    gap: 6px;
+  }
+  
   .school-name {
     font-size: 18px;
     min-width: 0; /* 允许文本截断 */
+  }
+  
+  .group-badge-inline {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 10px;
   }
   
   .category-tag {
