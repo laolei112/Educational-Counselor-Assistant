@@ -44,7 +44,7 @@
             </div>
             <div class="info-item">
               <label>学费范围</label>
-              <div>${{ school.tuition.toLocaleString() }}/年</div>
+              <div>${{ school.tuition }}/年</div>
             </div>
             <div class="info-item">
               <label>课程类型</label>
