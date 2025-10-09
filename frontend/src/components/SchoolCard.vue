@@ -10,11 +10,6 @@
           {{ school.schoolGroup }}
         </span>
       </div>
-      <span 
-        :class="['school-type-tag', `type-${school.schoolType || school.category}`]"
-      >
-        {{ getSchoolTypeLabel(school.schoolType || school.category) }}
-      </span>
     </div>
 
     <div class="card-content">
@@ -22,7 +17,7 @@
         <span>{{ school.district }}</span>
         <template v-if="school.schoolNet">
           <span class="divider">｜</span>
-          <span class="school-net">校网：{{ school.schoolNet }}</span>
+          <span class="school-net">对应校网：{{ school.schoolNet }}</span>
         </template>
         <template v-if="school.religion">
           <span class="divider">｜</span>
@@ -31,8 +26,15 @@
       </div>
 
       <div class="basic-info">
-        <span class="gender">{{ getGenderLabel(school.gender) }}</span>
-        <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
+        <span class="gender">{{ getSchoolTypeLabel(school.schoolType || school.category) }}</span>
+        <template v-if="school.gender">
+          <span class="divider">｜</span>
+          <span class="gender">{{ getGenderLabel(school.gender) }}</span>
+        </template>
+        <template v-if="school.tuition">
+          <span class="divider">｜</span>
+          <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
+        </template>
       </div>
 
       <div v-if="school.linkedSchools && school.linkedSchools.length" class="linked-schools">
