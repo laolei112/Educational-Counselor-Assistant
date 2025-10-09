@@ -25,16 +25,14 @@
         </template>
       </div>
 
-      <div class="basic-info">
+      <div class="location-info">
         <span class="gender">{{ getSchoolTypeLabel(school.schoolType || school.category) }}</span>
         <template v-if="school.gender">
           <span class="divider">｜</span>
           <span class="gender">{{ getGenderLabel(school.gender) }}</span>
         </template>
-        <template v-if="school.tuition">
-          <span class="divider">｜</span>
-          <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
-        </template>
+        <span class="divider">｜</span>
+        <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
       </div>
 
       <div v-if="school.linkedSchools && school.linkedSchools.length" class="linked-schools">
