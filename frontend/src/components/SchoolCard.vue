@@ -114,30 +114,58 @@ const getGenderLabel = (gender: string) => {
 }
 
 const formatTuition = (tuition: number | string | undefined) => {
-  if (tuition === undefined || tuition === null) {
+  // 处理空值情况
+  if (tuition === undefined || tuition === null || tuition === '') {
     return '0港元/年'
   }
   
-  // 如果是数字，格式化为千分位
+  // 如果是数字类型
   if (typeof tuition === 'number') {
+    // 确保是有效数字
+    if (isNaN(tuition)) {
+      return '0港元/年'
+    }
     return `${tuition.toLocaleString()}港元/年`
   }
   
-  // 如果是字符串，直接返回（中学数据可能是字符串格式）
+  // 如果是字符串类型
   if (typeof tuition === 'string') {
-    // 如果已经包含货币符号或"免费"等字样，直接返回
-    if (tuition.includes('免费') || tuition.includes('港元')) {
-      return tuition
+    // 移除首尾空格
+    const trimmed = tuition.trim()
+    
+    // 如果是空字符串
+    if (trimmed === '' || trimmed === 'null' || trimmed === 'undefined') {
+      return '0港元/年'
     }
-    // 否则尝试解析为数字
-    const num = parseFloat(tuition)
-    if (!isNaN(num)) {
+    
+    // 如果已经包含货币符号或"免费"等字样，直接返回
+    if (trimmed.includes('免费') || trimmed.includes('港元')) {
+      return trimmed
+    }
+    
+    // 如果包含 $ 符号，提取数字部分
+    if (trimmed.includes('$')) {
+      // 移除 $ 符号和逗号，尝试解析数字
+      const numStr = trimmed.replace(/[$,]/g, '')
+      const num = parseFloat(numStr)
+      if (!isNaN(num) && num > 0) {
+        return `${num.toLocaleString()}港元/年`
+      }
+      // 如果无法解析，返回原字符串
+      return trimmed
+    }
+    
+    // 尝试解析为数字
+    const num = parseFloat(trimmed.replace(/,/g, ''))
+    if (!isNaN(num) && isFinite(num)) {
       return `${num.toLocaleString()}港元/年`
     }
-    return tuition
+    
+    // 无法解析，返回原字符串
+    return trimmed
   }
   
-  return '未提供'
+  return '0港元/年'
 }
 </script>
 
