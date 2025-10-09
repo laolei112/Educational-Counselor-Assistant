@@ -14,6 +14,12 @@ export interface PageQuery {
   category?: string
   district?: string
   applicationStatus?: string
+  keyword?: string
+  
+  // 中学特有查询参数
+  schoolGroup?: string  // 学校组别
+  gender?: string  // 学生性别
+  religion?: string  // 宗教
 }
 
 // 分页响应数据
