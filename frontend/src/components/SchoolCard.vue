@@ -31,10 +31,8 @@
           <span class="divider">｜</span>
           <span class="gender">{{ getGenderLabel(school.gender) }}</span>
         </template>
-        <template v-if="school.tuition"> 
-          <span class="divider">｜</span>
-          <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
-        </template>
+        <span class="divider">｜</span>
+        <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
       </div>
 
       <div v-if="school.linkedSchools && school.linkedSchools.length" class="linked-schools">
@@ -117,7 +115,7 @@ const getGenderLabel = (gender: string) => {
 
 const formatTuition = (tuition: number | string | undefined) => {
   if (tuition === undefined || tuition === null) {
-    return '未提供'
+    return '0港元/年'
   }
   
   // 如果是数字，格式化为千分位
@@ -128,7 +126,7 @@ const formatTuition = (tuition: number | string | undefined) => {
   // 如果是字符串，直接返回（中学数据可能是字符串格式）
   if (typeof tuition === 'string') {
     // 如果已经包含货币符号或"免费"等字样，直接返回
-    if (tuition.includes('$') || tuition.includes('免费') || tuition.includes('港元')) {
+    if (tuition.includes('免费') || tuition.includes('港元')) {
       return tuition
     }
     // 否则尝试解析为数字
