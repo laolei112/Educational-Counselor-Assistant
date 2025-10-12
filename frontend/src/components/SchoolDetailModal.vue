@@ -754,8 +754,8 @@ section h3 {
   }
 }
 
-/* 小屏手机端单列布局 */
-@media (max-width: 480px) {
+/* 极小屏手机端单列布局 - 仅在非常小的屏幕上使用单列 */
+@media (max-width: 360px) {
   .info-grid {
     grid-template-columns: 1fr;
     gap: 12px;
