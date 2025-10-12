@@ -29,7 +29,7 @@ def serialize_school(school):
         # 新增字段
         "religion": school.religion,
         "schoolType": school.category,  # 映射到schoolType字段
-        "teachingLanguage": school.promotion_rate.get('teaching_language', '中英并重') if school.promotion_rate else '中英并重',
+        "teachingLanguage": school.teaching_language if school.teaching_language else None,
         "curriculum": school.promotion_rate.get('curriculum', ['DSE']) if school.promotion_rate else ['DSE'],
         "applicationDeadline": school.promotion_rate.get('application_deadline') if school.promotion_rate else None,
         "schoolScale": {

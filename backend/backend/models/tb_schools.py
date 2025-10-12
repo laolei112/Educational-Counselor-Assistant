@@ -84,6 +84,14 @@ class TbSchools(models.Model, Base):
         help_text='男女校/男校/女校'
     )
     
+    teaching_language = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='授课语言',
+        help_text='授课语言（中文/英文/中英并重/其他）'
+    )
+    
     address = models.CharField(
         max_length=500,
         blank=True,
@@ -167,6 +175,7 @@ class TbSchools(models.Model, Base):
             models.Index(fields=['district'], name='idx_district'),
             models.Index(fields=['category'], name='idx_category'),
             models.Index(fields=['gender'], name='idx_gender'),
+            models.Index(fields=['teaching_language'], name='idx_teaching_language'),
             models.Index(fields=['application_status'], name='idx_application_status'),
         ]
     
@@ -184,6 +193,7 @@ class TbSchools(models.Model, Base):
             'category': self.category,
             'district': self.district,
             'gender': self.gender,
+            'teaching_language': self.teaching_language,
             'application_status': self.application_status,
             'tuition': float(self.tuition) if self.tuition else 0,
             'official_website': self.official_website,

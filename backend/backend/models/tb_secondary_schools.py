@@ -46,6 +46,14 @@ class TbSecondarySchools(models.Model, Base):
         help_text='男/女/男女'
     )
     
+    teaching_language = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='授课语言',
+        help_text='授课语言（中文/英文/中英并重/其他）'
+    )
+    
     tuition = models.CharField(
         max_length=200,
         blank=True,
@@ -155,6 +163,7 @@ class TbSecondarySchools(models.Model, Base):
             models.Index(fields=['school_group'], name='idx_sec_group'),
             models.Index(fields=['student_gender'], name='idx_sec_gender'),
             models.Index(fields=['religion'], name='idx_sec_religion'),
+            models.Index(fields=['teaching_language'], name='idx_sec_teaching_language'),
         ]
     
     def __str__(self):
@@ -171,6 +180,7 @@ class TbSecondarySchools(models.Model, Base):
             'school_net': self.school_net,
             'religion': self.religion,
             'student_gender': self.student_gender,
+            'teaching_language': self.teaching_language,
             'tuition': self.tuition,
             'school_category': self.school_category,
             'school_group': self.school_group,

@@ -40,11 +40,11 @@
             </div>
             <div class="info-item">
               <label>教学语言</label>
-              <div>{{ school.teachingLanguage || '中英并重' }}</div>
+              <div>{{ school.teachingLanguage || '中英文并重' }}</div>
             </div>
             <div class="info-item">
               <label>学费范围</label>
-              <div>${{ school.tuition }}/年</div>
+              <div>${{ school.tuition }}港元/年</div>
             </div>
             <div class="info-item">
               <label>课程类型</label>

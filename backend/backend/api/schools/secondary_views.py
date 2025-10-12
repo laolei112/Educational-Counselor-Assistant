@@ -21,6 +21,7 @@ def serialize_secondary_school(school):
         "schoolNet": school.school_net,
         "religion": school.religion,
         "gender": school.student_gender,
+        "teachingLanguage": school.teaching_language if school.teaching_language else None,
         "tuition": school.tuition if school.tuition else 0,
         "category": school.school_category,
         "schoolType": school.school_category,
