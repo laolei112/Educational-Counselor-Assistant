@@ -153,7 +153,9 @@
             </div>
             <div v-if="school.contact.website" class="contact-item">
               <label>网址：</label>
-              <span>{{ school.contact.website }}</span>
+              <a :href="school.contact.website" target="_blank" rel="noopener noreferrer" class="website-link">
+                {{ school.contact.website }}
+              </a>
             </div>
           </div>
         </section>
@@ -438,6 +440,18 @@ section h3 {
 
 .contact-item span {
   color: #2c3e50;
+}
+
+.website-link {
+  color: #007bff;
+  text-decoration: none;
+  transition: all 0.2s;
+  word-break: break-all;
+}
+
+.website-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
 }
 
 /* 教学语言相关样式 */
