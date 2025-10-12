@@ -13,6 +13,6 @@ export const formatTuition = (tuition: number | string | undefined): string => {
     return '0港元/年'
   }
 
-  return `${tuition}港元/年`
+  return `${tuition}`
 }
 
