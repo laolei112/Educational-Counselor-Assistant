@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.db.models import F, Q, Case, When, Value, IntegerField
 from backend.models.tb_secondary_schools import TbSecondarySchools
 import json
+import traceback
 
 
 def serialize_secondary_school(school):
@@ -116,7 +117,7 @@ def secondary_schools_list(request):
         
         # 分页
         paginator = Paginator(queryset, page_size)
-        schools_page = paginator.get_page(page)
+        schools_data = paginator.get_page(page)
         
         # 序列化数据
         queryset = queryset.order_by(F('school_group').asc(nulls_last=True), 'school_name')        
@@ -141,6 +142,7 @@ def secondary_schools_list(request):
             "data": None
         })
     except Exception as e:
+        logger.error(f"服务器错误: {traceback.format_exc()}")
         return JsonResponse({
             "code": 500,
             "message": f"服务器错误: {str(e)}",
