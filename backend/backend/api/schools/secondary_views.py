@@ -13,6 +13,14 @@ def serialize_secondary_school(school):
     """
     序列化中学数据为前端需要的格式
     """
+    # 解析课程数据
+    curriculum_data = None
+    if school.school_curriculum:
+        try:
+            curriculum_data = json.loads(school.school_curriculum)
+        except:
+            curriculum_data = None
+    
     return {
         "id": school.id,
         "name": school.school_name,
@@ -29,7 +37,7 @@ def serialize_secondary_school(school):
         "transferOpenTime": school.transfer_open_time,
         "totalClasses": school.total_classes,
         "admissionInfo": school.admission_info,
-        "schoolCurriculum": school.school_curriculum,
+        "schoolCurriculum": curriculum_data,
         "schoolScale": {
             "classes": school.total_classes if school.total_classes else 0,
             "students": 0  # 中学数据中没有学生数，设置为0

@@ -135,6 +135,42 @@
           <div class="admission-content" v-html="school.admissionInfo"></div>
         </section>
 
+        <!-- 课程设置部分（中学特有） -->
+        <section v-if="school.type === 'secondary' && school.schoolCurriculum" class="curriculum">
+          <h3>📚 中四至中六课程设置（DSE）</h3>
+          <div class="curriculum-table-wrapper">
+            <table class="curriculum-table">
+              <thead>
+                <tr>
+                  <th class="lang-header">授课语言</th>
+                  <th class="subjects-header">科目</th>
+                  <th class="count-header">科目数</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="school.schoolCurriculum['中文授课'] && school.schoolCurriculum['中文授课'].length > 0">
+                  <td class="lang-cell">中文授课</td>
+                  <td class="subjects-cell">
+                    <div class="subjects-list">
+                      {{ school.schoolCurriculum['中文授课'].join('、') }}
+                    </div>
+                  </td>
+                  <td class="count-cell">{{ school.schoolCurriculum['中文授课'].length }}</td>
+                </tr>
+                <tr v-if="school.schoolCurriculum['英文授课'] && school.schoolCurriculum['英文授课'].length > 0">
+                  <td class="lang-cell">英文授课</td>
+                  <td class="subjects-cell">
+                    <div class="subjects-list">
+                      {{ school.schoolCurriculum['英文授课'].join('、') }}
+                    </div>
+                  </td>
+                  <td class="count-cell">{{ school.schoolCurriculum['英文授课'].length }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <!-- 联络信息部分 -->
         <section v-if="school.contact" class="contact">
           <h3>📞 联络信息</h3>
@@ -417,6 +453,72 @@ section h3 {
 
 .admission-content br {
   line-height: 2;
+}
+
+/* 课程设置表格样式 */
+.curriculum-table-wrapper {
+  overflow-x: auto;
+}
+
+.curriculum-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: white;
+}
+
+.curriculum-table thead {
+  background: #f8f9fa;
+}
+
+.curriculum-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.curriculum-table td {
+  padding: 12px;
+  border: 1px solid #dee2e6;
+  color: #2c3e50;
+}
+
+.curriculum-table .lang-header {
+  width: 100px;
+}
+
+.curriculum-table .count-header {
+  width: 80px;
+  text-align: center;
+}
+
+.curriculum-table .lang-cell {
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.curriculum-table .count-cell {
+  text-align: center;
+  font-weight: 600;
+  color: #007bff;
+  vertical-align: top;
+}
+
+.curriculum-table .subjects-cell {
+  max-width: 500px;
+}
+
+.curriculum-table .subjects-list {
+  line-height: 1.8;
+  word-wrap: break-word;
+}
+
+.curriculum-table tbody tr:hover {
+  background: #f8f9fa;
 }
 
 .contact-info {

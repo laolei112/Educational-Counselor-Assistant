@@ -120,8 +120,8 @@
           </div>
           
           <!-- 没有更多数据提示 -->
-          <div v-else-if="!hasMoreData && currentPageData.length > 0" class="no-more-data">
-            <div class="no-more-icon">📚</div>
+          <div v-else-if="!hasMoreData && currentPageData.length > 0">
+            <div>📚</div>
             <p>已加载全部 {{ pagination.total }} 所学校</p>
           </div>
           
