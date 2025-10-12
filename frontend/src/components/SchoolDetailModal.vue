@@ -606,15 +606,16 @@ section h3 {
 .language-info-popup {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   margin-top: 8px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   overflow: hidden;
-  min-width: 380px;
-  max-width: 500px;
+  width: 420px;
+  max-width: calc(100vw - 40px);
 }
 
 .popup-header {
