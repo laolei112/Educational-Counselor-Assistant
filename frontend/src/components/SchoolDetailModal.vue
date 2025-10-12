@@ -201,7 +201,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, onUnmounted } from 'vue'
 import type { School } from '@/types/school'
 import { formatTuition } from '@/utils/formatter'
 
@@ -214,11 +214,28 @@ interface Emits {
   (e: 'close'): void
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // 控制教学语言说明弹窗显示
 const showLanguageInfo = ref(false)
+
+// 监听弹窗显示状态，控制 body 滚动
+watch(() => props.visible, (newVisible) => {
+  if (newVisible) {
+    // 弹窗打开时，禁用 body 滚动
+    document.body.style.overflow = 'hidden'
+  } else {
+    // 弹窗关闭时，恢复 body 滚动
+    document.body.style.overflow = ''
+    showLanguageInfo.value = false
+  }
+})
+
+// 组件销毁时确保恢复 body 滚动
+onUnmounted(() => {
+  document.body.style.overflow = ''
+})
 
 const closeModal = () => {
   emit('close')
@@ -279,6 +296,7 @@ const getGenderLabel = (gender: string) => {
   overflow-y: auto;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  overscroll-behavior: contain;
 }
 
 .close-btn {
@@ -720,7 +738,14 @@ section h3 {
     padding: 16px;
   }
 
-  /* 移动端教学语言弹窗调整 */
+  .info-icon {
+    font-size: 16px;
+  }
+}
+
+/* 真正的移动端（手机）才使用固定定位 */
+@media (max-width: 480px) {
+  /* 教学语言弹窗在手机上居中显示 */
   .language-info-popup {
     position: fixed;
     top: 50%;
@@ -747,10 +772,6 @@ section h3 {
 
   .language-table .desc {
     font-size: 11px;
-  }
-
-  .info-icon {
-    font-size: 16px;
   }
 }
 
