@@ -604,11 +604,10 @@ section h3 {
 
 /* 教学语言说明弹窗 */
 .language-info-popup {
-  position: absolute;
-  top: 100%;
+  position: fixed;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  margin-top: 8px;
+  transform: translate(-50%, -50%);
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -746,19 +745,12 @@ section h3 {
   }
 }
 
-/* 真正的移动端（手机）才使用固定定位 */
+/* 移动端样式调整 */
 @media (max-width: 480px) {
-  /* 教学语言弹窗在手机上居中显示 */
+  /* 教学语言弹窗在手机上宽度调整 */
   .language-info-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    right: auto;
-    transform: translate(-50%, -50%);
     width: 90%;
-    min-width: auto;
     max-width: 400px;
-    margin-top: 0;
   }
 
   .language-table {
