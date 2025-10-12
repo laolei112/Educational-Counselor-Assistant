@@ -98,7 +98,7 @@
               </div>
             </div>
             <div class="info-item">
-              <label>学费范围</label>
+              <label>学费</label>
               <div>{{ formatTuition(school.tuition) }}</div>
             </div>
             <div class="info-item">
@@ -389,25 +389,37 @@ section h3 {
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 20px 24px;
+  row-gap: 20px;
+  column-gap: 24px;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.info-item:hover {
+  background: #e9ecef;
 }
 
 .info-item label {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .info-item div {
   font-size: 16px;
   color: #2c3e50;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .features-list {
