@@ -67,6 +67,7 @@
 
 <script setup lang="ts">
 import type { School } from '@/types/school'
+import { formatTuition } from '@/utils/formatter'
 
 interface Props {
   school: School
@@ -114,15 +115,6 @@ const getGenderLabel = (gender: string) => {
     '男女': '男女校'
   }
   return labels[gender as keyof typeof labels] || gender
-}
-
-const formatTuition = (tuition: number | string | undefined) => {
-  // 处理空值情况
-  if (tuition === undefined || tuition === null || tuition === '') {
-    return '0港元/年'
-  }
-
-  return '0港元/年'
 }
 </script>
 

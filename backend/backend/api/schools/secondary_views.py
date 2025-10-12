@@ -264,6 +264,7 @@ def secondary_schools_stats(request):
         })
         
     except Exception as e:
+        logerror(f"服务器错误: {traceback.format_exc()}")
         return JsonResponse({
             "code": 500,
             "message": f"服务器错误: {str(e)}",

@@ -99,7 +99,7 @@
             </div>
             <div class="info-item">
               <label>学费范围</label>
-              <div>${{ school.tuition }}港元/年</div>
+              <div>{{ formatTuition(school.tuition) }}</div>
             </div>
             <div class="info-item">
               <label>课程类型</label>
@@ -159,6 +159,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { School } from '@/types/school'
+import { formatTuition } from '@/utils/formatter'
 
 interface Props {
   school: School
