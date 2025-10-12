@@ -137,7 +137,7 @@
 
         <!-- 课程设置部分（中学特有） -->
         <section v-if="school.type === 'secondary' && school.schoolCurriculum" class="curriculum">
-          <h3>📚 中四至中六课程设置（DSE）</h3>
+          <h3>📚 课程设置（DSE）</h3>
           <div class="curriculum-table-wrapper">
             <table class="curriculum-table">
               <thead>
@@ -389,37 +389,25 @@ section h3 {
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px 24px;
-  row-gap: 20px;
-  column-gap: 24px;
+  gap: 16px;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 12px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-
-.info-item:hover {
-  background: #e9ecef;
+  gap: 4px;
 }
 
 .info-item label {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: #6c757d;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .info-item div {
   font-size: 16px;
   color: #2c3e50;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .features-list {
@@ -731,10 +719,6 @@ section h3 {
   .content {
     padding: 16px;
   }
-  
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
 
   /* 移动端教学语言弹窗调整 */
   .language-info-popup {
@@ -767,6 +751,14 @@ section h3 {
 
   .info-icon {
     font-size: 16px;
+  }
+}
+
+/* 小屏手机端单列布局 */
+@media (max-width: 480px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 </style> 
