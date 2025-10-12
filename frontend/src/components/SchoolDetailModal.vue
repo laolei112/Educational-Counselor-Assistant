@@ -414,6 +414,7 @@ section h3 {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  position: relative;
 }
 
 .info-item label {
@@ -606,13 +607,14 @@ section h3 {
   position: absolute;
   top: 100%;
   left: 0;
-  right: 0;
   margin-top: 8px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  z-index: 100;
+  z-index: 1000;
   overflow: hidden;
+  min-width: 380px;
+  max-width: 500px;
 }
 
 .popup-header {
@@ -753,6 +755,7 @@ section h3 {
     right: auto;
     transform: translate(-50%, -50%);
     width: 90%;
+    min-width: auto;
     max-width: 400px;
     margin-top: 0;
   }
