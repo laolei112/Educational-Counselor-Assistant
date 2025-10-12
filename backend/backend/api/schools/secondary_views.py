@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.paginator import Paginator
-from django.db.models import Q, Case, When, Value, IntegerField
+from django.db.models import F, Q, Case, When, Value, IntegerField
 from backend.models.tb_secondary_schools import TbSecondarySchools
 import json
 
