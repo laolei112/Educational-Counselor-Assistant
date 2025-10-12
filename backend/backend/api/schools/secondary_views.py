@@ -111,17 +111,18 @@ def secondary_schools_list(request):
                     default=Value(9),
                     output_field=IntegerField()
                 )
-            ).order_by('search_priority', 'school_group', 'school_name')
+            ).order_by('search_priority', F('school_group').asc(nulls_last=True), 'school_name')
         else:
-            # 没有关键词时，按照 school_group 和 school_name 排序
-            queryset = queryset.order_by('school_group', 'school_name')
+            # 没有关键词时，按照 school_group 和 school_name 排序（NULL 值排在最后）
+            queryset = queryset.order_by(F('school_group').asc(nulls_last=True), 'school_name')
         
         # 分页
         paginator = Paginator(queryset, page_size)
-        schools_data = paginator.get_page(page)
+        schools_page = paginator.get_page(page)
         
         # 序列化数据
-        queryset = queryset.order_by(F('school_group').asc(nulls_last=True), 'school_name')        
+        schools_data = [serialize_secondary_school(school) for school in schools_page]
+        
         return JsonResponse({
             "code": 200,
             "message": "成功",
