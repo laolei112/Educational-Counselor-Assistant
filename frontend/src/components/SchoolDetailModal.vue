@@ -44,41 +44,55 @@
                 <span class="info-icon" @click="showLanguageInfo = !showLanguageInfo">ℹ️</span>
               </label>
               <div class="teaching-language-wrapper">
-                <span :class="['language-badge', getLanguageClass(school.teachingLanguage)]">
+                <span class="language-text">
                   {{ school.teachingLanguage || '中英文并重' }}
                 </span>
               </div>
               <!-- 教学语言说明弹窗 -->
               <div v-if="showLanguageInfo" class="language-info-popup" @click.stop>
                 <div class="popup-header">
-                  <span>📚 教学语言分类标准</span>
+                  <span>教学语言分类标准</span>
                   <button class="popup-close" @click="showLanguageInfo = false">✕</button>
                 </div>
                 <div class="popup-content">
-                  <div class="language-standard">
-                    <div class="standard-item">
-                      <span class="language-badge badge-english">英文</span>
-                      <span class="standard-desc">英文授课占比 ≥ 80%</span>
-                    </div>
-                    <div class="standard-item">
-                      <span class="language-badge badge-mainly-english">主要英文</span>
-                      <span class="standard-desc">英文授课占比 60% - 79%</span>
-                    </div>
-                    <div class="standard-item">
-                      <span class="language-badge badge-bilingual">中英文并重</span>
-                      <span class="standard-desc">英文授课占比 40% - 59%</span>
-                    </div>
-                    <div class="standard-item">
-                      <span class="language-badge badge-mainly-chinese">主要中文</span>
-                      <span class="standard-desc">英文授课占比 20% - 39%</span>
-                    </div>
-                    <div class="standard-item">
-                      <span class="language-badge badge-chinese">中文</span>
-                      <span class="standard-desc">英文授课占比 < 20%</span>
-                    </div>
-                  </div>
+                  <table class="language-table">
+                    <thead>
+                      <tr>
+                        <th>分类</th>
+                        <th>英文授课占比</th>
+                        <th>说明</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="category">英文</td>
+                        <td class="ratio">≥ 80%</td>
+                        <td class="desc">绝大部分科目使用英文授课</td>
+                      </tr>
+                      <tr>
+                        <td class="category">主要英文</td>
+                        <td class="ratio">60% - 79%</td>
+                        <td class="desc">多数科目使用英文授课</td>
+                      </tr>
+                      <tr class="highlight">
+                        <td class="category">中英文并重</td>
+                        <td class="ratio">40% - 59%</td>
+                        <td class="desc">中英文授课科目数量接近</td>
+                      </tr>
+                      <tr>
+                        <td class="category">主要中文</td>
+                        <td class="ratio">20% - 39%</td>
+                        <td class="desc">多数科目使用中文授课</td>
+                      </tr>
+                      <tr>
+                        <td class="category">中文</td>
+                        <td class="ratio">< 20%</td>
+                        <td class="desc">绝大部分科目使用中文授课</td>
+                      </tr>
+                    </tbody>
+                  </table>
                   <div class="popup-note">
-                    * 基于中四至中六 DSE 科目统计
+                    注：基于中四至中六 DSE 科目统计
                   </div>
                 </div>
               </div>
@@ -164,20 +178,6 @@ const showLanguageInfo = ref(false)
 const closeModal = () => {
   emit('close')
   showLanguageInfo.value = false
-}
-
-const getLanguageClass = (language: string | null | undefined) => {
-  if (!language) return 'badge-bilingual'
-  
-  const classMap: Record<string, string> = {
-    '英文': 'badge-english',
-    '主要英文': 'badge-mainly-english',
-    '中英文并重': 'badge-bilingual',
-    '主要中文': 'badge-mainly-chinese',
-    '中文': 'badge-chinese'
-  }
-  
-  return classMap[language] || 'badge-bilingual'
 }
 
 const getCategoryLabel = (category: string) => {
@@ -410,48 +410,23 @@ section h3 {
   font-size: 14px;
   cursor: pointer;
   margin-left: 6px;
-  opacity: 0.7;
-  transition: opacity 0.2s;
+  opacity: 0.6;
+  transition: all 0.2s;
   display: inline-block;
 }
 
 .info-icon:hover {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 .teaching-language-wrapper {
   position: relative;
 }
 
-.language-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.badge-english {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.badge-mainly-english {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.badge-bilingual {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-
-.badge-mainly-chinese {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-}
-
-.badge-chinese {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+.language-text {
+  font-weight: 500;
+  color: #2c3e50;
 }
 
 /* 教学语言说明弹窗 */
@@ -462,7 +437,7 @@ section h3 {
   right: 0;
   margin-top: 8px;
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   z-index: 100;
   overflow: hidden;
@@ -485,16 +460,17 @@ section h3 {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
   font-weight: 600;
   font-size: 14px;
+  color: #2c3e50;
 }
 
 .popup-close {
-  background: rgba(255, 255, 255, 0.2);
+  background: #e9ecef;
   border: none;
-  color: white;
+  color: #6c757d;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -503,50 +479,85 @@ section h3 {
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .popup-close:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #dee2e6;
+  color: #2c3e50;
 }
 
 .popup-content {
   padding: 16px;
 }
 
-.language-standard {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.standard-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.standard-item .language-badge {
-  min-width: 85px;
-  text-align: center;
+/* 表格样式 */
+.language-table {
+  width: 100%;
+  border-collapse: collapse;
   font-size: 13px;
-  padding: 4px 8px;
-  flex-shrink: 0;
 }
 
-.standard-desc {
+.language-table thead {
+  background: #f8f9fa;
+}
+
+.language-table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.language-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e9ecef;
+  color: #2c3e50;
+}
+
+.language-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.language-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.language-table tbody tr.highlight {
+  background: #fff3cd;
+}
+
+.language-table tbody tr.highlight:hover {
+  background: #ffe69c;
+}
+
+.language-table .category {
+  font-weight: 600;
+  color: #2c3e50;
+  white-space: nowrap;
+}
+
+.language-table .ratio {
+  font-weight: 500;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.language-table .desc {
   color: #6c757d;
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 12px;
 }
 
 .popup-note {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid #e9ecef;
-  font-size: 12px;
+  font-size: 11px;
   color: #6c757d;
-  font-style: italic;
 }
 
 @media (max-width: 768px) {
@@ -583,14 +594,21 @@ section h3 {
     margin-top: 0;
   }
 
-  .standard-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
+  .language-table {
+    font-size: 12px;
   }
 
-  .standard-item .language-badge {
-    width: 100%;
+  .language-table th,
+  .language-table td {
+    padding: 8px 6px;
+  }
+
+  .language-table th {
+    font-size: 11px;
+  }
+
+  .language-table .desc {
+    font-size: 11px;
   }
 
   .info-icon {
