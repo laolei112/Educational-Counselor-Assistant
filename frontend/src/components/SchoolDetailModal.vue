@@ -34,7 +34,7 @@
             <div class="info-item">
               <label>学校规模</label>
               <div v-if="school.schoolScale">
-                {{ school.schoolScale.classes }}班 | {{ school.schoolScale.students }}学生
+                {{ school.schoolScale.classes }}班
               </div>
               <div v-else>-</div>
             </div>
