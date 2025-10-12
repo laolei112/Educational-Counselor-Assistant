@@ -29,6 +29,10 @@ def serialize_secondary_school(school):
         "totalClasses": school.total_classes,
         "admissionInfo": school.admission_info,
         "schoolCurriculum": school.school_curriculum,
+        "schoolScale": {
+            "classes": school.total_classes if school.total_classes else 0,
+            "students": 0  # 中学数据中没有学生数，设置为0
+        },
         "contact": {
             "address": school.address,
             "phone": school.phone,
