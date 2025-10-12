@@ -119,8 +119,7 @@ def secondary_schools_list(request):
         schools_page = paginator.get_page(page)
         
         # 序列化数据
-        schools_data = [serialize_secondary_school(school) for school in schools_page]
-        
+        queryset = queryset.order_by(F('school_group').asc(nulls_last=True), 'school_name')        
         return JsonResponse({
             "code": 200,
             "message": "成功",
