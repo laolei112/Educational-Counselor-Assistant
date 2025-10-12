@@ -450,13 +450,12 @@ section h3 {
   cursor: pointer;
   margin-left: 6px;
   opacity: 0.6;
-  transition: all 0.2s;
+  transition: opacity 0.2s;
   display: inline-block;
 }
 
 .info-icon:hover {
   opacity: 1;
-  transform: scale(1.15);
 }
 
 .teaching-language-wrapper {
@@ -480,18 +479,6 @@ section h3 {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   z-index: 100;
   overflow: hidden;
-  animation: slideDown 0.2s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .popup-header {
