@@ -6,6 +6,7 @@ from django.db.models import F, Q, Case, When, Value, IntegerField
 from backend.models.tb_secondary_schools import TbSecondarySchools
 import json
 import traceback
+from common.logger import logerror
 
 
 def serialize_secondary_school(school):
@@ -142,7 +143,7 @@ def secondary_schools_list(request):
             "data": None
         })
     except Exception as e:
-        logger.error(f"服务器错误: {traceback.format_exc()}")
+        logerror(f"服务器错误: {traceback.format_exc()}")
         return JsonResponse({
             "code": 500,
             "message": f"服务器错误: {str(e)}",
