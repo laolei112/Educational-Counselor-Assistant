@@ -129,6 +129,14 @@
           </ul>
         </section>
 
+        <!-- 入学信息部分（中学特有） -->
+        <section v-if="school.type === 'secondary' && school.admissionInfo" class="admission-info">
+          <h3>📝 中一入学信息</h3>
+          <div class="admission-content">
+            {{ school.admissionInfo }}
+          </div>
+        </section>
+
         <!-- 联络信息部分 -->
         <section v-if="school.contact" class="contact">
           <h3>📞 联络信息</h3>
@@ -377,6 +385,22 @@ section h3 {
   color: #2c3e50;
   font-size: 15px;
   line-height: 1.5;
+}
+
+/* 入学信息样式 */
+.admission-info {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.admission-content {
+  color: #2c3e50;
+  font-size: 15px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .contact-info {
