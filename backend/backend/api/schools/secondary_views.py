@@ -42,8 +42,8 @@ def serialize_secondary_school(school):
         "updatedAt": school.updated_at.isoformat() if school.updated_at else None,
         
         # 为了兼容前端，添加一些默认字段
-        "applicationStatus": "open",  # 默认值
-        "band1Rate": 0,  # 如果需要可以从 school_group 推算
+        "applicationStatus": "closed",  # 默认值
+        "band1Rate": 0,  
     }
 
 
@@ -109,7 +109,10 @@ def secondary_schools_list(request):
                     default=Value(9),
                     output_field=IntegerField()
                 )
-            ).order_by('search_priority', 'school_name')
+            ).order_by('search_priority', 'school_group', 'school_name')
+        else:
+            # 没有关键词时，按照 school_group 和 school_name 排序
+            queryset = queryset.order_by('school_group', 'school_name')
         
         # 分页
         paginator = Paginator(queryset, page_size)

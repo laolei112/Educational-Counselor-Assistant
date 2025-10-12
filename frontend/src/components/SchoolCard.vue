@@ -57,6 +57,9 @@
           <span class="rate-circle">升Band 1比例：{{ school.band1Rate }}%</span>
           <span class="arrow">→</span>
         </div>
+        <div v-if="school.type === 'secondary'" class="band-rate">
+          <span class="arrow">→</span>
+        </div>
       </div>
     </div>
   </div>
