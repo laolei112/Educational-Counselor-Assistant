@@ -13,3 +13,4 @@ mysqlclient
 drf_yasg
 supervisor
 gevent
+PyJWT==2.8.0

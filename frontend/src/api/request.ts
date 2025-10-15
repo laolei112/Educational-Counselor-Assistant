@@ -1,6 +1,7 @@
 import { API_CONFIG } from './config'
 import type { ApiResponse } from './types'
-import { generateSignature, getDeviceFingerprint } from '../utils/crypto'
+import { tokenManager } from '../utils/token'
+import { getDeviceFingerprint } from '../utils/crypto'
 
 // HTTP请求错误类
 export class HttpError extends Error {
@@ -67,22 +68,14 @@ async function request<T = any>(
   
   if (!skipSignature) {
     try {
-      const signatureData = await generateSignature(
-        method === 'GET' ? params : {},
-        method !== 'GET' ? body : undefined,
-        method  // 传递HTTP方法
-      )
-      
-      // 添加签名相关的请求头
-      requestHeaders['X-Api-Key'] = signatureData.apiKey
-      requestHeaders['X-Timestamp'] = String(signatureData.timestamp)
-      requestHeaders['X-Nonce'] = signatureData.nonce
-      requestHeaders['X-Signature'] = signatureData.signature
+      // 使用JWT Token替代签名（性能更好）
+      const token = await tokenManager.getToken()
+      requestHeaders['Authorization'] = `Bearer ${token}`
       requestHeaders['X-Device-Id'] = getDeviceFingerprint()
     } catch (err) {
-      console.error('生成签名失败:', err)
-      // 签名失败时抛出错误，不继续请求
-      throw new HttpError(0, '无法生成请求签名，请检查网络连接')
+      console.error('获取Token失败:', err)
+      // Token获取失败时抛出错误
+      throw new HttpError(0, '无法获取访问凭证，请检查网络连接')
     }
   }
   
@@ -101,6 +94,35 @@ async function request<T = any>(
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
+      
+      // 如果是401错误且使用了Token，尝试刷新Token后重试
+      if (response.status === 401 && !skipSignature) {
+        console.log('Token可能已过期，尝试刷新并重试...')
+        try {
+          // 清除旧Token
+          tokenManager.clearToken()
+          // 获取新Token
+          const newToken = await tokenManager.getToken()
+          // 更新请求头
+          requestHeaders['Authorization'] = `Bearer ${newToken}`
+          
+          // 重试请求（仅重试一次）
+          const retryResponse = await fetch(url, {
+            method,
+            headers: requestHeaders,
+            body: body ? JSON.stringify(body) : undefined,
+            signal: controller.signal
+          })
+          
+          if (retryResponse.ok) {
+            const retryData = await retryResponse.json()
+            return retryData
+          }
+        } catch (retryErr) {
+          console.error('重试失败:', retryErr)
+        }
+      }
+      
       throw new HttpError(
         response.status,
         errorData.message || `HTTP Error: ${response.status}`,
