@@ -59,6 +59,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # ========== 防爬取和安全中间件（按顺序执行）==========
+    "backend.middleware.RateLimitMiddleware.RateLimitMiddleware",  # 频率限制（最先执行，快速拒绝）
+    "backend.middleware.AntiCrawlerMiddleware.AntiCrawlerMiddleware",  # 反爬虫检测
+    "backend.middleware.SignatureMiddleware.SignatureMiddleware",  # 签名验证
+    # =====================================================
     "backend.middleware.AuthMiddleware.AuthMiddleware",  # 登录态验证
     "backend.middleware.ExceptionMiddleware.ExceptionMiddleware",  # noqa
 ]
@@ -96,7 +101,14 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
     'Pragma',
-    'accept'
+    'accept',
+    # 防爬取相关的自定义请求头
+    'x-api-key',
+    'x-timestamp',
+    'x-nonce',
+    'x-signature',
+    'x-device-id',
+    'x-device-fingerprint',
 )
 
 SESSION_COOKIE_HTTPONLY = True  # session httponly

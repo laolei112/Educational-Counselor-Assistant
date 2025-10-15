@@ -1,5 +1,6 @@
 import { API_CONFIG } from './config'
 import type { ApiResponse } from './types'
+import { generateSignature, getDeviceFingerprint } from '../utils/crypto'
 
 // HTTP请求错误类
 export class HttpError extends Error {
@@ -19,6 +20,7 @@ interface RequestConfig {
   headers?: Record<string, string>
   body?: any
   timeout?: number
+  skipSignature?: boolean  // 是否跳过签名（用于某些不需要签名的请求）
 }
 
 // 构建完整URL
@@ -51,10 +53,36 @@ async function request<T = any>(
     method = 'GET',
     headers = {},
     body,
-    timeout = API_CONFIG.TIMEOUT
+    timeout = API_CONFIG.TIMEOUT,
+    skipSignature = false
   } = config
 
   const url = buildUrl(path, method === 'GET' ? params : undefined)
+  
+  // 生成请求签名（用于防爬取）
+  const requestHeaders: Record<string, string> = {
+    ...API_CONFIG.HEADERS,
+    ...headers
+  }
+  
+  if (!skipSignature) {
+    try {
+      const signatureData = await generateSignature(
+        method === 'GET' ? params : {},
+        method !== 'GET' ? body : undefined
+      )
+      
+      // 添加签名相关的请求头
+      requestHeaders['X-Api-Key'] = signatureData.apiKey
+      requestHeaders['X-Timestamp'] = String(signatureData.timestamp)
+      requestHeaders['X-Nonce'] = signatureData.nonce
+      requestHeaders['X-Signature'] = signatureData.signature
+      requestHeaders['X-Device-Id'] = getDeviceFingerprint()
+    } catch (err) {
+      console.error('生成签名失败:', err)
+      // 签名失败时继续请求，但可能会被服务器拒绝
+    }
+  }
   
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeout)
@@ -62,10 +90,7 @@ async function request<T = any>(
   try {
     const response = await fetch(url, {
       method,
-      headers: {
-        ...API_CONFIG.HEADERS,
-        ...headers
-      },
+      headers: requestHeaders,
       body: body ? JSON.stringify(body) : undefined,
       signal: controller.signal
     })
