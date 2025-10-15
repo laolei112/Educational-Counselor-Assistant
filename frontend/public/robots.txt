@@ -1,0 +1,22 @@
+# 搜索引擎爬虫规则
+User-agent: *
+Allow: /
+
+# 允许访问API（用于数据抓取）
+Allow: /api/schools/
+
+# 不允许爬取的路径
+Disallow: /api/generate-signature
+Disallow: /api/signature/
+Disallow: /admin/
+
+# 特定爬虫规则
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap位置
+Sitemap: https://betterschool.hk/sitemap.xml
+

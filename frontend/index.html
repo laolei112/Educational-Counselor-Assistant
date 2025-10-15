@@ -5,11 +5,68 @@
   <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
   <link rel="apple-touch-icon" href="/favicon.jpg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="香港升学助手 - 为您提供香港中小学信息查询和升学指导服务" />
-  <title>香港升学助手</title>
+  
+  <!-- SEO优化 -->
+  <title>香港升学助手 - 中小学信息查询和升学指导服务</title>
+  <meta name="description" content="提供香港中小学详细信息、升学指导、学校对比等服务，帮助家长为孩子选择最合适的学校。包含小学、中学的详细资料、教学语言、课程设置等信息。" />
+  <meta name="keywords" content="香港升学,香港小学,香港中学,学校查询,升学指导,教育咨询,学校对比,Band1中学,直资学校,国际学校" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="香港升学助手 - 中小学信息查询和升学指导" />
+  <meta property="og:description" content="提供香港中小学详细信息、升学指导、学校对比等服务" />
+  <meta property="og:site_name" content="香港升学助手" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="香港升学助手 - 中小学信息查询" />
+  <meta name="twitter:description" content="提供香港中小学详细信息、升学指导、学校对比等服务" />
+  
+  <!-- 结构化数据 (Schema.org for Google) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "香港升学助手",
+    "description": "提供香港中小学信息查询和升学指导服务",
+    "url": "https://betterschool.hk",
+    "sameAs": [],
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://betterschool.hk/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <!-- SEO内容 - 搜索引擎可见，用户看不到（Vue挂载后会被替换） -->
+    <noscript>
+      <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <h1>香港升学助手</h1>
+        <p>为您提供香港中小学详细信息、升学指导、学校对比等服务，帮助家长为孩子选择最合适的学校。</p>
+        
+        <h2>服务特色</h2>
+        <ul>
+          <li>全面的学校信息查询 - 涵盖香港所有中小学</li>
+          <li>详细的学校资料 - 包括教学语言、课程设置、Band等级等</li>
+          <li>智能学校对比 - 多维度对比帮助决策</li>
+          <li>升学指导建议 - 专业的升学规划建议</li>
+          <li>实时数据更新 - 确保信息准确及时</li>
+        </ul>
+        
+        <h2>小学查询</h2>
+        <p>提供香港各区小学详细信息，包括官立、资助、直资和私立小学。</p>
+        
+        <h2>中学查询</h2>
+        <p>提供香港各区中学详细信息，包括Band1-3中学、教学语言、课程设置等。</p>
+        
+        <h2>如何使用</h2>
+        <p>请启用JavaScript以获得完整功能。本网站需要JavaScript才能正常运行。</p>
+      </div>
+    </noscript>
+  </div>
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html> 

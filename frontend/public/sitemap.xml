@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 首页 -->
+  <url>
+    <loc>https://betterschool.hk/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <lastmod>2024-10-15</lastmod>
+  </url>
+  
+  <!-- 小学列表 -->
+  <url>
+    <loc>https://betterschool.hk/primary</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2024-10-15</lastmod>
+  </url>
+  
+  <!-- 中学列表 -->
+  <url>
+    <loc>https://betterschool.hk/secondary</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2024-10-15</lastmod>
+  </url>
+  
+  <!-- API端点（供搜索引擎索引数据） -->
+  <url>
+    <loc>https://betterschool.hk/api/schools/primary</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://betterschool.hk/api/schools/secondary</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- 
+  注意：此文件为静态基础sitemap
+  建议实施动态sitemap，包含所有学校详情页
+  参考：SEO优化方案.md 中的"后端生成动态sitemap"部分
+  -->
+</urlset>
+

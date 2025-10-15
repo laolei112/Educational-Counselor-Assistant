@@ -69,7 +69,8 @@ async function request<T = any>(
     try {
       const signatureData = await generateSignature(
         method === 'GET' ? params : {},
-        method !== 'GET' ? body : undefined
+        method !== 'GET' ? body : undefined,
+        method  // 传递HTTP方法
       )
       
       // 添加签名相关的请求头
@@ -80,7 +81,8 @@ async function request<T = any>(
       requestHeaders['X-Device-Id'] = getDeviceFingerprint()
     } catch (err) {
       console.error('生成签名失败:', err)
-      // 签名失败时继续请求，但可能会被服务器拒绝
+      // 签名失败时抛出错误，不继续请求
+      throw new HttpError(0, '无法生成请求签名，请检查网络连接')
     }
   }
   

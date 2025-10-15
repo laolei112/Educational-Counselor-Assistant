@@ -19,13 +19,30 @@ class SignatureMiddleware:
     # 白名单路径（不需要签名验证）
     WHITELIST_PATHS = [
         '/api/health',
+        '/api/generate-signature',  # 签名生成API本身不需要验证
+        '/api/signature/',
         '/nginx-health',
         '/swagger/',
         '/admin/',
     ]
     
+    # 搜索引擎爬虫白名单（允许无签名访问）
+    SEARCH_ENGINE_USER_AGENTS = [
+        'Googlebot',
+        'Bingbot',
+        'Slurp',  # Yahoo
+        'DuckDuckBot',
+        'Baiduspider',
+        'YandexBot',
+        'Sogou',
+        'Exabot',
+    ]
+    
     # 是否启用签名验证
     ENABLE_SIGNATURE_CHECK = True  # 设置为False可临时禁用签名验证
+    
+    # 是否允许搜索引擎爬虫无签名访问
+    ALLOW_SEARCH_ENGINES = True  # 设置为False将拦截所有搜索引擎
     
     def __init__(self, get_response):
         self.get_response = get_response
@@ -40,6 +57,12 @@ class SignatureMiddleware:
         for whitelist_path in self.WHITELIST_PATHS:
             if path.startswith(whitelist_path):
                 return self.get_response(request)
+        
+        # 检查是否为搜索引擎爬虫（允许无签名访问以支持SEO）
+        if self.ALLOW_SEARCH_ENGINES and self._is_search_engine(request):
+            user_agent = request.META.get('HTTP_USER_AGENT', 'unknown')
+            loginfo(f"搜索引擎访问（已允许）: {user_agent}, Path: {path}, IP: {self._get_client_ip(request)}")
+            return self.get_response(request)
         
         # 验证签名
         is_valid, error_msg = self._validate_request(request)
@@ -98,6 +121,22 @@ class SignatureMiddleware:
             params,
             body
         )
+    
+    def _is_search_engine(self, request):
+        """
+        检查是否为搜索引擎爬虫
+        
+        Returns:
+            bool: True表示是搜索引擎爬虫
+        """
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        
+        # 检查User-Agent是否包含搜索引擎标识
+        for bot in self.SEARCH_ENGINE_USER_AGENTS:
+            if bot.lower() in user_agent.lower():
+                return True
+        
+        return False
     
     def _get_client_ip(self, request):
         """获取客户端IP"""

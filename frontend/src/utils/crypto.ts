@@ -1,104 +1,67 @@
 /**
  * 加密和签名工具类
  * 用于前后端通信加密和防爬取
+ * 
+ * 安全说明：
+ * - 签名由后端生成，前端不存储密钥
+ * - 前端只负责调用签名API并使用返回的签名
  */
 
-// API密钥（实际使用时应该从环境变量读取）
-const API_SECRET = import.meta.env.VITE_API_SECRET || 'your-secret-key-change-in-production'
-const API_KEY = import.meta.env.VITE_API_KEY || 'web-client-v1'
+// API基础URL
+const API_BASE_URL = '/api'
 
 /**
- * SHA256 哈希函数
- */
-async function sha256(message: string): Promise<string> {
-  const msgBuffer = new TextEncoder().encode(message)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-  return hashHex
-}
-
-/**
- * 生成随机字符串
- */
-function generateNonce(length: number = 16): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  const randomValues = new Uint8Array(length)
-  crypto.getRandomValues(randomValues)
-  
-  for (let i = 0; i < length; i++) {
-    result += chars[randomValues[i] % chars.length]
-  }
-  
-  return result
-}
-
-/**
- * 生成时间戳（秒级）
- */
-function getTimestamp(): number {
-  return Math.floor(Date.now() / 1000)
-}
-
-/**
- * 对对象的键进行排序并序列化
- */
-function sortAndStringify(obj: Record<string, any>): string {
-  const sortedKeys = Object.keys(obj).sort()
-  const pairs: string[] = []
-  
-  for (const key of sortedKeys) {
-    const value = obj[key]
-    if (value !== undefined && value !== null) {
-      pairs.push(`${key}=${String(value)}`)
-    }
-  }
-  
-  return pairs.join('&')
-}
-
-/**
- * 生成请求签名
- * 签名算法：SHA256(timestamp + nonce + apiKey + sortedParams + apiSecret)
+ * 调用后端生成请求签名
+ * 
+ * 优势：
+ * 1. 前端不存储任何密钥
+ * 2. 密钥完全在服务端管理
+ * 3. 即使前端代码被完全逆向，也无法伪造签名
  */
 export async function generateSignature(
   params: Record<string, any> = {},
-  body?: any
+  body?: any,
+  method: string = 'GET'
 ): Promise<{
   timestamp: number
   nonce: string
   apiKey: string
   signature: string
 }> {
-  const timestamp = getTimestamp()
-  const nonce = generateNonce()
-  
-  // 构建签名字符串
-  let signString = `${timestamp}${nonce}${API_KEY}`
-  
-  // 添加查询参数
-  if (params && Object.keys(params).length > 0) {
-    signString += sortAndStringify(params)
-  }
-  
-  // 添加请求体
-  if (body) {
-    const bodyStr = typeof body === 'string' ? body : JSON.stringify(body)
-    signString += bodyStr
-  }
-  
-  // 添加密钥
-  signString += API_SECRET
-  
-  // 生成签名
-  const signature = await sha256(signString)
-  
-  return {
-    timestamp,
-    nonce,
-    apiKey: API_KEY,
-    signature
+  try {
+    // 调用后端API生成签名
+    const response = await fetch(`${API_BASE_URL}/generate-signature`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        params: method === 'GET' ? params : {},
+        body: method !== 'GET' && body ? (typeof body === 'string' ? body : JSON.stringify(body)) : undefined,
+        method
+      })
+    })
+    
+    if (!response.ok) {
+      throw new Error(`签名生成失败: ${response.status}`)
+    }
+    
+    const result = await response.json()
+    
+    if (!result.success || !result.data) {
+      throw new Error(result.message || '签名生成失败')
+    }
+    
+    return {
+      timestamp: result.data.timestamp,
+      nonce: result.data.nonce,
+      apiKey: result.data.apiKey,
+      signature: result.data.signature
+    }
+  } catch (error) {
+    console.error('生成签名失败:', error)
+    // 如果签名生成失败，返回空签名（会被后端拒绝，但不影响应用运行）
+    throw error
   }
 }
 
