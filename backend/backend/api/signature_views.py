@@ -101,7 +101,7 @@ def generate_signature(request):
         # 生成时间戳和nonce
         timestamp = int(time.time())
         nonce = secrets.token_urlsafe(16)
-        api_key = 'web-client-v1'
+        api_key = 'betterschool-client-v1'
         
         # 使用签名验证器生成签名
         # 注意：我们直接调用内部方法，因为验证器的公开方法是用于验证的
