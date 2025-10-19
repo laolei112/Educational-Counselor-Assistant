@@ -34,9 +34,10 @@ def serialize_secondary_school(school):
         "category": school.school_category,
         "schoolType": school.school_category,
         "schoolGroup": school.school_group,
-        "transferInfo": school.transfer_info,
+        "transferInfo": school.transfer_info if school.transfer_info else {},
         "totalClasses": school.total_classes,
         "admissionInfo": school.admission_info,
+        "promotionInfo": school.promotion_info if school.promotion_info else {},
         "schoolCurriculum": curriculum_data,
         "schoolScale": {
             "classes": school.total_classes if school.total_classes else 0,

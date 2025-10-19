@@ -42,12 +42,12 @@
       <div class="bottom-row">
         <div class="status-info">
           <span 
-            v-if="school.transferInfo"
+            v-if="school.transferInfo?.application_status"
             :class="['status-badge', `status-${school.transferInfo.application_status}`]"
           >
             {{ getStatusLabel(school.transferInfo.application_status) }}
           </span>
-          <template v-if="school.transferInfo.application_deadline">
+          <template v-if="school.transferInfo?.application_deadline">
             <span class="divider">｜</span>
             <span class="deadline">截止：{{ school.transferInfo.application_deadline }}</span>
           </template>
@@ -55,7 +55,7 @@
         
         <!-- 小学显示升学比例 -->
         <div v-if="school.type === 'primary'" class="band-rate">
-          <template v-if="school.promotionInfo.band1_rate !== undefined">
+          <template v-if="school.promotionInfo?.band1_rate !== undefined">
             <span class="rate-circle">升Band 1比例：{{ school.promotionInfo.band1_rate }}%</span>
           </template>
           <span class="arrow">详情→</span>
