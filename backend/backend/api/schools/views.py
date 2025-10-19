@@ -4,6 +4,8 @@ from django.views.decorators.http import require_http_methods
 from django.core.paginator import Paginator
 from django.db.models import Q, Case, When, Value, IntegerField
 from backend.models.tb_schools import TbSchools
+from backend.models.tb_primary_schools import TbPrimarySchools
+from backend.models.tb_secondary_schools import TbSecondarySchools
 import json
 
 
@@ -192,95 +194,8 @@ def school_detail(request, school_id):
         })
 
 
-@csrf_exempt
-@require_http_methods(["GET"])
-def primary_schools_list(request):
-    """
-    获取小学列表
-    GET /api/schools/primary
-    """
-    try:
-        # 获取查询参数
-        category = request.GET.get('category')
-        district = request.GET.get('district')
-        application_status = request.GET.get('applicationStatus')
-        keyword = request.GET.get('keyword')
-        page = int(request.GET.get('page', 1))
-        page_size = int(request.GET.get('pageSize', 20))
-        
-        # 构建查询条件 - 只查询小学
-        queryset = TbSchools.objects.filter(level='primary')
-        
-        # 应用过滤条件
-        if category:
-            queryset = queryset.filter(category=category)
-            
-        if district:
-            queryset = queryset.filter(district=district)
-            
-        if application_status:
-            queryset = queryset.filter(application_status=application_status)
-            
-        if keyword:
-            # 使用 Case 和 When 来实现排序：校名包含关键词的排在前面
-            queryset = queryset.filter(
-                Q(name__icontains=keyword) | 
-                Q(district__icontains=keyword) |
-                Q(address__icontains=keyword) |
-                Q(category__icontains=keyword) |
-                Q(religion__icontains=keyword) |
-                Q(net_name__icontains=keyword) |
-                Q(remarks__icontains=keyword)
-            ).annotate(
-                # 添加排序权重：校名包含关键词的权重最高
-                search_priority=Case(
-                    When(name__icontains=keyword, then=Value(1)),  # 校名包含关键词，优先级最高
-                    When(district__icontains=keyword, then=Value(2)),  # 地区包含关键词
-                    When(address__icontains=keyword, then=Value(3)),  # 地址包含关键词
-                    When(category__icontains=keyword, then=Value(4)),  # 分类包含关键词
-                    When(religion__icontains=keyword, then=Value(5)),  # 宗教包含关键词
-                    When(net_name__icontains=keyword, then=Value(6)),  # 校网包含关键词
-                    When(remarks__icontains=keyword, then=Value(7)),  # 备注包含关键词
-                    default=Value(8),
-                    output_field=IntegerField()
-                )
-            ).order_by('search_priority', 'name')  # 按优先级和校名排序
-        
-        # 分页
-        paginator = Paginator(queryset, page_size)
-        schools_page = paginator.get_page(page)
-        
-        # 序列化数据
-        schools_data = [serialize_school(school) for school in schools_page]
-        
-        return JsonResponse({
-            "code": 200,
-            "message": "成功",
-            "success": True,
-            "data": {
-                "list": schools_data,
-                "total": paginator.count,
-                "page": page,
-                "pageSize": page_size,
-                "totalPages": paginator.num_pages
-            }
-        })
-        
-    except ValueError as e:
-        return JsonResponse({
-            "code": 400,
-            "message": f"参数错误: {str(e)}",
-            "success": False,
-            "data": None
-        })
-    except Exception as e:
-        return JsonResponse({
-            "code": 500,
-            "message": f"服务器错误: {str(e)}",
-            "success": False,
-            "data": None
-        })
-
+# 注意：小学列表接口已迁移到 primary_views.py，从 tb_primary_schools 表读取
+# 该函数已废弃，请使用 primary_views.primary_schools_list
 
 # 注意：中学列表接口已迁移到 secondary_views.py，从 tb_secondary_schools 表读取
 # 该函数已废弃，请使用 secondary_views.secondary_schools_list
@@ -290,55 +205,124 @@ def primary_schools_list(request):
 @require_http_methods(["GET"])
 def schools_stats(request):
     """
-    获取学校统计信息
+    获取学校统计信息（已废弃，请使用专用统计接口）
     GET /api/schools/stats
+    
+    推荐使用:
+    - 小学: GET /api/schools/primary/stats/
+    - 中学: GET /api/schools/secondary/stats/
     """
     try:
         school_type = request.GET.get('type')
         
-        # 构建查询条件
-        queryset = TbSchools.objects.all()
-        if school_type:
-            queryset = queryset.filter(level=school_type)
-        
-        # 计算统计信息
-        total_schools = queryset.count()
-        # 计算开放申请的学校数量，计算规则从transfer_info字段中获取，transfer_info是一个json串，
-        # 其中的application_status字段为open的学校数量
-        open_applications = queryset.filter(transfer_info__icontains='"application_status":"open"').count()
-        
-        # 按类型统计
-        type_stats = {}
-        for level, _ in TbSchools.LEVEL_CHOICES:
-            count = queryset.filter(level=level).count()
-            type_stats[level] = count
-        
-        # 按地区统计
-        district_stats = {}
-        districts = queryset.values_list('district', flat=True).distinct()
-        for district in districts:
-            if district:
-                count = queryset.filter(district=district).count()
-                district_stats[district] = count
-        
-        # 按分类统计
-        category_stats = {}
-        for category, _ in TbSchools.CATEGORY_CHOICES:
-            count = queryset.filter(category=category).count()
-            category_stats[category] = count
-        
-        return JsonResponse({
-            "code": 200,
-            "message": "成功",
-            "success": True,
-            "data": {
-                "totalSchools": total_schools,
-                "openApplications": open_applications,
-                "typeStats": type_stats,
-                "districtStats": district_stats,
-                "categoryStats": category_stats
-            }
-        })
+        # 根据类型选择不同的数据库表
+        if school_type == 'primary':
+            # 查询小学表
+            queryset = TbPrimarySchools.objects.all()
+            total_schools = queryset.count()
+            
+            # 计算开放申请的学校数量
+            open_applications = queryset.filter(
+                transfer_info__icontains='"application_status":"open"'
+            ).count() if queryset.filter(transfer_info__isnull=False).exists() else 0
+            
+            # 按地区统计
+            district_stats = {}
+            districts = queryset.values_list('district', flat=True).distinct()
+            for district in districts:
+                if district:
+                    count = queryset.filter(district=district).count()
+                    district_stats[district] = count
+            
+            # 按分类统计
+            category_stats = {}
+            categories = queryset.values_list('school_category', flat=True).distinct()
+            for category in categories:
+                if category:
+                    count = queryset.filter(school_category=category).count()
+                    category_stats[category] = count
+            
+            return JsonResponse({
+                "code": 200,
+                "message": "成功",
+                "success": True,
+                "data": {
+                    "totalSchools": total_schools,
+                    "openApplications": open_applications,
+                    "districtStats": district_stats,
+                    "categoryStats": category_stats
+                }
+            })
+            
+        elif school_type == 'secondary':
+            # 查询中学表
+            queryset = TbSecondarySchools.objects.all()
+            total_schools = queryset.count()
+            
+            # 计算开放申请的学校数量
+            open_applications = queryset.filter(
+                transfer_info__icontains='"application_status":"open"'
+            ).count() if queryset.filter(transfer_info__isnull=False).exists() else 0
+            
+            # 按地区统计
+            district_stats = {}
+            districts = queryset.values_list('district', flat=True).distinct()
+            for district in districts:
+                if district:
+                    count = queryset.filter(district=district).count()
+                    district_stats[district] = count
+            
+            # 按分类统计
+            category_stats = {}
+            categories = queryset.values_list('school_category', flat=True).distinct()
+            for category in categories:
+                if category:
+                    count = queryset.filter(school_category=category).count()
+                    category_stats[category] = count
+            
+            # 按组别统计
+            group_stats = {}
+            groups = queryset.values_list('school_group', flat=True).distinct()
+            for group in groups:
+                if group:
+                    count = queryset.filter(school_group=group).count()
+                    group_stats[group] = count
+            
+            return JsonResponse({
+                "code": 200,
+                "message": "成功",
+                "success": True,
+                "data": {
+                    "totalSchools": total_schools,
+                    "openApplications": open_applications,
+                    "districtStats": district_stats,
+                    "categoryStats": category_stats,
+                    "groupStats": group_stats
+                }
+            })
+            
+        else:
+            # 没有指定类型或使用旧表（已废弃）
+            # 合并小学和中学的统计
+            primary_count = TbPrimarySchools.objects.count()
+            secondary_count = TbSecondarySchools.objects.count()
+            total_schools = primary_count + secondary_count
+            
+            return JsonResponse({
+                "code": 200,
+                "message": "成功",
+                "success": True,
+                "data": {
+                    "totalSchools": total_schools,
+                    "openApplications": 0,
+                    "typeStats": {
+                        "primary": primary_count,
+                        "secondary": secondary_count
+                    },
+                    "districtStats": {},
+                    "categoryStats": {}
+                }
+            })
         
     except Exception as e:
         return JsonResponse({
