@@ -20,6 +20,60 @@ django.setup()
 
 from backend.models.tb_primary_schools import TbPrimarySchools
 
+# 尝试导入 OpenCC
+try:
+    from opencc import OpenCC
+    cc = OpenCC('t2s')  # 繁体到简体
+    USE_OPENCC = True
+    print("✅ 使用 OpenCC 进行繁简转换")
+except ImportError:
+    USE_OPENCC = False
+    print("⚠️  未安装 OpenCC，使用内置转换")
+
+
+# 繁简转换字典（简化版）
+TRADITIONAL_TO_SIMPLIFIED = {
+    '書': '书', '學': '学', '國': '国', '華': '华', '聖': '圣', '為': '为',
+    '醫': '医', '會': '会', '義': '义', '寶': '宝', '協': '协', '慶': '庆',
+    '銘': '铭', '賢': '贤', '紀': '纪', '劉': '刘', '張': '张', '陳': '陈',
+    '楊': '杨', '黃': '黄', '趙': '赵', '鄭': '郑', '謝': '谢', '鍾': '钟',
+    '陸': '陆', '餘': '余', '諸': '诸', '區': '区', '樂': '乐', '藍': '蓝',
+    '閻': '阎', '馬': '马', '盧': '卢', '蔣': '蒋', '蘇': '苏', '葉': '叶',
+    '緣': '缘', '達': '达', '灣': '湾', '島': '岛', '門': '门', '東': '东',
+    '護': '护', '譚': '谭', '鄧': '邓', '範': '范', '潘': '潘', '羅': '罗',
+    '梁': '梁', '韋': '韦', '許': '许', '錢': '钱', '湯': '汤', '諾': '诺',
+    '瑪': '玛', '麗': '丽', '啟': '启', '導': '导', '濟': '济', '衛': '卫',
+    '勵': '励', '壇': '坛', '僑': '侨', '鄉': '乡', '廈': '厦', '廣': '广',
+    '漢': '汉', '臺': '台', '師': '师', '資': '资', '館': '馆', '圖': '图',
+    '體': '体', '課': '课', '訓': '训', '術': '术', '藝': '艺', '員': '员',
+    '園': '园', '獎': '奖', '優': '优', '勝': '胜', '愛': '爱', '總': '总',
+    '聯': '联', '辦': '办', '業': '业', '來': '来', '還': '还', '進': '进',
+    '運': '运', '關': '关', '開': '开', '閉': '闭', '從': '从', '應': '应',
+    '當': '当', '對': '对', '與': '与', '給': '给', '讓': '让', '説': '说',
+    '話': '话', '語': '语', '詞': '词', '認': '认', '識': '识', '讀': '读',
+    '寫': '写', '聽': '听', '見': '见', '觀': '观', '聞': '闻', '問': '问',
+}
+
+
+def to_simplified(text):
+    """
+    繁体转简体
+    """
+    if not text:
+        return text
+    
+    if USE_OPENCC:
+        try:
+            return cc.convert(text)
+        except:
+            pass
+    
+    # 使用内置字典
+    result = text
+    for trad, simp in TRADITIONAL_TO_SIMPLIFIED.items():
+        result = result.replace(trad, simp)
+    return result
+
 
 def normalize_school_name(name):
     """
@@ -39,12 +93,23 @@ def normalize_school_name(name):
 
 def match_school_in_db(school_name, district=None):
     """
-    在数据库中匹配小学
+    在数据库中匹配小学（支持繁简转换）
     """
     # 规范化名称
     normalized_name = normalize_school_name(school_name)
     
-    # 尝试完全匹配
+    # 转换为简体（数据库中是简体）
+    simplified_name = to_simplified(normalized_name)
+    
+    # 1. 简体完全匹配（优先）
+    queryset = TbPrimarySchools.objects.filter(school_name=simplified_name)
+    if district:
+        queryset = queryset.filter(district__icontains=district.replace('区', ''))
+    
+    if queryset.exists():
+        return queryset.first()
+    
+    # 2. 繁体完全匹配
     queryset = TbPrimarySchools.objects.filter(school_name=normalized_name)
     if district:
         queryset = queryset.filter(district__icontains=district.replace('区', ''))
@@ -52,7 +117,15 @@ def match_school_in_db(school_name, district=None):
     if queryset.exists():
         return queryset.first()
     
-    # 尝试包含匹配
+    # 3. 简体包含匹配
+    queryset = TbPrimarySchools.objects.filter(school_name__icontains=simplified_name)
+    if district:
+        queryset = queryset.filter(district__icontains=district.replace('区', ''))
+    
+    if queryset.exists():
+        return queryset.first()
+    
+    # 4. 繁体包含匹配
     queryset = TbPrimarySchools.objects.filter(school_name__icontains=normalized_name)
     if district:
         queryset = queryset.filter(district__icontains=district.replace('区', ''))
@@ -60,8 +133,8 @@ def match_school_in_db(school_name, district=None):
     if queryset.exists():
         return queryset.first()
     
-    # 反向匹配
-    queryset = TbPrimarySchools.objects.filter(school_name__contains=school_name)
+    # 5. 反向匹配（数据库名称包含搜索名称）
+    queryset = TbPrimarySchools.objects.filter(school_name__contains=simplified_name)
     if district:
         queryset = queryset.filter(district__icontains=district.replace('区', ''))
     
@@ -102,8 +175,11 @@ def apply_stats_to_database(stats_file):
         primary_school = school_stat['primary_school']
         district = school_to_district.get(primary_school)
         
+        # 转换为简体
+        primary_school_simplified = to_simplified(primary_school)
+        
         try:
-            # 在数据库中查找学校
+            # 在数据库中查找学校（支持繁简转换）
             db_school = match_school_in_db(primary_school, district)
             
             if db_school:
@@ -117,17 +193,19 @@ def apply_stats_to_database(stats_file):
                         {'school': k, 'count': v} 
                         for k, v in list(school_stat['secondary_schools'].items())[:10]
                     ],
+                    'yearly_stats': school_stat.get('yearly_stats', {}),  # 年度数据
                     'data_source': 'excel_import',
                     'last_updated': '2025-10-19'
                 }
                 db_school.save()
                 
                 updated_count += 1
-                print(f"✅ 更新: {db_school.school_name:35s} - Band 1: {school_stat['band1_rate']}%")
+                match_info = f"(繁:{primary_school}→简:{primary_school_simplified})" if primary_school != primary_school_simplified else ""
+                print(f"✅ 更新: {db_school.school_name:35s} - Band 1: {school_stat['band1_rate']}% {match_info}")
             else:
                 not_found_count += 1
                 not_found_schools.append(primary_school)
-                print(f"⚠️  未找到: {primary_school:35s} (区域: {district})")
+                print(f"⚠️  未找到: {primary_school:35s} (简体:{primary_school_simplified[:20]}) (区域: {district})")
         
         except Exception as e:
             error_count += 1
