@@ -56,7 +56,10 @@ def serialize_primary_school(school):
         
         # 评估信息
         "assessmentInfo": school.assessment_info if school.assessment_info else {},
-        
+        # 插班信息
+        "transferInfo": school.transfer_info if school.transfer_info else {},
+        # 升学信息
+        "promotionInfo": school.promotion_info if school.promotion_info else {},
         # 其他
         "isFullDay": school.is_full_day(),
         "isCoed": school.is_coed(),

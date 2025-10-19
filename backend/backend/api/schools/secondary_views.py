@@ -34,7 +34,7 @@ def serialize_secondary_school(school):
         "category": school.school_category,
         "schoolType": school.school_category,
         "schoolGroup": school.school_group,
-        "transferOpenTime": school.transfer_open_time,
+        "transferInfo": school.transfer_info,
         "totalClasses": school.total_classes,
         "admissionInfo": school.admission_info,
         "schoolCurriculum": curriculum_data,
@@ -57,7 +57,6 @@ def serialize_secondary_school(school):
         "updatedAt": school.updated_at.isoformat() if school.updated_at else None,
         
         # 为了兼容前端，添加一些默认字段
-        "applicationStatus": "closed",  # 默认值
         "band1Rate": 0,  
     }
 

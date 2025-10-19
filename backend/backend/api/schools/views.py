@@ -303,7 +303,9 @@ def schools_stats(request):
         
         # 计算统计信息
         total_schools = queryset.count()
-        open_applications = queryset.filter(application_status='open').count()
+        # 计算开放申请的学校数量，计算规则从transfer_info字段中获取，transfer_info是一个json串，
+        # 其中的application_status字段为open的学校数量
+        open_applications = queryset.filter(transfer_info__icontains='"application_status":"open"').count()
         
         # 按类型统计
         type_stats = {}

@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS tb_primary_schools (
     fax VARCHAR(20) COMMENT '学校传真',
     email VARCHAR(100) COMMENT '学校电邮',
     website VARCHAR(200) COMMENT '学校网址',
-    
     -- 学校分类
     school_category VARCHAR(50) COMMENT '学校类别（资助/直资/私立/官立）',
     student_gender VARCHAR(20) COMMENT '学生性别（男/女/男女）',
@@ -27,7 +26,10 @@ CREATE TABLE IF NOT EXISTS tb_primary_schools (
     class_teaching_info JSON COMMENT '班级教学信息',
     -- 评估政策
     assessment_info JSON COMMENT '学习评估信息',
-
+    -- 插班信息
+    transfer_info JSON COMMENT '插班信息',
+    -- 升学信息
+    promotion_info JSON COMMENT '升学信息',
     -- 系统字段
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

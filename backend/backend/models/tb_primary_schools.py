@@ -147,6 +147,20 @@ class TbPrimarySchools(models.Model, Base):
         help_text='测验考试安排、评估政策等信息'
     )
     
+    transfer_info = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name='插班信息',
+        help_text='插班申请信息'
+    )
+
+    promotion_info = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name='升学信息',
+        help_text='升学信息'
+    )
+    
     # 系统字段
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -202,6 +216,8 @@ class TbPrimarySchools(models.Model, Base):
             'total_classes_info': self.total_classes_info,
             'class_teaching_info': self.class_teaching_info,
             'assessment_info': self.assessment_info,
+            'transfer_info': self.transfer_info,
+            'promotion_info': self.promotion_info,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
         }

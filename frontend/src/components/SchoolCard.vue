@@ -42,20 +42,23 @@
       <div class="bottom-row">
         <div class="status-info">
           <span 
-            v-if="school.applicationStatus"
-            :class="['status-badge', `status-${school.applicationStatus}`]"
+            v-if="school.transferInfo"
+            :class="['status-badge', `status-${school.transferInfo.application_status}`]"
           >
-            {{ getStatusLabel(school.applicationStatus) }}
+            {{ getStatusLabel(school.transferInfo.application_status) }}
           </span>
-          <span v-if="school.applicationDeadline" class="deadline">
-            截止：{{ school.applicationDeadline }}
-          </span>
+          <template v-if="school.transferInfo.application_deadline">
+            <span class="divider">｜</span>
+            <span class="deadline">截止：{{ school.transferInfo.application_deadline }}</span>
+          </template>
         </div>
         
         <!-- 小学显示升学比例 -->
-        <div v-if="school.type === 'primary' && school.band1Rate !== undefined" class="band-rate">
-          <span class="rate-circle">升Band 1比例：{{ school.band1Rate }}%</span>
-          <span class="arrow">→</span>
+        <div v-if="school.type === 'primary'" class="band-rate">
+          <template v-if="school.promotionInfo.band1_rate !== undefined">
+            <span class="rate-circle">升Band 1比例：{{ school.promotionInfo.band1_rate }}%</span>
+          </template>
+          <span class="arrow">详情→</span>
         </div>
         <div v-if="school.type === 'secondary'" class="band-rate">
           <span class="arrow">详情→</span>
@@ -334,7 +337,7 @@ const getGenderLabel = (gender: string) => {
 }
 
 .arrow {
-  font-size: 18px;
+  font-size: 16px;
   color: #9ca3af;
   font-weight: bold;
 }

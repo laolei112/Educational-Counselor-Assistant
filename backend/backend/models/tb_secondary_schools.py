@@ -78,12 +78,11 @@ class TbSecondarySchools(models.Model, Base):
         help_text='学校组别（如1A、1B等）'
     )
     
-    transfer_open_time = models.CharField(
-        max_length=100,
+    transfer_info = models.JSONField(
         blank=True,
         null=True,
-        verbose_name='插班开放时间',
-        help_text='插班申请开放时间'
+        verbose_name='插班信息',
+        help_text='插班申请信息'
     )
     
     total_classes = models.IntegerField(
@@ -99,7 +98,13 @@ class TbSecondarySchools(models.Model, Base):
         verbose_name='入学信息',
         help_text='中一入学信息'
     )
-    
+
+    promotion_info = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name='升学信息',
+        help_text='升学信息'
+    )
     school_curriculum = models.TextField(
         blank=True,
         null=True,
@@ -184,9 +189,10 @@ class TbSecondarySchools(models.Model, Base):
             'tuition': self.tuition,
             'school_category': self.school_category,
             'school_group': self.school_group,
-            'transfer_open_time': self.transfer_open_time,
+            'transfer_info': self.transfer_info,
             'total_classes': self.total_classes,
             'admission_info': self.admission_info,
+            'promotion_info': self.promotion_info,
             'school_curriculum': self.school_curriculum,
             'address': self.address,
             'phone': self.phone,
@@ -201,7 +207,7 @@ class TbSecondarySchools(models.Model, Base):
         判断是否为 Band 1 学校
         """
         if self.school_group:
-            return self.school_group.startswith('1')
+            return self.school_group.contains('BAND 1')
         return False
     
     def is_coed(self):
