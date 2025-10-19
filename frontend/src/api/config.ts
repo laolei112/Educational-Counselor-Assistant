@@ -1,7 +1,7 @@
 // API配置
 export const API_CONFIG = {
-  // 开发环境API地址，您可以根据需要调整
-  BASE_URL: 'https://betterschool.hk/api',
+  // 使用相对路径，自动适配 betterschool.hk 和 www.betterschool.hk
+  BASE_URL: '/api',
   
   // 请求超时时间
   TIMEOUT: 10000,
