@@ -226,21 +226,21 @@ def schools_stats(request):
                 transfer_info__icontains='"application_status":"open"'
             ).count() if queryset.filter(transfer_info__isnull=False).exists() else 0
             
-            # 按地区统计
-            district_stats = {}
-            districts = queryset.values_list('district', flat=True).distinct()
-            for district in districts:
-                if district:
-                    count = queryset.filter(district=district).count()
-                    district_stats[district] = count
+            # # 按地区统计
+            # district_stats = {}
+            # districts = queryset.values_list('district', flat=True).distinct()
+            # for district in districts:
+            #     if district:
+            #         count = queryset.filter(district=district).count()
+            #         district_stats[district] = count
             
-            # 按分类统计
-            category_stats = {}
-            categories = queryset.values_list('school_category', flat=True).distinct()
-            for category in categories:
-                if category:
-                    count = queryset.filter(school_category=category).count()
-                    category_stats[category] = count
+            # # 按分类统计
+            # category_stats = {}
+            # categories = queryset.values_list('school_category', flat=True).distinct()
+            # for category in categories:
+            #     if category:
+            #         count = queryset.filter(school_category=category).count()
+            #         category_stats[category] = count
             
             return JsonResponse({
                 "code": 200,
@@ -249,8 +249,8 @@ def schools_stats(request):
                 "data": {
                     "totalSchools": total_schools,
                     "openApplications": open_applications,
-                    "districtStats": district_stats,
-                    "categoryStats": category_stats
+                    # "districtStats": district_stats,
+                    # "categoryStats": category_stats
                 }
             })
             
@@ -264,29 +264,29 @@ def schools_stats(request):
                 transfer_info__icontains='"application_status":"open"'
             ).count() if queryset.filter(transfer_info__isnull=False).exists() else 0
             
-            # 按地区统计
-            district_stats = {}
-            districts = queryset.values_list('district', flat=True).distinct()
-            for district in districts:
-                if district:
-                    count = queryset.filter(district=district).count()
-                    district_stats[district] = count
+            # # 按地区统计
+            # district_stats = {}
+            # districts = queryset.values_list('district', flat=True).distinct()
+            # for district in districts:
+            #     if district:
+            #         count = queryset.filter(district=district).count()
+            #         district_stats[district] = count
             
-            # 按分类统计
-            category_stats = {}
-            categories = queryset.values_list('school_category', flat=True).distinct()
-            for category in categories:
-                if category:
-                    count = queryset.filter(school_category=category).count()
-                    category_stats[category] = count
+            # # 按分类统计
+            # category_stats = {}
+            # categories = queryset.values_list('school_category', flat=True).distinct()
+            # for category in categories:
+            #     if category:
+            #         count = queryset.filter(school_category=category).count()
+            #         category_stats[category] = count
             
-            # 按组别统计
-            group_stats = {}
-            groups = queryset.values_list('school_group', flat=True).distinct()
-            for group in groups:
-                if group:
-                    count = queryset.filter(school_group=group).count()
-                    group_stats[group] = count
+            # # 按组别统计
+            # group_stats = {}
+            # groups = queryset.values_list('school_group', flat=True).distinct()
+            # for group in groups:
+            #     if group:
+            #         count = queryset.filter(school_group=group).count()
+            #         group_stats[group] = count
             
             return JsonResponse({
                 "code": 200,
@@ -295,9 +295,9 @@ def schools_stats(request):
                 "data": {
                     "totalSchools": total_schools,
                     "openApplications": open_applications,
-                    "districtStats": district_stats,
-                    "categoryStats": category_stats,
-                    "groupStats": group_stats
+                    # "districtStats": district_stats,
+                    # "categoryStats": category_stats,
+                    # "groupStats": group_stats
                 }
             })
             
