@@ -58,7 +58,7 @@
           <span class="arrow">→</span>
         </div>
         <div v-if="school.type === 'secondary'" class="band-rate">
-          <span class="arrow">→</span>
+          <span class="arrow">详情→</span>
         </div>
       </div>
     </div>
@@ -334,7 +334,7 @@ const getGenderLabel = (gender: string) => {
 }
 
 .arrow {
-  font-size: 16px;
+  font-size: 18px;
   color: #9ca3af;
   font-weight: bold;
 }
