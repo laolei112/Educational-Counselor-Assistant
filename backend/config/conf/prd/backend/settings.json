@@ -2,16 +2,16 @@
     "mysql": {
         "user": "root",
         "password": "Lyy@82337476",
-        "host": "10.0.0.2",
-        "port": 3306,
+        "host": "gz-cdb-no12hc1x.sql.tencentcdb.com",
+        "port": 22462,
         "db": "prd_yundisoft",
         "charset": "utf8mb4",
         "timezone": "asia/shanghai",
         "init_command": ""
     },
     "redis": {
-        "host": "10.0.0.12",
-        "port": 6380,
+        "host": "gz-crs-a8pjxd70.sql.tencentcdb.com",
+        "port": 27665,
         "db": 0,
         "password": "Lyy@82337476"
     }
