@@ -113,9 +113,15 @@ def load_primary_school_totals(totals_file):
         
         for col in df.columns:
             col_str = str(col).lower()
-            if any(keyword in col_str for keyword in ['学校', 'school', '名称', 'name']):
+            # 优先匹配确切的列名
+            if '学校名称' in col:
                 school_name_col = col
-            elif any(keyword in col_str for keyword in ['人数', '学生', 'student', '小六', '六年级', '估算']):
+            elif '小六学生人数（估算）2025届毕业' in col:
+                student_count_col = col
+            # 备用匹配
+            elif any(keyword in col_str for keyword in ['学校', 'school', '名称', 'name']) and school_name_col is None:
+                school_name_col = col
+            elif any(keyword in col_str for keyword in ['人数', '学生', 'student', '小六', '六年级', '估算']) and student_count_col is None:
                 student_count_col = col
         
         if not school_name_col or not student_count_col:
@@ -278,6 +284,23 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
     school_stats = defaultdict(int)
     band_distribution = defaultdict(int)
     unmatched_schools = set()
+
+    # 获取该小学的总人数（从Excel文件读取）
+    school_total_from_excel = None
+    if school_totals:
+        # 尝试多种匹配方式
+        for school_name, total_count in school_totals.items():
+            if sheet_name == school_name:
+                school_total_from_excel = total_count
+                break
+            # 尝试繁简转换匹配
+            elif to_simplified(sheet_name) == to_simplified(school_name):
+                school_total_from_excel = total_count
+                break
+            # 尝试部分匹配
+            elif len(sheet_name) >= 5 and (sheet_name in school_name or school_name in sheet_name):
+                school_total_from_excel = total_count
+                break
     
     for idx, row in df.iterrows():
         secondary_school = row.get('升入学校')
@@ -329,30 +352,13 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
         
         # 年份统计
         if year:
-            yearly_stats[year]['total'] += count
+            yearly_stats[year]['total'] = school_total_from_excel
             yearly_stats[year]['schools'][secondary_school] += count
             if band:
                 yearly_stats[year]['band_dist'][band] += count
             else:
                 yearly_stats[year]['band_dist']['未知'] += count
                 yearly_stats[year]['unmatched'].append(secondary_school)
-    
-    # 获取该小学的总人数（从Excel文件读取）
-    school_total_from_excel = None
-    if school_totals:
-        # 尝试多种匹配方式
-        for school_name, total_count in school_totals.items():
-            if sheet_name == school_name:
-                school_total_from_excel = total_count
-                break
-            # 尝试繁简转换匹配
-            elif to_simplified(sheet_name) == to_simplified(school_name):
-                school_total_from_excel = total_count
-                break
-            # 尝试部分匹配
-            elif len(sheet_name) >= 5 and (sheet_name in school_name or school_name in sheet_name):
-                school_total_from_excel = total_count
-                break
     
     # 计算总体 Band 1 比例
     band1_rate = (band1_students / total_students * 100) if total_students > 0 else 0
