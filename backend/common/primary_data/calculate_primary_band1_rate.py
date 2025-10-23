@@ -90,6 +90,76 @@ def to_simplified(text):
     return result
 
 
+def load_primary_school_totals(totals_file):
+    """
+    加载小学总人数数据
+    从2025年小学概览Excel文件中读取每个小学的小六学生总人数
+    """
+    print(f"正在加载小学总人数信息: {totals_file}")
+    
+    try:
+        # 读取Excel文件
+        xl_file = pd.ExcelFile(totals_file)
+        print(f"找到工作表: {xl_file.sheet_names}")
+        
+        # 尝试读取第一个工作表
+        df = pd.read_excel(totals_file, sheet_name=xl_file.sheet_names[0])
+        print(f"数据行数: {len(df)}")
+        print(f"列名: {list(df.columns)}")
+        
+        # 查找学校名称和人数相关的列
+        school_name_col = None
+        student_count_col = None
+        
+        for col in df.columns:
+            col_str = str(col).lower()
+            if any(keyword in col_str for keyword in ['学校', 'school', '名称', 'name']):
+                school_name_col = col
+            elif any(keyword in col_str for keyword in ['人数', '学生', 'student', '小六', '六年级', '估算']):
+                student_count_col = col
+        
+        if not school_name_col or not student_count_col:
+            print(f"⚠️  无法自动识别列名，请检查Excel文件结构")
+            print(f"   学校名称列候选: {school_name_col}")
+            print(f"   学生人数列候选: {student_count_col}")
+            return {}
+        
+        print(f"使用学校名称列: {school_name_col}")
+        print(f"使用学生人数列: {student_count_col}")
+        
+        # 建立学校名称到人数的映射
+        school_totals = {}
+        unmatched_count = 0
+        
+        for idx, row in df.iterrows():
+            school_name = row.get(school_name_col)
+            student_count = row.get(student_count_col)
+            
+            if pd.notna(school_name) and pd.notna(student_count):
+                school_name = str(school_name).strip()
+                try:
+                    student_count = int(student_count)
+                    school_totals[school_name] = student_count
+                except (ValueError, TypeError):
+                    unmatched_count += 1
+                    print(f"⚠️  无法解析人数: {school_name} -> {student_count}")
+        
+        print(f"成功加载 {len(school_totals)} 所小学的总人数信息")
+        if unmatched_count > 0:
+            print(f"⚠️  {unmatched_count} 条记录无法解析")
+        
+        # 显示前几个示例
+        print("\n示例数据:")
+        for i, (school, count) in enumerate(list(school_totals.items())[:5]):
+            print(f"  {school}: {count} 人")
+        
+        return school_totals
+        
+    except Exception as e:
+        print(f"❌ 加载小学总人数信息失败: {str(e)}")
+        return {}
+
+
 def load_secondary_band_map(band_file):
     """
     加载中学 Band 映射，同时建立繁体和简体两个映射
@@ -183,10 +253,11 @@ def match_school_name(target_name, band_map, band_map_simplified):
     return None
 
 
-def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified):
+def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, school_totals=None):
     """
     处理单个小学的工作表，支持按年份统计
     处理合并单元格：年份列使用前向填充
+    school_totals: 从Excel文件读取的小学总人数映射
     """
     # 处理合并单元格：年份列前向填充
     if '年份' in df.columns:
@@ -266,6 +337,23 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified):
                 yearly_stats[year]['band_dist']['未知'] += count
                 yearly_stats[year]['unmatched'].append(secondary_school)
     
+    # 获取该小学的总人数（从Excel文件读取）
+    school_total_from_excel = None
+    if school_totals:
+        # 尝试多种匹配方式
+        for school_name, total_count in school_totals.items():
+            if sheet_name == school_name:
+                school_total_from_excel = total_count
+                break
+            # 尝试繁简转换匹配
+            elif to_simplified(sheet_name) == to_simplified(school_name):
+                school_total_from_excel = total_count
+                break
+            # 尝试部分匹配
+            elif len(sheet_name) >= 5 and (sheet_name in school_name or school_name in sheet_name):
+                school_total_from_excel = total_count
+                break
+    
     # 计算总体 Band 1 比例
     band1_rate = (band1_students / total_students * 100) if total_students > 0 else 0
     
@@ -281,7 +369,8 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified):
     
     return {
         'primary_school': sheet_name,
-        'total_students': total_students,
+        'total_students': total_students,  # 升学数据中的总人数
+        'school_total_from_excel': school_total_from_excel,  # 从Excel文件读取的总人数
         'band1_students': band1_students,
         'band1_rate': round(band1_rate, 2),
         'band_distribution': dict(band_distribution),
@@ -291,9 +380,10 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified):
     }
 
 
-def process_excel_file(file_path, band_map, band_map_simplified):
+def process_excel_file(file_path, band_map, band_map_simplified, school_totals=None):
     """
     处理单个 Excel 文件（包含多个小学的工作表）
+    school_totals: 从Excel文件读取的小学总人数映射
     """
     district = file_path.stem.replace('升学数据', '').replace('小学', '').replace('區', '区')
     print(f"\n处理 {district}...")
@@ -306,7 +396,7 @@ def process_excel_file(file_path, band_map, band_map_simplified):
         for sheet_name in xl_file.sheet_names:
             try:
                 df = pd.read_excel(file_path, sheet_name=sheet_name)
-                result = process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified)
+                result = process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, school_totals)
                 
                 if result['total_students'] > 0:
                     results.append(result)
@@ -320,7 +410,10 @@ def process_excel_file(file_path, band_map, band_map_simplified):
                             yearly_parts.append(f"{y}年:{y_stat['rate']:.1f}%")
                         yearly_info = " [" + ", ".join(yearly_parts) + "]"
                     
-                    print(f"    ✅ {sheet_name:30s} - 总体:{result['band1_rate']:5.2f}% ({result['band1_students']}/{result['total_students']}){yearly_info}")
+                    excel_total_info = ""
+                    if result.get('school_total_from_excel'):
+                        excel_total_info = f" [Excel总人数:{result['school_total_from_excel']}]"
+                    print(f"    ✅ {sheet_name:30s} - 总体:{result['band1_rate']:5.2f}% ({result['band1_students']}/{result['total_students']}){yearly_info}{excel_total_info}")
                 else:
                     print(f"    ⚠️  {sheet_name:30s} - 无数据")
                     
@@ -347,6 +440,14 @@ def main():
     
     data_dir = Path(__file__).parent
     
+    # 加载小学总人数信息
+    totals_file = data_dir.parent / 'data' / '2025年小学概览-估算小六学生人数.xlsx'
+    if not totals_file.exists():
+        print(f"\n❌ 错误：找不到小学总人数信息文件: {totals_file}")
+        return
+    
+    school_totals = load_primary_school_totals(totals_file)
+    
     # 加载中学 Band 映射
     band_file = data_dir / '中学banding信息_new.xlsx'
     if not band_file.exists():
@@ -364,7 +465,7 @@ def main():
     all_schools = []
     
     for file_path in sorted(excel_files):
-        result = process_excel_file(file_path, band_map, band_map_simplified)
+        result = process_excel_file(file_path, band_map, band_map_simplified, school_totals)
         if result:
             all_districts.append(result)
             all_schools.extend(result['schools'])
@@ -457,7 +558,7 @@ def main():
     csv_file = data_dir / 'primary_schools_band1_rate.csv'
     with open(csv_file, 'w', encoding='utf-8-sig') as f:
         # CSV 表头
-        f.write("小学名称,区域,总人数,Band 1人数,Band 1比例,2023年比例,2024年比例,2025年比例\n")
+        f.write("小学名称,区域,升学总人数,Excel总人数,Band 1人数,Band 1比例,2023年比例,2024年比例,2025年比例\n")
         
         for school in sorted_schools:
             # 查找该小学所在区域
@@ -476,7 +577,8 @@ def main():
             year_2024_str = f"{year_2024}%" if year_2024 else "-"
             year_2025_str = f"{year_2025}%" if year_2025 else "-"
             
-            f.write(f"{school['primary_school']},{district},{school['total_students']},"
+            excel_total = school.get('school_total_from_excel', '')
+            f.write(f"{school['primary_school']},{district},{school['total_students']},{excel_total},"
                    f"{school['band1_students']},{school['band1_rate']}%,"
                    f"{year_2023_str},{year_2024_str},{year_2025_str}\n")
     
@@ -512,7 +614,9 @@ def main():
             
             for school in sorted_district_schools:
                 f.write(f"\n{school['primary_school']}\n")
-                f.write(f"  总人数: {school['total_students']}\n")
+                f.write(f"  升学总人数: {school['total_students']}\n")
+                if school.get('school_total_from_excel'):
+                    f.write(f"  Excel总人数: {school['school_total_from_excel']}\n")
                 f.write(f"  Band 1 人数: {school['band1_students']}\n")
                 f.write(f"  Band 1 比例: {school['band1_rate']:.2f}%\n")
                 
