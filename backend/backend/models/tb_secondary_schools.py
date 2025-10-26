@@ -105,6 +105,7 @@ class TbSecondarySchools(models.Model, Base):
         verbose_name='升学信息',
         help_text='升学信息'
     )
+    
     school_curriculum = models.TextField(
         blank=True,
         null=True,
