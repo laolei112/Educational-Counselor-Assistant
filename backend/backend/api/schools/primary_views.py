@@ -43,8 +43,8 @@ def serialize_primary_school(school):
         # 基础信息
         "basicInfo": school.school_basic_info if school.school_basic_info else {},
         
-        # 中学联系（一条龙/直属/联系中学）
-        "linkedSchools": linked_schools,
+        # 中学联系（转换为字符串数组格式）
+        "linkedSchools": [school['name'] for school in linked_schools] if linked_schools else [],
         "secondaryInfo": school.secondary_info if school.secondary_info else {},
         
         # 班级信息
@@ -134,10 +134,18 @@ def primary_schools_list(request):
                     default=Value(8),
                     output_field=IntegerField()
                 )
-            ).order_by('search_priority', 'school_name')  # 按优先级和校名排序
+            ).extra(
+                select={
+                    'band1_rate': "CAST(JSON_EXTRACT(promotion_info, '$.band1_rate') AS DECIMAL(5,2))"
+                }
+            ).order_by('search_priority', '-band1_rate', 'school_name')  # 按优先级、Band 1比例和校名排序
         else:
-            # 默认按学校名称排序
-            queryset = queryset.order_by('school_name')
+            # 默认按Band 1比例降序，比例相同时按学校名称排序
+            queryset = queryset.extra(
+                select={
+                    'band1_rate': "CAST(JSON_EXTRACT(promotion_info, '$.band1_rate') AS DECIMAL(5,2))"
+                }
+            ).order_by('-band1_rate', 'school_name')
         
         # 分页
         paginator = Paginator(queryset, page_size)

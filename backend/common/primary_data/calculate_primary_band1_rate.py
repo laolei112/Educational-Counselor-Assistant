@@ -604,8 +604,8 @@ def main():
     
     print(f"找到 {len(all_schools)} 所小学的升学数据")
     
-    # 按学校名称排序
-    sorted_schools = sorted(all_schools, key=lambda x: x['primary_school'])
+    # 按Band 1比例降序排序，比例相同时按学校名称排序
+    sorted_schools = sorted(all_schools, key=lambda x: (-x['band1_rate'], x['primary_school']))
     
     # 保存结果到 JSON
     output_file = data_dir / 'primary_schools_band1_stats.json'
