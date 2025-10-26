@@ -411,7 +411,7 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
                 school_total_from_excel = total_count
                 break
             # 尝试部分匹配
-            elif len(sheet_name) >= 5 and (sheet_name in school_name or school_name in sheet_name):
+            elif len(sheet_name) >= 5 and (sheet_name in school_name or school_name in sheet_name) and sheet_name != "嘉诺撒圣心学校私立部":
                 school_total_from_excel = total_count
                 break
     
@@ -570,7 +570,6 @@ def main():
         return
     
     school_totals = load_primary_school_totals(totals_file)
-    
     # 加载中学 Band 映射
     band_file = data_dir / '中学banding信息_new.xlsx'
     if not band_file.exists():
