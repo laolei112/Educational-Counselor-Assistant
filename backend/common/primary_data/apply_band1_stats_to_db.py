@@ -181,7 +181,7 @@ def apply_stats_to_database(stats_file):
         try:
             # 在数据库中查找学校（支持繁简转换）
             db_school = match_school_in_db(primary_school, district)
-            
+            latest_year = max(school_stat['yearly_stats'].keys())
             if db_school:
                 latest_band1_rate = school_stat['yearly_stats'].get('2025', {}).get('rate', 0)
                 if not latest_band1_rate:
@@ -197,6 +197,7 @@ def apply_stats_to_database(stats_file):
                                     print(f"❌ 错误: {primary_school:35s} - 没有找到最新年份的数据")
                 # 更新 promotion_info 字段
                 db_school.promotion_info = {
+                    'latest_year': latest_year,
                     'band1_rate': latest_band1_rate,
                     'total_graduates': school_stat['total_students'],
                     'band1_graduates': school_stat['band1_students'],
@@ -213,7 +214,7 @@ def apply_stats_to_database(stats_file):
                 
                 updated_count += 1
                 match_info = f"(繁:{primary_school}→简:{primary_school_simplified})" if primary_school != primary_school_simplified else ""
-                print(f"✅ 更新: {db_school.school_name:35s} - Band 1: {latest_band1_rate}% {match_info}")
+                print(f"✅ 更新: {db_school.school_name:35s} - Band 1: {latest_band1_rate}% {match_info}, 最新年份: {latest_year}")
             else:
                 not_found_count += 1
                 not_found_schools.append(primary_school)
