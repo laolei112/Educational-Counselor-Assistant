@@ -1,9 +1,9 @@
 {
-  "generated_at": "2025-10-26T19:29:46.440904",
+  "generated_at": "2025-10-26T22:32:20.835097",
   "total_schools": 92,
   "schools": [
     {
-      "primary_school": "嘉諾撒聖心學校",
+      "primary_school": "嘉诺撒圣心学校私立部",
       "total_students": 403,
       "school_total_from_excel": 120,
       "band1_students": 398,
@@ -257,9 +257,9 @@
         "聖母書院": 1
       },
       "unmatched_schools": [
-        "啟思中學",
         "宣道國際學校",
-        "國際基督教優質音樂中學"
+        "國際基督教優質音樂中學",
+        "啟思中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -670,10 +670,10 @@
         "張祝珊英文中學": 1
       },
       "unmatched_schools": [
-        "德瑞國際學校",
+        "蔡繼有學校",
         "啟思中學",
         "海外升學",
-        "蔡繼有學校"
+        "德瑞國際學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -739,9 +739,9 @@
       "district": "九龙城区"
     },
     {
-      "primary_school": "佛教正覺蓮社學校",
+      "primary_school": "香海正觉莲社佛教正觉莲社学校",
       "total_students": 43,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 120,
       "band1_students": 39,
       "band1_rate": 90.7,
       "band_distribution": {
@@ -764,9 +764,9 @@
       ],
       "yearly_stats": {
         "2025": {
-          "total": 43,
+          "total": 120,
           "band1": 39,
-          "rate": 90.7,
+          "rate": 32.5,
           "schools": {
             "香港道教聯合會鄧顯紀念中學": 4,
             "東華三院甲寅年總理中學": 6,
@@ -1215,13 +1215,13 @@
         "聖貞德中學": 1
       },
       "unmatched_schools": [
-        "文理書院",
-        "英華女校",
-        "聖約瑟書院",
-        "新加坡國際學校",
-        "​​培僑僑書院​​",
         "漢基國際學校",
-        "​​優才(楊殷有娣)書院​​"
+        "聖約瑟書院",
+        "文理書院",
+        "​​優才(楊殷有娣)書院​​",
+        "英華女校",
+        "​​培僑僑書院​​",
+        "新加坡國際學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -1475,9 +1475,9 @@
         "Band 1A": 175,
         "Band 1B": 92,
         "Band 2": 31,
-        "Band 2A": 25,
+        "Band 2A": 30,
         "Band 2B": 32,
-        "未知": 10,
+        "未知": 5,
         "Band 3A": 17,
         "Band 2C": 17,
         "Band 3": 16
@@ -1564,10 +1564,9 @@
         "聖公會聖三一堂中學": 1
       },
       "unmatched_schools": [
-        "衞理中學",
+        "培僑中學​​",
         "玫瑰崗中學",
-        "啓思中學",
-        "培僑中學​​"
+        "啓思中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -1683,14 +1682,11 @@
             "Band 2B": 7,
             "Band 2": 5,
             "Band 3": 7,
-            "未知": 2,
-            "Band 2A": 3,
+            "Band 2A": 5,
             "Band 3A": 3,
             "Band 2C": 3
           },
-          "unmatched": [
-            "衞理中學"
-          ]
+          "unmatched": []
         },
         "2023": {
           "total": 144,
@@ -1743,15 +1739,14 @@
             "Band 1B": 23,
             "Band 2C": 5,
             "Band 2B": 10,
-            "未知": 2,
-            "Band 2A": 4,
+            "未知": 1,
+            "Band 2A": 5,
             "Band 3A": 4,
             "Band 3": 3,
             "Band 2": 8
           },
           "unmatched": [
-            "啓思中學",
-            "衞理中學"
+            "啓思中學"
           ]
         },
         "2022": {
@@ -1816,8 +1811,8 @@
             "Band 1A": 33,
             "Band 1B": 31,
             "Band 2B": 7,
-            "未知": 5,
-            "Band 2A": 10,
+            "未知": 3,
+            "Band 2A": 12,
             "Band 3A": 6,
             "Band 3": 4,
             "Band 2": 8,
@@ -1825,7 +1820,6 @@
           },
           "unmatched": [
             "啓思中學",
-            "衞理中學",
             "培僑中學​​",
             "玫瑰崗中學"
           ]
@@ -2342,9 +2336,8 @@
         "Band 1A": 45,
         "Band 1B": 20,
         "Band 1C": 6,
-        "未知": 6,
+        "Band 2A": 11,
         "Band 2B": 6,
-        "Band 2A": 5,
         "Band 2": 3,
         "Band 2C": 9,
         "Band 3A": 4,
@@ -2391,9 +2384,7 @@
         "保良局甲子何玉清中學": 1,
         "嶺南衡怡紀念中學": 1
       },
-      "unmatched_schools": [
-        "衞理中學"
-      ],
+      "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
           "total": 105,
@@ -2444,17 +2435,14 @@
             "Band 1A": 45,
             "Band 1B": 20,
             "Band 1C": 6,
-            "未知": 6,
+            "Band 2A": 11,
             "Band 2B": 6,
-            "Band 2A": 5,
             "Band 2": 3,
             "Band 2C": 9,
             "Band 3A": 4,
             "Band 3": 1
           },
-          "unmatched": [
-            "衞理中學"
-          ]
+          "unmatched": []
         }
       },
       "district": "东区"
@@ -2580,9 +2568,9 @@
         "Band 1A": 36,
         "Band 1B": 12,
         "Band 1C": 15,
-        "未知": 1,
+        "未知": 3,
         "Band 2": 4,
-        "Band 2A": 12,
+        "Band 2A": 10,
         "Band 2B": 6,
         "Band 3": 2,
         "Band 2C": 7,
@@ -2628,7 +2616,8 @@
         "福建中學(小西灣)": 1
       },
       "unmatched_schools": [
-        "滬江維多利亞學校"
+        "滬江維多利亞學校",
+        "衛理中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -2678,16 +2667,17 @@
             "Band 1A": 36,
             "Band 1B": 12,
             "Band 1C": 15,
-            "未知": 1,
+            "未知": 3,
             "Band 2": 4,
-            "Band 2A": 12,
+            "Band 2A": 10,
             "Band 2B": 6,
             "Band 3": 2,
             "Band 2C": 7,
             "Band 3A": 4
           },
           "unmatched": [
-            "滬江維多利亞學校"
+            "滬江維多利亞學校",
+            "衛理中學"
           ]
         }
       },
@@ -2882,11 +2872,11 @@
         "港大同學會書院": 1
       },
       "unmatched_schools": [
-        "香港道尔顿学校",
-        "其他及海外升學",
-        "啟思中學",
         "耀中国际学校",
-        "其他"
+        "香港道尔顿学校",
+        "其他",
+        "其他及海外升學",
+        "啟思中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -3085,14 +3075,14 @@
         "Band 1A": 34,
         "Band 1B": 40,
         "Band 1C": 11,
-        "未知": 2,
+        "未知": 1,
         "Band 2B": 21,
         "Band 2C": 11,
         "Band 3A": 9,
         "Band 3B": 5,
         "Band 2": 5,
         "Band 3": 1,
-        "Band 2A": 2
+        "Band 2A": 3
       },
       "secondary_schools": {
         "香港道教聯合會圓玄學院第二中學": 16,
@@ -3137,7 +3127,6 @@
         "炮台山循道衞理中學": 1
       },
       "unmatched_schools": [
-        "炮台山循道衞理中學",
         "香港斯坦福美國學校"
       ],
       "yearly_stats": {
@@ -3191,18 +3180,17 @@
             "Band 1A": 34,
             "Band 1B": 40,
             "Band 1C": 11,
-            "未知": 2,
+            "未知": 1,
             "Band 2B": 21,
             "Band 2C": 11,
             "Band 3A": 9,
             "Band 3B": 5,
             "Band 2": 5,
             "Band 3": 1,
-            "Band 2A": 2
+            "Band 2A": 3
           },
           "unmatched": [
-            "香港斯坦福美國學校",
-            "炮台山循道衞理中學"
+            "香港斯坦福美國學校"
           ]
         }
       },
@@ -3712,12 +3700,12 @@
         "潔心林炳炎中學": 1
       },
       "unmatched_schools": [
-        "大光德萃書院",
+        "國際基督教優質音樂中學暨小學",
         "宣道國際學校",
-        "耀中國際學校",
-        "韓國國際學校",
         "美國國際學校",
-        "國際基督教優質音樂中學暨小學"
+        "韓國國際學校",
+        "大光德萃書院",
+        "耀中國際學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -4436,8 +4424,7 @@
         "Band 1A": 14,
         "Band 1B": 22,
         "Band 1C": 14,
-        "Band 2A": 2,
-        "未知": 1,
+        "Band 2A": 3,
         "Band 2B": 2,
         "Band 2C": 21,
         "Band 2": 7,
@@ -4478,9 +4465,7 @@
         "香港仔浸信會呂明才書院": 1,
         "嶺南中學": 1
       },
-      "unmatched_schools": [
-        "衞理中學"
-      ],
+      "unmatched_schools": [],
       "yearly_stats": {
         "2023": {
           "total": 96,
@@ -4525,16 +4510,13 @@
             "Band 1A": 14,
             "Band 1B": 22,
             "Band 1C": 14,
-            "Band 2A": 2,
-            "未知": 1,
+            "Band 2A": 3,
             "Band 2B": 2,
             "Band 2C": 21,
             "Band 2": 7,
             "Band 3A": 7
           },
-          "unmatched": [
-            "衞理中學"
-          ]
+          "unmatched": []
         }
       },
       "district": "中西区"
@@ -4549,8 +4531,7 @@
         "Band 1A": 37,
         "Band 1B": 8,
         "Band 1C": 12,
-        "Band 2A": 10,
-        "未知": 3,
+        "Band 2A": 13,
         "Band 2B": 10,
         "Band 2C": 10,
         "Band 3": 9,
@@ -4592,9 +4573,7 @@
         "聖公會李福慶中學": 1,
         "聖貞德中學": 1
       },
-      "unmatched_schools": [
-        "衞理中學"
-      ],
+      "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
           "total": 103,
@@ -4639,17 +4618,14 @@
             "Band 1A": 37,
             "Band 1B": 8,
             "Band 1C": 12,
-            "Band 2A": 10,
-            "未知": 3,
+            "Band 2A": 13,
             "Band 2B": 10,
             "Band 2C": 10,
             "Band 3": 9,
             "Band 3A": 3,
             "Band 2": 1
           },
-          "unmatched": [
-            "衞理中學"
-          ]
+          "unmatched": []
         }
       },
       "district": "东区"
@@ -4668,8 +4644,8 @@
         "Band 2B": 14,
         "Band 3B": 5,
         "Band 2C": 8,
-        "未知": 5,
-        "Band 2A": 1,
+        "Band 2A": 3,
+        "未知": 3,
         "Band 3": 1
       },
       "secondary_schools": {
@@ -4705,7 +4681,6 @@
       },
       "unmatched_schools": [
         "香港兆基創意書院",
-        "天水圍循道衞理中學",
         "葛約伯類書院"
       ],
       "yearly_stats": {
@@ -4752,12 +4727,11 @@
             "Band 2B": 14,
             "Band 3B": 5,
             "Band 2C": 8,
-            "未知": 5,
-            "Band 2A": 1,
+            "Band 2A": 3,
+            "未知": 3,
             "Band 3": 1
           },
           "unmatched": [
-            "天水圍循道衞理中學",
             "葛約伯類書院",
             "香港兆基創意書院"
           ]
@@ -4912,9 +4886,9 @@
         "Band 1C": 5,
         "Band 2": 3,
         "Band 2B": 5,
-        "未知": 2,
+        "未知": 1,
         "Band 3": 1,
-        "Band 2A": 1,
+        "Band 2A": 2,
         "Band 3A": 4,
         "Band 2C": 16,
         "Band 3C": 2
@@ -4956,7 +4930,6 @@
         "鄧肇堅維多利亞官立中學": 1
       },
       "unmatched_schools": [
-        "衞理中學",
         "中華基督教會公理書院"
       ],
       "yearly_stats": {
@@ -5006,16 +4979,15 @@
             "Band 1C": 5,
             "Band 2": 3,
             "Band 2B": 5,
-            "未知": 2,
+            "未知": 1,
             "Band 3": 1,
-            "Band 2A": 1,
+            "Band 2A": 2,
             "Band 3A": 4,
             "Band 2C": 16,
             "Band 3C": 2
           },
           "unmatched": [
-            "中華基督教會公理書院",
-            "衞理中學"
+            "中華基督教會公理書院"
           ]
         }
       },
@@ -5487,12 +5459,12 @@
         "Band 1B": 38,
         "Band 1C": 38,
         "Band 2B": 37,
-        "Band 2A": 14,
+        "Band 2A": 11,
+        "未知": 8,
         "Band 2": 17,
         "Band 2C": 34,
         "Band 3A": 49,
         "Band 3": 14,
-        "未知": 5,
         "Band 3B": 2,
         "Band 3C": 2
       },
@@ -5569,9 +5541,11 @@
         "炮台山循道衛理中學​​": 1
       },
       "unmatched_schools": [
+        "炮台山循道衛理中學​​",
+        "衛理中學",
         "培僑中學​​",
-        "衛理中學​​",
-        "玫瑰崗學校"
+        "玫瑰崗學校",
+        "衛理中學​​"
       ],
       "yearly_stats": {
         "2025": {
@@ -5622,13 +5596,16 @@
             "Band 1B": 10,
             "Band 1C": 22,
             "Band 2B": 7,
-            "Band 2A": 8,
+            "Band 2A": 6,
+            "未知": 2,
             "Band 2": 5,
             "Band 2C": 14,
             "Band 3A": 14,
             "Band 3": 7
           },
-          "unmatched": []
+          "unmatched": [
+            "衛理中學"
+          ]
         },
         "2024": {
           "total": 120,
@@ -5744,10 +5721,10 @@
             "Band 1A": 23,
             "Band 1B": 12,
             "Band 1C": 8,
-            "Band 2A": 5,
+            "Band 2A": 4,
             "Band 2B": 14,
             "Band 2": 4,
-            "未知": 3,
+            "未知": 4,
             "Band 2C": 10,
             "Band 3A": 18,
             "Band 3": 4,
@@ -5756,7 +5733,8 @@
           },
           "unmatched": [
             "培僑中學​​",
-            "玫瑰崗學校"
+            "玫瑰崗學校",
+            "炮台山循道衛理中學​​"
           ]
         }
       },
@@ -6069,15 +6047,15 @@
       "band1_rate": 45.36,
       "band_distribution": {
         "Band 1B": 21,
-        "未知": 8,
+        "Band 2A": 23,
         "Band 1A": 15,
         "Band 1C": 8,
-        "Band 2A": 16,
         "Band 2B": 11,
         "Band 3": 8,
         "Band 3A": 5,
         "Band 2C": 3,
-        "Band 2": 2
+        "Band 2": 2,
+        "未知": 1
       },
       "secondary_schools": {
         "顯理中學": 11,
@@ -6116,7 +6094,6 @@
         "北角協同中學": 1
       },
       "unmatched_schools": [
-        "衞理中學",
         "香港諾德安達國際學校"
       ],
       "yearly_stats": {
@@ -6162,18 +6139,17 @@
           },
           "band_dist": {
             "Band 1B": 21,
-            "未知": 8,
+            "Band 2A": 23,
             "Band 1A": 15,
             "Band 1C": 8,
-            "Band 2A": 16,
             "Band 2B": 11,
             "Band 3": 8,
             "Band 3A": 5,
             "Band 2C": 3,
-            "Band 2": 2
+            "Band 2": 2,
+            "未知": 1
           },
           "unmatched": [
-            "衞理中學",
             "香港諾德安達國際學校"
           ]
         }
@@ -6663,12 +6639,11 @@
       "band_distribution": {
         "Band 1B": 9,
         "Band 1C": 13,
-        "Band 2A": 6,
+        "Band 2A": 8,
         "Band 2B": 12,
         "Band 2C": 6,
         "Band 3": 3,
         "Band 1A": 4,
-        "未知": 2,
         "Band 3B": 3,
         "Band 3A": 1
       },
@@ -6698,9 +6673,7 @@
         "天水圍香島中學(直資)": 1,
         "可道中學": 1
       },
-      "unmatched_schools": [
-        "天水圍循道衞理中學"
-      ],
+      "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
           "total": 59,
@@ -6735,18 +6708,15 @@
           "band_dist": {
             "Band 1B": 9,
             "Band 1C": 13,
-            "Band 2A": 6,
+            "Band 2A": 8,
             "Band 2B": 12,
             "Band 2C": 6,
             "Band 3": 3,
             "Band 1A": 4,
-            "未知": 2,
             "Band 3B": 3,
             "Band 3A": 1
           },
-          "unmatched": [
-            "天水圍循道衞理中學"
-          ]
+          "unmatched": []
         }
       },
       "district": "元朗区"
@@ -6903,13 +6873,13 @@
         "Band 1A": 92,
         "Band 1B": 58,
         "Band 1C": 21,
-        "Band 2A": 44,
+        "Band 2A": 51,
         "Band 2B": 58,
         "Band 3A": 57,
         "Band 2C": 26,
         "Band 3": 8,
-        "未知": 11,
         "Band 2": 15,
+        "未知": 4,
         "Band 3B": 3,
         "Band 3C": 1
       },
@@ -6980,11 +6950,10 @@
         "仁濟醫院王華湘中學": 1
       },
       "unmatched_schools": [
-        "衞理中學",
-        "猶太教國際學校",
         "NAIS諾德安達國際學校",
-        "香港兆基創意書院",
-        "宣基中學"
+        "宣基中學",
+        "猶太教國際學校",
+        "香港兆基創意書院"
       ],
       "yearly_stats": {
         "2025": {
@@ -7031,17 +7000,14 @@
             "Band 1A": 22,
             "Band 1B": 10,
             "Band 1C": 5,
-            "Band 2A": 14,
+            "Band 2A": 18,
             "Band 2B": 12,
             "Band 3A": 14,
             "Band 2C": 6,
             "Band 3": 6,
-            "未知": 4,
             "Band 2": 6
           },
-          "unmatched": [
-            "衞理中學"
-          ]
+          "unmatched": []
         },
         "2024": {
           "total": 96,
@@ -7085,8 +7051,8 @@
             "Band 1A": 21,
             "Band 1B": 17,
             "Band 1C": 4,
-            "未知": 3,
-            "Band 2A": 15,
+            "未知": 2,
+            "Band 2A": 16,
             "Band 2C": 6,
             "Band 2B": 10,
             "Band 3A": 22,
@@ -7097,8 +7063,7 @@
           },
           "unmatched": [
             "NAIS諾德安達國際學校",
-            "猶太教國際學校",
-            "衞理中學"
+            "猶太教國際學校"
           ]
         },
         "2023": {
@@ -7195,16 +7160,15 @@
             "Band 1A": 26,
             "Band 1B": 19,
             "Band 1C": 9,
-            "未知": 3,
+            "未知": 1,
             "Band 2B": 13,
-            "Band 2A": 7,
+            "Band 2A": 9,
             "Band 2C": 7,
             "Band 3A": 7,
             "Band 2": 3
           },
           "unmatched": [
-            "香港兆基創意書院",
-            "衞理中學"
+            "香港兆基創意書院"
           ]
         }
       },
@@ -7274,10 +7238,10 @@
         "順利天主教中學": 1
       },
       "unmatched_schools": [
+        "培僑僑中學",
         "蘇浙國際",
         "聖保祿祿中學",
-        "加拿大國際學校",
-        "培僑僑中學"
+        "加拿大國際學校"
       ],
       "yearly_stats": {
         "2023": {
@@ -7503,13 +7467,13 @@
         "Band 1C": 21,
         "Band 1A": 31,
         "Band 1B": 41,
-        "未知": 25,
+        "Band 2A": 53,
         "Band 2B": 13,
-        "Band 2A": 31,
         "Band 2C": 17,
         "Band 2": 7,
         "Band 3": 18,
-        "Band 3A": 16
+        "Band 3A": 16,
+        "未知": 3
       },
       "secondary_schools": {
         "衞理中學": 22,
@@ -7565,77 +7529,114 @@
         "啟思中學": 1
       },
       "unmatched_schools": [
-        "衞理中學",
-        "啟思中學",
-        "炮台山循道衞理中學"
+        "炮台山循道衛理中學",
+        "啟思中學"
       ],
       "yearly_stats": {
         "2025": {
           "total": 72,
-          "band1": 70,
-          "rate": 97.22,
+          "band1": 27,
+          "rate": 37.5,
           "schools": {
             "賽馬會體藝中學": 1,
             "庇理羅士女子中學": 2,
-            "張祝珊英文中學": 4,
+            "張祝珊英文中學": 2,
             "香港中國婦女會中學": 1,
-            "港島民生書院": 8,
-            "聖馬可中學": 9,
-            "筲箕灣官立中學": 6,
-            "中華基金中學": 10,
-            "嘉諾撒書院": 6,
-            "港大同學會書院": 4,
-            "聖公會鄧肇堅中學": 2,
+            "港島民生書院": 5,
+            "聖馬可中學": 2,
+            "筲箕灣官立中學": 5,
+            "中華基金中學": 2,
+            "嘉諾撒書院": 3,
+            "港大同學會書院": 2,
+            "聖公會鄧肇堅中學": 1,
             "香港華人基督教聯會真道書院": 1,
-            "衞理中學": 15,
-            "金文泰中學": 4,
-            "中華傳道會劉永生中學": 9,
-            "顯理中學": 11,
-            "漢華中學": 6,
+            "衞理中學": 7,
+            "金文泰中學": 2,
+            "中華傳道會劉永生中學": 2,
+            "顯理中學": 3,
+            "漢華中學": 3,
             "保良局甲子何玉清中學": 1,
-            "嶺南衡怡紀念中學": 10,
-            "嶺南中學": 3,
+            "嶺南衡怡紀念中學": 7,
+            "嶺南中學": 1,
             "張振興伉儷書院": 1,
-            "東華三院李潤田紀念中學": 7,
+            "東華三院李潤田紀念中學": 4,
             "萬鈞匯知中學": 1,
-            "炮台山循道衛理中學": 2,
+            "炮台山循道衛理中學": 1
+          },
+          "band_dist": {
+            "Band 1C": 11,
+            "Band 1A": 9,
+            "Band 1B": 7,
+            "Band 2A": 12,
+            "Band 2B": 2,
+            "Band 2C": 3,
+            "Band 2": 1,
+            "Band 3": 9,
+            "Band 3A": 5,
+            "未知": 1
+          },
+          "unmatched": [
+            "炮台山循道衛理中學"
+          ]
+        },
+        "2024": {
+          "total": 72,
+          "band1": 43,
+          "rate": 59.72,
+          "schools": {
             "聖保祿學校": 3,
+            "港大同學會書院": 2,
             "香港真光中學": 3,
+            "張祝珊英文中學": 2,
+            "港島民生書院": 3,
+            "聖馬可中學": 7,
             "沙田循道衞理中學": 1,
             "基督教崇真中學": 1,
             "林大輝中學": 1,
             "基督教宣道會宣基中學": 1,
+            "筲箕灣官立中學": 1,
+            "聖公會鄧肇堅中學": 1,
             "保良局羅氏基金中學": 1,
             "聖士提反書院": 1,
             "優才（楊殷有娣）書院": 2,
             "播道書院": 1,
             "滙基書院（東九龍）": 1,
+            "金文泰中學": 2,
+            "衞理中學": 8,
+            "中華基金中學": 8,
             "福建中學": 1,
+            "中華傳道會劉永生中學": 7,
+            "嘉諾撒書院": 3,
+            "顯理中學": 8,
             "慈幼英文學校": 4,
+            "漢華中學": 3,
             "培僑中學": 2,
+            "嶺南衡怡紀念中學": 3,
+            "嶺南中學": 2,
             "福建中學（小西灣）": 1,
             "寶血女子中學": 4,
             "何東中學": 2,
             "文理書院（香港）": 4,
             "聖公會李福慶中學": 2,
             "佛教黃鳳翎中學": 1,
-            "德信中學": 1
+            "東華三院李潤田紀念中學": 3,
+            "德信中學": 1,
+            "炮台山循道衛理中學": 1
           },
           "band_dist": {
-            "Band 1C": 17,
-            "Band 1A": 23,
-            "Band 1B": 30,
-            "未知": 15,
-            "Band 2B": 10,
-            "Band 2A": 22,
-            "Band 2C": 14,
-            "Band 2": 6,
-            "Band 3": 14,
-            "Band 3A": 11
+            "Band 1A": 14,
+            "Band 1B": 23,
+            "Band 2": 5,
+            "Band 1C": 6,
+            "Band 2B": 8,
+            "Band 2A": 23,
+            "Band 2C": 11,
+            "Band 3": 5,
+            "Band 3A": 6,
+            "未知": 1
           },
           "unmatched": [
-            "衞理中學",
-            "衞理中學"
+            "炮台山循道衛理中學"
           ]
         },
         "2023": {
@@ -7676,17 +7677,15 @@
             "Band 1B": 11,
             "Band 1C": 4,
             "Band 3": 4,
-            "未知": 10,
-            "Band 2A": 9,
+            "Band 2A": 18,
             "Band 2B": 3,
             "Band 2": 1,
             "Band 2C": 3,
-            "Band 3A": 5
+            "Band 3A": 5,
+            "未知": 1
           },
           "unmatched": [
-            "衞理中學",
-            "啟思中學",
-            "炮台山循道衞理中學"
+            "啟思中學"
           ]
         }
       },
@@ -8423,7 +8422,7 @@
         "Band 3B": 4,
         "Band 3": 4,
         "Band 2C": 5,
-        "未知": 2
+        "Band 2A": 2
       },
       "secondary_schools": {
         "東華三院盧幹庭紀念中學": 4,
@@ -8456,9 +8455,7 @@
         "賽馬會萬鈞毅智書院": 1,
         "東華三院邱子田紀念中學": 1
       },
-      "unmatched_schools": [
-        "天水圍循道衞理中學"
-      ],
+      "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
           "total": 120,
@@ -8505,11 +8502,9 @@
             "Band 3B": 4,
             "Band 3": 4,
             "Band 2C": 5,
-            "未知": 2
+            "Band 2A": 2
           },
-          "unmatched": [
-            "天水圍循道衞理中學"
-          ]
+          "unmatched": []
         }
       },
       "district": "元朗区"
@@ -9746,15 +9741,15 @@
         "Band 1A": 4,
         "Band 1B": 3,
         "Band 1C": 20,
-        "Band 2A": 11,
+        "Band 2A": 17,
         "Band 2": 2,
         "Band 2B": 18,
         "Band 2C": 12,
-        "未知": 7,
         "Band 3A": 9,
         "Band 3B": 17,
         "Band 3": 2,
-        "Band 3C": 1
+        "Band 3C": 1,
+        "未知": 1
       },
       "secondary_schools": {
         "香港青年協會李兆基書院": 10,
@@ -9795,8 +9790,7 @@
         "東華三院鄺錫坤伉儷中學": 1
       },
       "unmatched_schools": [
-        "東華三院鄺錫坤伉儷中學",
-        "天水圍循道衞理中學"
+        "東華三院鄺錫坤伉儷中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -9845,18 +9839,17 @@
             "Band 1A": 4,
             "Band 1B": 3,
             "Band 1C": 20,
-            "Band 2A": 11,
+            "Band 2A": 17,
             "Band 2": 2,
             "Band 2B": 18,
             "Band 2C": 12,
-            "未知": 7,
             "Band 3A": 9,
             "Band 3B": 17,
             "Band 3": 2,
-            "Band 3C": 1
+            "Band 3C": 1,
+            "未知": 1
           },
           "unmatched": [
-            "天水圍循道衞理中學",
             "東華三院鄺錫坤伉儷中學"
           ]
         }
@@ -9873,15 +9866,15 @@
         "Band 1A": 4,
         "Band 1B": 3,
         "Band 1C": 20,
-        "Band 2A": 11,
+        "Band 2A": 17,
         "Band 2": 2,
         "Band 2B": 18,
         "Band 2C": 12,
-        "未知": 7,
         "Band 3A": 9,
         "Band 3B": 17,
         "Band 3": 2,
-        "Band 3C": 1
+        "Band 3C": 1,
+        "未知": 1
       },
       "secondary_schools": {
         "香港青年協會李兆基書院": 10,
@@ -9922,8 +9915,7 @@
         "東華三院鄺錫坤伉儷中學": 1
       },
       "unmatched_schools": [
-        "東華三院鄺錫坤伉儷中學",
-        "天水圍循道衞理中學"
+        "東華三院鄺錫坤伉儷中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -9972,18 +9964,17 @@
             "Band 1A": 4,
             "Band 1B": 3,
             "Band 1C": 20,
-            "Band 2A": 11,
+            "Band 2A": 17,
             "Band 2": 2,
             "Band 2B": 18,
             "Band 2C": 12,
-            "未知": 7,
             "Band 3A": 9,
             "Band 3B": 17,
             "Band 3": 2,
-            "Band 3C": 1
+            "Band 3C": 1,
+            "未知": 1
           },
           "unmatched": [
-            "天水圍循道衞理中學",
             "東華三院鄺錫坤伉儷中學"
           ]
         }
@@ -10328,11 +10319,10 @@
         "Band 1A": 1,
         "Band 1C": 14,
         "Band 1B": 11,
-        "Band 2A": 11,
+        "Band 2A": 16,
         "Band 2B": 27,
         "Band 3A": 12,
         "Band 3B": 15,
-        "未知": 5,
         "Band 3": 6
       },
       "secondary_schools": {
@@ -10379,9 +10369,7 @@
         "中華基督教會譚李麗芬紀念中學": 1,
         "伊利沙伯中學舊生會中學": 1
       },
-      "unmatched_schools": [
-        "天水圍循道衞理中學"
-      ],
+      "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
           "total": 120,
@@ -10436,16 +10424,13 @@
             "Band 1A": 1,
             "Band 1C": 14,
             "Band 1B": 11,
-            "Band 2A": 11,
+            "Band 2A": 16,
             "Band 2B": 27,
             "Band 3A": 12,
             "Band 3B": 15,
-            "未知": 5,
             "Band 3": 6
           },
-          "unmatched": [
-            "天水圍循道衞理中學"
-          ]
+          "unmatched": []
         }
       },
       "district": "元朗区"
@@ -10459,10 +10444,9 @@
       "band_distribution": {
         "Band 1B": 4,
         "Band 1C": 9,
-        "Band 2A": 8,
+        "Band 2A": 9,
         "Band 2B": 11,
         "Band 2C": 8,
-        "未知": 1,
         "Band 2": 1,
         "Band 3": 6,
         "Band 3A": 8,
@@ -10502,9 +10486,7 @@
         "新界鄉議局大埔區中學": 1,
         "天主教南華中學": 1
       },
-      "unmatched_schools": [
-        "天水圍循道衞理中學"
-      ],
+      "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
           "total": 72,
@@ -10547,18 +10529,15 @@
           "band_dist": {
             "Band 1B": 4,
             "Band 1C": 9,
-            "Band 2A": 8,
+            "Band 2A": 9,
             "Band 2B": 11,
             "Band 2C": 8,
-            "未知": 1,
             "Band 2": 1,
             "Band 3": 6,
             "Band 3A": 8,
             "Band 3B": 13
           },
-          "unmatched": [
-            "天水圍循道衞理中學"
-          ]
+          "unmatched": []
         }
       },
       "district": "元朗区"
@@ -10979,56 +10958,56 @@
         "Pui Tak Canossian College": 1
       },
       "unmatched_schools": [
-        "Precious Blood Secondary School",
-        "Wah Yan College,KLN",
+        "Queen's College",
+        "HK Tang King Po College",
+        "TWGHS Lee Ching Dea Memorial College",
+        "St Paul's School (Nam Tin)",
+        "Delia Memorial School (Hip Wo)",
+        "King Ling College",
+        "Man Kwan QualiEd College",
+        "Raimondi College",
+        "HKMA David Li Kwok Po College",
+        "Aberdeen Technical School",
+        "Madam Lau Kam Lung Secondary School of Miu Fat Buddhist Monastery",
         "Delia Memorial School (Hip Wo No.2 College)",
-        "Yu Chun Keung Memorial College No.2",
-        "Islamic Kasim Tuet Memorial College",
+        "Buddhist Wong Fung Ling College",
+        "Academy of Innovation (Confucius Hall)",
+        "Pui Tak Canossian College",
+        "St Stephen's Girls' College",
+        "SKH Tang Shiu Kin Secondary School",
         "Marymount Secondary School",
         "Wah Yan College, Hong Kong",
-        "True Light Middle School of Hong Kong",
-        "Heung To Secondary School (Tseung Kwan O)",
-        "HK Tang King Po College",
-        "Kiangsu-Chekiang College",
-        "Chinese YMCA Secondary School",
-        "Caritas Wu Cheng-Chung Secondary School",
         "Delia Memorial School (Glee Path)",
-        "Yan Chai Hospital Wong Wha San Secondary School",
-        "Raimondi College",
-        "Creative Secondary School",
-        "The Church of Christ in China Heep Who College",
-        "Man Kwan QualiEd College",
-        "The True Light School of Hong Kong",
-        "St Mark's School",
-        "SKH Tang Shiu Kin Secondary School",
-        "King Ling College",
-        "Delia Memorial School (Hip Wo)",
-        "St Joan of Arc Secondary School",
-        "Academy of Innovation (Confucius Hall)",
-        "CCC Kwei Wah Shan College",
-        "St Paul's School (Nam Tin)",
-        "Lock Tao Secondary School",
-        "The Methodist Church HK Wesley College",
-        "St Stephen's Girls' College",
-        "St Paul's Secondary School",
-        "Hon Wah College",
-        "HKMA David Li Kwok Po College",
-        "Buddhist Wong Fung Ling College",
-        "Delia Memorial School (Broadway)",
-        "Madam Lau Kam Lung Secondary School of Miu Fat Buddhist Monastery",
-        "TWGHS Lee Ching Dea Memorial College",
-        "Cheung Sha Wan Catholic Secondary School",
-        "PLK Tong Nai Kan Junior Secondary School",
-        "St Stephen's Church College",
+        "Kiangsu-Chekiang College",
+        "Precious Blood Secondary School",
+        "Heung To Secondary School (Tseung Kwan O)",
+        "Chinese YMCA Secondary School",
+        "Yu Chun Keung Memorial College No.2",
         "Chong Gene Hang College",
-        "Queen's College",
-        "Pui Ying Secondary School",
-        "Our Lady's College",
-        "Concordia Lutheran School (NP)",
-        "NLSI Lui Kwok Pat Fong College",
+        "Creative Secondary School",
+        "The True Light School of Hong Kong",
+        "St Joan of Arc Secondary School",
+        "The Church of Christ in China Heep Who College",
+        "Lock Tao Secondary School",
+        "St Mark's School",
         "Hotung Secondary School",
-        "Pui Tak Canossian College",
-        "Aberdeen Technical School"
+        "St Stephen's Church College",
+        "Our Lady's College",
+        "Caritas Wu Cheng-Chung Secondary School",
+        "Yan Chai Hospital Wong Wha San Secondary School",
+        "The Methodist Church HK Wesley College",
+        "Islamic Kasim Tuet Memorial College",
+        "Wah Yan College,KLN",
+        "Hon Wah College",
+        "PLK Tong Nai Kan Junior Secondary School",
+        "NLSI Lui Kwok Pat Fong College",
+        "Delia Memorial School (Broadway)",
+        "True Light Middle School of Hong Kong",
+        "Concordia Lutheran School (NP)",
+        "Pui Ying Secondary School",
+        "St Paul's Secondary School",
+        "Cheung Sha Wan Catholic Secondary School",
+        "CCC Kwei Wah Shan College"
       ],
       "yearly_stats": {
         "2025": {
