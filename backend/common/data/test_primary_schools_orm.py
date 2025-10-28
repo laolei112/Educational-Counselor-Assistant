@@ -146,12 +146,16 @@ def test_school_methods():
         total_classes = school.get_total_classes()
         print(f"  总班数: {total_classes}")
         
-        # 测试获取关联中学
-        linked_schools = school.get_linked_secondary_schools()
-        print(f"  关联中学: {len(linked_schools)} 所")
-        if linked_schools:
-            for s in linked_schools[:3]:
-                print(f"    - {s['name']} ({s['type']})")
+        # 测试获取中学联系信息
+        secondary_info = school.secondary_info
+        print(f"  中学联系信息: {secondary_info}")
+        if secondary_info:
+            if secondary_info.get('through_train'):
+                print(f"    结龙学校: {secondary_info['through_train']}")
+            if secondary_info.get('direct'):
+                print(f"    直属中学: {secondary_info['direct']}")
+            if secondary_info.get('associated'):
+                print(f"    联系中学: {secondary_info['associated']}")
         
         # 测试是否为全日制
         is_full_day = school.is_full_day()

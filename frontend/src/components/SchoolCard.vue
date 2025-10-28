@@ -35,8 +35,19 @@
         <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
       </div>
 
-      <div v-if="school.linkedSchools && school.linkedSchools.length" class="linked-schools">
-        直属中学：{{ school.linkedSchools.join('、') }}
+      <div v-if="school.secondaryInfo && hasSecondaryInfo(school.secondaryInfo)" class="secondary-info">
+        <div v-if="school.secondaryInfo.through_train" class="secondary-item">
+          <span class="secondary-label">结龙学校：</span>
+          <span class="secondary-value">{{ school.secondaryInfo.through_train }}</span>
+        </div>
+        <div v-if="school.secondaryInfo.direct" class="secondary-item">
+          <span class="secondary-label">直属中学：</span>
+          <span class="secondary-value">{{ school.secondaryInfo.direct }}</span>
+        </div>
+        <div v-if="school.secondaryInfo.associated" class="secondary-item">
+          <span class="secondary-label">联系中学：</span>
+          <span class="secondary-value">{{ school.secondaryInfo.associated }}</span>
+        </div>
       </div>
 
       <div class="bottom-row">
@@ -118,6 +129,14 @@ const getGenderLabel = (gender: string) => {
     '男女': '男女校'
   }
   return labels[gender as keyof typeof labels] || gender
+}
+
+const hasSecondaryInfo = (secondaryInfo: any) => {
+  return secondaryInfo && (
+    secondaryInfo.through_train || 
+    secondaryInfo.direct || 
+    secondaryInfo.associated
+  )
 }
 </script>
 
@@ -249,11 +268,26 @@ const getGenderLabel = (gender: string) => {
   color: #1a1a1a;
 }
 
-.linked-schools {
-  color: #4338ca;
-  font-size: 14px;
-  font-weight: 500;
+.secondary-info {
   margin-bottom: 8px;
+}
+
+.secondary-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.secondary-label {
+  color: #4338ca;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.secondary-value {
+  color: #1a1a1a;
+  font-weight: 400;
 }
 
 .bottom-row {

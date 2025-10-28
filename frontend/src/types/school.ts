@@ -30,7 +30,11 @@ export interface School {
     website?: string
   }
   applicationDeadline?: string
-  linkedSchools?: string[]
+  secondaryInfo?: {
+    through_train?: string
+    direct?: string
+    associated?: string
+  }
   
   // 中学特有字段 (tb_secondary_schools)
   schoolGroup?: string  // 学校组别 (1A, 1B, 2A, 2B等)

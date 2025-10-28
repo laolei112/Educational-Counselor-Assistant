@@ -11,9 +11,6 @@ def serialize_primary_school(school):
     """
     序列化小学数据为前端需要的格式
     """
-    # 获取关联中学
-    linked_schools = school.get_linked_secondary_schools()
-    
     # 获取总班数
     total_classes = school.get_total_classes()
     
@@ -43,8 +40,7 @@ def serialize_primary_school(school):
         # 基础信息
         "basicInfo": school.school_basic_info if school.school_basic_info else {},
         
-        # 中学联系（转换为字符串数组格式）
-        "linkedSchools": [school['name'] for school in linked_schools] if linked_schools else [],
+        # 中学联系信息
         "secondaryInfo": school.secondary_info if school.secondary_info else {},
         
         # 班级信息
