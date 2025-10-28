@@ -274,20 +274,27 @@ const hasSecondaryInfo = (secondaryInfo: any) => {
 
 .secondary-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 4px;
   font-size: 14px;
+  line-height: 1.4;
 }
 
 .secondary-label {
   color: #4338ca;
   font-weight: 500;
-  margin-right: 4px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  min-width: 80px;
+  white-space: nowrap;
 }
 
 .secondary-value {
   color: #1a1a1a;
   font-weight: 400;
+  flex: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .bottom-row {
@@ -441,6 +448,17 @@ const hasSecondaryInfo = (secondaryInfo: any) => {
   
   .tags-row {
     gap: 8px;
+  }
+  
+  .secondary-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  
+  .secondary-label {
+    min-width: auto;
+    margin-right: 0;
   }
 }
 </style> 
