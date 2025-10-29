@@ -22,7 +22,7 @@ except ImportError:
     print("⚠️  未安装 OpenCC，使用内置转换字典")
     print("   提示: pip install opencc-python-reimplemented")
 
-SPECIAL_SCHOOL_NAMES = ['嘉诺撒圣心学校私立部', '李志達紀念學校']
+SPECIAL_SCHOOL_NAMES = ['嘉诺撒圣心学校私立部', '李志达纪念学校']
 # 扩展的繁简转换字典（500+ 常用字）
 TRADITIONAL_TO_SIMPLIFIED = {
     # 基础汉字
