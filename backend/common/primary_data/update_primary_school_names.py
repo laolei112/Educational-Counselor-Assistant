@@ -14,10 +14,6 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.append(str(project_root))
 
-# 设置工作目录为backend目录
-backend_dir = project_root / 'backend'
-os.chdir(str(backend_dir))
-
 # 设置 Django 环境
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 django.setup()
