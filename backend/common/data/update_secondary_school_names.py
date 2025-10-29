@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-更新小学数据库中的中英文名称
-从 小学名称中英文对照.xlsx 读取中英文名称对照，更新 tb_primary_schools 表
+更新中学数据库中的中英文名称
+从 中学名称中英文对照.xlsx 读取中英文名称对照，更新 tb_secondary_schools 表
 """
 
 import os
@@ -14,16 +14,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.append(str(project_root))
 
-# 设置工作目录为backend目录
-backend_dir = project_root / 'backend'
-os.chdir(str(backend_dir))
-
 # 设置 Django 环境
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 django.setup()
 
 
-from backend.models.tb_primary_schools import TbPrimarySchools
+from backend.models.tb_secondary_schools import TbSecondarySchools
 
 
 def normalize_school_name(name):
@@ -55,24 +51,13 @@ def load_school_name_mapping(excel_file):
     df = pd.read_excel(excel_file)
 
     i = 0
-    english_name = ""
     while i < len(df):
+        english_name = str(df.iloc[i]['school_name']).strip()
         simple_school_name = str(df.iloc[i]['学校名称']).strip()
-        traditional_school_name = str(df.iloc[i]['學校名稱']).strip()
-        # 前两行是学校名称，不属于正式的学校名称，跳过
-        if i < 1:
-            i += 1
-            continue
-        # 奇数行为英文名称，偶数行为中文名称
-        if i % 2 == 1:
-            english_name = simple_school_name
-        
-        if i % 2 == 0:
-            school_map.append({
-                'traditional_school_name': traditional_school_name,
-                'simple_school_name': simple_school_name,
-                'english_name': english_name
-            })
+        school_map.append({
+            'english_name': english_name,
+            'simple_school_name': simple_school_name,
+        })
         i += 1
 
     print(f"成功解析 {len(school_map)} 所学校的中英文对照")
@@ -81,13 +66,13 @@ def load_school_name_mapping(excel_file):
 
 def match_school_in_db(simple_school_name):
     """
-    在数据库中匹配小学
+    在数据库中匹配中学
     """
     if not simple_school_name:
         return None
     
     # 1. 简体完全匹配（优先）
-    queryset = TbPrimarySchools.objects.filter(school_name=simple_school_name)
+    queryset = TbSecondarySchools.objects.filter(school_name=simple_school_name)
     if queryset.exists():
         return queryset.first()
     print(f"未找到 {simple_school_name}")
@@ -107,7 +92,6 @@ def update_school_names(school_map):
     not_found_schools = []
     
     for i, school_info in enumerate(school_map):
-        traditional_school_name = school_info['traditional_school_name']
         simple_school_name = school_info['simple_school_name']
         english_name = school_info['english_name']
         
@@ -116,11 +100,10 @@ def update_school_names(school_map):
             db_school = match_school_in_db(simple_school_name)
             if db_school:
                 # 更新英文名称
-                db_school.school_name_traditional = traditional_school_name
                 db_school.school_name_english = english_name
                 db_school.save()
                 updated_count += 1
-                print(f"✅ 更新: {db_school.school_name:35s} - 繁体: {traditional_school_name} - 英文: {english_name[:30]}")
+                print(f"✅ 更新: {db_school.school_name:35s} - 英文: {english_name[:30]}")
             else:
                 not_found_count += 1
                 not_found_schools.append(simple_school_name)
@@ -148,7 +131,7 @@ def main():
     print("=" * 80)
     
     # Excel文件路径
-    excel_file = Path(__file__).parent / '小学名称中英文对照.xlsx'
+    excel_file = Path(__file__).parent / '中学英文名.xlsx'
     
     if not excel_file.exists():
         print(f"\n❌ 错误：找不到Excel文件: {excel_file}")
