@@ -58,20 +58,34 @@ TRADITIONAL_TO_SIMPLIFIED = {
 def to_simplified(text):
     """
     繁体转简体
+    注意：字符 "銶" 不进行转换，保持原样
     """
     if not text:
         return text
     
+    # 使用临时标记保护 "銶" 字符，避免被转换
+    PLACEHOLDER = "___PROTECT_CHAR_QUIU___"
+    
+    # 先替换 "銶" 为临时标记
+    has_protect_char = "銶" in text
+    if has_protect_char:
+        text = text.replace("銶", PLACEHOLDER)
+    
     if USE_OPENCC:
         try:
-            return cc.convert(text)
+            result = cc.convert(text)
         except:
-            pass
+            result = text
+    else:
+        # 使用内置字典
+        result = text
+        for trad, simp in TRADITIONAL_TO_SIMPLIFIED.items():
+            result = result.replace(trad, simp)
     
-    # 使用内置字典
-    result = text
-    for trad, simp in TRADITIONAL_TO_SIMPLIFIED.items():
-        result = result.replace(trad, simp)
+    # 恢复 "銶" 字符
+    if has_protect_char:
+        result = result.replace(PLACEHOLDER, "銶")
+    
     return result
 
 
