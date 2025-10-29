@@ -54,9 +54,12 @@ DATABASES = {
         "HOST": MYSQL_HOST,
         "PORT": MYSQL_PORT,
         "OPTIONS": {
-            "charset": "utf8",
-            "init_command": "SET SESSION time_zone='+08:00',"
-            "sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO'",
+            "charset": "utf8mb4",
+            "init_command": (
+                "SET SESSION time_zone='+08:00',"
+                " sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO',"
+                " collation_connection='utf8mb4_unicode_ci'"
+            ),
             "isolation_level": "repeatable read",
         },
     }

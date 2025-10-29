@@ -103,13 +103,10 @@ def match_school_in_db(school_name, district=None):
     
     # 1. 简体完全匹配
     queryset = TbPrimarySchools.objects.filter(school_name=simplified_name)
-    if district:
-        queryset = queryset.filter(district__icontains=district.replace('区', ''))
-    
     if queryset.exists():
         return queryset.first()
     
-    print(f"未找到 {normalized_name} school_name {school_name}")
+    print(f"未找到 {normalized_name} school_name {school_name} simplified_name {simplified_name}")
     
     return None
 

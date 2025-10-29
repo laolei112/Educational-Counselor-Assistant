@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-10-26T22:50:15.420628",
+  "generated_at": "2025-10-30T00:06:16.512494",
   "total_schools": 92,
   "schools": [
     {
@@ -74,9 +74,9 @@
           "unmatched": []
         },
         "2024": {
-          "total": 73,
+          "total": 72,
           "band1": 72,
-          "rate": 98.63,
+          "rate": 100.0,
           "schools": {
             "嘉諾撒聖心書院": 38,
             "英華女學校": 14,
@@ -97,9 +97,9 @@
           "unmatched": []
         },
         "2023": {
-          "total": 73,
+          "total": 84,
           "band1": 84,
-          "rate": 115.07,
+          "rate": 100.0,
           "schools": {
             "嘉諾撒聖心書院": 46,
             "英華女學校": 9,
@@ -124,9 +124,9 @@
           "unmatched": []
         },
         "2022": {
-          "total": 73,
+          "total": 78,
           "band1": 76,
-          "rate": 104.11,
+          "rate": 97.44,
           "schools": {
             "嘉諾撒聖心書院": 42,
             "英華女學校": 8,
@@ -154,9 +154,9 @@
           ]
         },
         "2021": {
-          "total": 73,
+          "total": 96,
           "band1": 93,
-          "rate": 127.4,
+          "rate": 96.88,
           "schools": {
             "嘉諾撒聖心書院": 52,
             "英華女學校": 8,
@@ -258,8 +258,8 @@
       },
       "unmatched_schools": [
         "宣道國際學校",
-        "啟思中學",
-        "國際基督教優質音樂中學"
+        "國際基督教優質音樂中學",
+        "啟思中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -381,9 +381,9 @@
       "district": "九龙城区"
     },
     {
-      "primary_school": "圓玄小學",
+      "primary_school": "保良局香港道教聯合會圓玄小學",
       "total_students": 94,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 96,
       "band1_students": 88,
       "band1_rate": 93.62,
       "band_distribution": {
@@ -424,9 +424,9 @@
       "unmatched_schools": [],
       "yearly_stats": {
         "2023": {
-          "total": 94,
+          "total": 96,
           "band1": 88,
-          "rate": 93.62,
+          "rate": 91.67,
           "schools": {
             "聖保羅男女中學": 3,
             "拔萃女書院": 1,
@@ -671,9 +671,9 @@
       },
       "unmatched_schools": [
         "德瑞國際學校",
+        "啟思中學",
         "蔡繼有學校",
-        "海外升學",
-        "啟思中學"
+        "海外升學"
       ],
       "yearly_stats": {
         "2025": {
@@ -1139,9 +1139,9 @@
       "district": "元朗区"
     },
     {
-      "primary_school": "蘇浙小學",
+      "primary_school": "蘇浙小學校",
       "total_students": 272,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 144,
       "band1_students": 212,
       "band1_rate": 77.94,
       "band_distribution": {
@@ -1215,13 +1215,13 @@
         "聖貞德中學": 1
       },
       "unmatched_schools": [
-        "聖約瑟書院",
-        "英華女校",
-        "漢基國際學校",
         "新加坡國際學校",
-        "文理書院",
+        "漢基國際學校",
         "​​培僑僑書院​​",
-        "​​優才(楊殷有娣)書院​​"
+        "聖約瑟書院",
+        "文理書院",
+        "​​優才(楊殷有娣)書院​​",
+        "英華女校"
       ],
       "yearly_stats": {
         "2025": {
@@ -1292,9 +1292,9 @@
           ]
         },
         "2024": {
-          "total": 272,
+          "total": 144,
           "band1": 97,
-          "rate": 35.66,
+          "rate": 67.36,
           "schools": {
             "聖保羅男女中學": 2,
             "庇理羅士女子中學": 10,
@@ -1565,8 +1565,8 @@
       },
       "unmatched_schools": [
         "啓思中學",
-        "玫瑰崗中學",
-        "培僑中學​​"
+        "培僑中學​​",
+        "玫瑰崗中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -2327,9 +2327,9 @@
       "district": "大埔区"
     },
     {
-      "primary_school": "基灣小學愛蝶灣",
+      "primary_school": "中華基督教會基灣小學（愛蝶灣）",
       "total_students": 105,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 96,
       "band1_students": 71,
       "band1_rate": 67.62,
       "band_distribution": {
@@ -2387,9 +2387,9 @@
       "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
-          "total": 105,
+          "total": 96,
           "band1": 71,
-          "rate": 67.62,
+          "rate": 73.96,
           "schools": {
             "聖保羅男女中學": 1,
             "協恩中學": 1,
@@ -2872,10 +2872,10 @@
         "港大同學會書院": 1
       },
       "unmatched_schools": [
-        "其他",
+        "啟思中學",
         "香港道尔顿学校",
         "其他及海外升學",
-        "啟思中學",
+        "其他",
         "耀中国际学校"
       ],
       "yearly_stats": {
@@ -2965,9 +2965,9 @@
       "district": "九龙城区"
     },
     {
-      "primary_school": "徐澤林紀念小學",
+      "primary_school": "基督教宣道會徐澤林紀念小學",
       "total_students": 92,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 120,
       "band1_students": 56,
       "band1_rate": 60.87,
       "band_distribution": {
@@ -3015,9 +3015,9 @@
       "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
-          "total": 92,
+          "total": 120,
           "band1": 56,
-          "rate": 60.87,
+          "rate": 46.67,
           "schools": {
             "協恩中學": 1,
             "香港真光中學": 1,
@@ -3700,11 +3700,11 @@
         "潔心林炳炎中學": 1
       },
       "unmatched_schools": [
-        "宣道國際學校",
-        "國際基督教優質音樂中學暨小學",
-        "大光德萃書院",
-        "韓國國際學校",
         "美國國際學校",
+        "韓國國際學校",
+        "國際基督教優質音樂中學暨小學",
+        "宣道國際學校",
+        "大光德萃書院",
         "耀中國際學校"
       ],
       "yearly_stats": {
@@ -4522,9 +4522,9 @@
       "district": "中西区"
     },
     {
-      "primary_school": "基灣小學",
+      "primary_school": "中華基督教會基灣小學",
       "total_students": 103,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 96,
       "band1_students": 57,
       "band1_rate": 55.34,
       "band_distribution": {
@@ -4576,9 +4576,9 @@
       "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
-          "total": 103,
+          "total": 96,
           "band1": 57,
-          "rate": 55.34,
+          "rate": 59.38,
           "schools": {
             "皇仁書院": 1,
             "協恩中學": 1,
@@ -5541,10 +5541,10 @@
         "炮台山循道衛理中學​​": 1
       },
       "unmatched_schools": [
+        "玫瑰崗學校",
+        "衛理中學​​",
         "炮台山循道衛理中學​​",
         "培僑中學​​",
-        "衛理中學​​",
-        "玫瑰崗學校",
         "衛理中學"
       ],
       "yearly_stats": {
@@ -6387,9 +6387,9 @@
       "district": "北区"
     },
     {
-      "primary_school": "佛教正慧小學",
+      "primary_school": "香海正覺蓮社佛教正慧小學",
       "total_students": 160,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 120,
       "band1_students": 71,
       "band1_rate": 44.38,
       "band_distribution": {
@@ -6455,9 +6455,9 @@
       "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
-          "total": 160,
+          "total": 120,
           "band1": 71,
-          "rate": 44.38,
+          "rate": 59.17,
           "schools": {
             "聖保羅男女中學": 1,
             "聖保羅書院": 1,
@@ -6631,9 +6631,9 @@
       "district": "元朗区"
     },
     {
-      "primary_school": "伊利沙伯中學舊生會小學(分校)",
+      "primary_school": "伊利沙伯中學舊生會小學分校",
       "total_students": 59,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 120,
       "band1_students": 26,
       "band1_rate": 44.07,
       "band_distribution": {
@@ -6676,9 +6676,9 @@
       "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
-          "total": 59,
+          "total": 120,
           "band1": 26,
-          "rate": 44.07,
+          "rate": 21.67,
           "schools": {
             "新界鄉議局元朗區中學": 5,
             "元朗信義中學": 4,
@@ -7238,9 +7238,9 @@
         "順利天主教中學": 1
       },
       "unmatched_schools": [
-        "加拿大國際學校",
-        "培僑僑中學",
         "聖保祿祿中學",
+        "培僑僑中學",
+        "加拿大國際學校",
         "蘇浙國際"
       ],
       "yearly_stats": {
@@ -7297,9 +7297,9 @@
           ]
         },
         "2022": {
-          "total": 114,
+          "total": 44,
           "band1": 22,
-          "rate": 19.3,
+          "rate": 50.0,
           "schools": {
             "皇仁書院": 1,
             "佛教黄鳳翎中學": 3,
@@ -7529,8 +7529,8 @@
         "啟思中學": 1
       },
       "unmatched_schools": [
-        "啟思中學",
-        "炮台山循道衛理中學"
+        "炮台山循道衛理中學",
+        "啟思中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -8282,9 +8282,9 @@
       "district": "中西区"
     },
     {
-      "primary_school": "馬錦燦紀念小學",
+      "primary_school": "東華三院馬錦燦紀念小學",
       "total_students": 148,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 144,
       "band1_students": 57,
       "band1_rate": 38.51,
       "band_distribution": {
@@ -8344,9 +8344,9 @@
       "unmatched_schools": [],
       "yearly_stats": {
         "2025": {
-          "total": 148,
+          "total": 144,
           "band1": 57,
-          "rate": 38.51,
+          "rate": 39.58,
           "schools": {
             "粉嶺禮賢會中學": 5,
             "鳳溪第一中學": 3,
@@ -8952,8 +8952,8 @@
         "港大同學會書院": 1
       },
       "unmatched_schools": [
-        "文理書院",
-        "培僑中學​​"
+        "培僑中學​​",
+        "文理書院"
       ],
       "yearly_stats": {
         "2024": {
@@ -10543,9 +10543,9 @@
       "district": "元朗区"
     },
     {
-      "primary_school": "英業小學",
+      "primary_school": "元朗公立中學校友會鄧英業小學",
       "total_students": 103,
-      "school_total_from_excel": null,
+      "school_total_from_excel": 120,
       "band1_students": 18,
       "band1_rate": 17.48,
       "band_distribution": {
@@ -10580,9 +10580,9 @@
       ],
       "yearly_stats": {
         "2025": {
-          "total": 103,
+          "total": 120,
           "band1": 18,
-          "rate": 17.48,
+          "rate": 15.0,
           "schools": {
             "華仁書院": 1,
             "新界鄉議局元朗區中學": 2,
@@ -10958,56 +10958,56 @@
         "Pui Tak Canossian College": 1
       },
       "unmatched_schools": [
-        "CCC Kwei Wah Shan College",
+        "Pui Ying Secondary School",
+        "Wah Yan College, Hong Kong",
+        "Yan Chai Hospital Wong Wha San Secondary School",
+        "Cheung Sha Wan Catholic Secondary School",
+        "Hotung Secondary School",
+        "Precious Blood Secondary School",
+        "St Joan of Arc Secondary School",
+        "Raimondi College",
+        "Delia Memorial School (Broadway)",
+        "St Stephen's Church College",
+        "Madam Lau Kam Lung Secondary School of Miu Fat Buddhist Monastery",
+        "SKH Tang Shiu Kin Secondary School",
+        "Concordia Lutheran School (NP)",
+        "Hon Wah College",
+        "Heung To Secondary School (Tseung Kwan O)",
+        "St Mark's School",
+        "Pui Tak Canossian College",
+        "Delia Memorial School (Hip Wo No.2 College)",
+        "True Light Middle School of Hong Kong",
+        "Aberdeen Technical School",
+        "NLSI Lui Kwok Pat Fong College",
+        "Caritas Wu Cheng-Chung Secondary School",
+        "TWGHS Lee Ching Dea Memorial College",
         "Delia Memorial School (Hip Wo)",
-        "Islamic Kasim Tuet Memorial College",
+        "St Paul's School (Nam Tin)",
+        "CCC Kwei Wah Shan College",
+        "HK Tang King Po College",
+        "Lock Tao Secondary School",
+        "Chinese YMCA Secondary School",
+        "Kiangsu-Chekiang College",
+        "HKMA David Li Kwok Po College",
+        "Wah Yan College,KLN",
+        "St Paul's Secondary School",
+        "Our Lady's College",
+        "Chong Gene Hang College",
+        "Buddhist Wong Fung Ling College",
+        "King Ling College",
+        "PLK Tong Nai Kan Junior Secondary School",
+        "Queen's College",
         "The Church of Christ in China Heep Who College",
         "The Methodist Church HK Wesley College",
-        "Pui Tak Canossian College",
-        "St Joan of Arc Secondary School",
-        "Queen's College",
-        "Delia Memorial School (Broadway)",
         "Marymount Secondary School",
-        "Wah Yan College, Hong Kong",
-        "Yu Chun Keung Memorial College No.2",
-        "HKMA David Li Kwok Po College",
-        "Chong Gene Hang College",
-        "The True Light School of Hong Kong",
-        "Cheung Sha Wan Catholic Secondary School",
-        "SKH Tang Shiu Kin Secondary School",
-        "Madam Lau Kam Lung Secondary School of Miu Fat Buddhist Monastery",
-        "Academy of Innovation (Confucius Hall)",
-        "Delia Memorial School (Hip Wo No.2 College)",
-        "St Mark's School",
         "Delia Memorial School (Glee Path)",
-        "Buddhist Wong Fung Ling College",
-        "St Paul's Secondary School",
-        "Precious Blood Secondary School",
-        "PLK Tong Nai Kan Junior Secondary School",
+        "Academy of Innovation (Confucius Hall)",
         "Man Kwan QualiEd College",
         "St Stephen's Girls' College",
-        "Yan Chai Hospital Wong Wha San Secondary School",
-        "Chinese YMCA Secondary School",
-        "King Ling College",
-        "Concordia Lutheran School (NP)",
-        "Pui Ying Secondary School",
-        "Kiangsu-Chekiang College",
-        "NLSI Lui Kwok Pat Fong College",
-        "TWGHS Lee Ching Dea Memorial College",
-        "St Paul's School (Nam Tin)",
-        "Hon Wah College",
-        "Our Lady's College",
+        "Islamic Kasim Tuet Memorial College",
         "Creative Secondary School",
-        "Lock Tao Secondary School",
-        "HK Tang King Po College",
-        "Hotung Secondary School",
-        "Raimondi College",
-        "Heung To Secondary School (Tseung Kwan O)",
-        "True Light Middle School of Hong Kong",
-        "St Stephen's Church College",
-        "Aberdeen Technical School",
-        "Caritas Wu Cheng-Chung Secondary School",
-        "Wah Yan College,KLN"
+        "The True Light School of Hong Kong",
+        "Yu Chun Keung Memorial College No.2"
       ],
       "yearly_stats": {
         "2025": {

@@ -22,7 +22,7 @@ except ImportError:
     print("⚠️  未安装 OpenCC，使用内置转换字典")
     print("   提示: pip install opencc-python-reimplemented")
 
-
+SPECIAL_SCHOOL_NAMES = ['嘉诺撒圣心学校私立部']
 # 扩展的繁简转换字典（500+ 常用字）
 TRADITIONAL_TO_SIMPLIFIED = {
     # 基础汉字
@@ -460,11 +460,11 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
         # 年份统计
         if year:
             # 使用Excel中的总人数作为该年的总人数
-            if school_total_from_excel:
+            if school_total_from_excel and to_simplified(school_name) not in SPECIAL_SCHOOL_NAMES:
                 yearly_stats[year]['total'] = school_total_from_excel
             else:
                 # 如果没有Excel总人数，使用升学数据中的总人数
-                yearly_stats[year]['total'] = total_students
+                yearly_stats[year]['total'] += count
             
             yearly_stats[year]['schools'][secondary_school] += count
             if band:
