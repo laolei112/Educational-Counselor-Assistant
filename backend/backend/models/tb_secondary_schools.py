@@ -14,6 +14,23 @@ class TbSecondarySchools(models.Model, Base):
         help_text='学校的完整名称'
     )
     
+    # 多语言字段
+    school_name_traditional = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='学校名称（繁体）',
+        help_text='学校的繁体名称'
+    )
+    
+    school_name_english = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='学校名称（英文）',
+        help_text='学校的英文名称'
+    )
+    
     district = models.CharField(
         max_length=50,
         blank=True,
