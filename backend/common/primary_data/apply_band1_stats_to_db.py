@@ -101,7 +101,7 @@ def match_school_in_db(school_name, district=None):
     # 转换为简体（数据库中是简体）
     simplified_name = to_simplified(normalized_name)
     
-    # 1. 简体完全匹配（优先）
+    # 1. 简体完全匹配
     queryset = TbPrimarySchools.objects.filter(school_name=simplified_name)
     if district:
         queryset = queryset.filter(district__icontains=district.replace('区', ''))
@@ -109,37 +109,7 @@ def match_school_in_db(school_name, district=None):
     if queryset.exists():
         return queryset.first()
     
-    # 2. 繁体完全匹配
-    queryset = TbPrimarySchools.objects.filter(school_name=normalized_name)
-    if district:
-        queryset = queryset.filter(district__icontains=district.replace('区', ''))
-    
-    if queryset.exists():
-        return queryset.first()
-    
-    # 3. 简体包含匹配
-    queryset = TbPrimarySchools.objects.filter(school_name__icontains=simplified_name)
-    if district:
-        queryset = queryset.filter(district__icontains=district.replace('区', ''))
-    
-    if queryset.exists():
-        return queryset.first()
-    
-    # 4. 繁体包含匹配
-    queryset = TbPrimarySchools.objects.filter(school_name__icontains=normalized_name)
-    if district:
-        queryset = queryset.filter(district__icontains=district.replace('区', ''))
-    
-    if queryset.exists():
-        return queryset.first()
-    
-    # 5. 反向匹配（数据库名称包含搜索名称）
-    queryset = TbPrimarySchools.objects.filter(school_name__contains=simplified_name)
-    if district:
-        queryset = queryset.filter(district__icontains=district.replace('区', ''))
-    
-    if queryset.exists():
-        return queryset.first()
+    print(f"未找到 {normalized_name} school_name {school_name}")
     
     return None
 
