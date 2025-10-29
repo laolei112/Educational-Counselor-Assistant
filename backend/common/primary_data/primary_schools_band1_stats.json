@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-10-30T00:06:16.512494",
+  "generated_at": "2025-10-30T00:24:46.754231",
   "total_schools": 92,
   "schools": [
     {
@@ -258,8 +258,8 @@
       },
       "unmatched_schools": [
         "宣道國際學校",
-        "國際基督教優質音樂中學",
-        "啟思中學"
+        "啟思中學",
+        "國際基督教優質音樂中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -670,8 +670,8 @@
         "張祝珊英文中學": 1
       },
       "unmatched_schools": [
-        "德瑞國際學校",
         "啟思中學",
+        "德瑞國際學校",
         "蔡繼有學校",
         "海外升學"
       ],
@@ -1215,13 +1215,13 @@
         "聖貞德中學": 1
       },
       "unmatched_schools": [
-        "新加坡國際學校",
-        "漢基國際學校",
         "​​培僑僑書院​​",
         "聖約瑟書院",
-        "文理書院",
+        "新加坡國際學校",
+        "英華女校",
         "​​優才(楊殷有娣)書院​​",
-        "英華女校"
+        "漢基國際學校",
+        "文理書院"
       ],
       "yearly_stats": {
         "2025": {
@@ -1564,9 +1564,9 @@
         "聖公會聖三一堂中學": 1
       },
       "unmatched_schools": [
-        "啓思中學",
+        "玫瑰崗中學",
         "培僑中學​​",
-        "玫瑰崗中學"
+        "啓思中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -2872,11 +2872,11 @@
         "港大同學會書院": 1
       },
       "unmatched_schools": [
-        "啟思中學",
         "香港道尔顿学校",
-        "其他及海外升學",
+        "耀中国际学校",
+        "啟思中學",
         "其他",
-        "耀中国际学校"
+        "其他及海外升學"
       ],
       "yearly_stats": {
         "2025": {
@@ -3700,12 +3700,12 @@
         "潔心林炳炎中學": 1
       },
       "unmatched_schools": [
-        "美國國際學校",
-        "韓國國際學校",
-        "國際基督教優質音樂中學暨小學",
         "宣道國際學校",
+        "國際基督教優質音樂中學暨小學",
         "大光德萃書院",
-        "耀中國際學校"
+        "美國國際學校",
+        "耀中國際學校",
+        "韓國國際學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -5541,11 +5541,11 @@
         "炮台山循道衛理中學​​": 1
       },
       "unmatched_schools": [
-        "玫瑰崗學校",
         "衛理中學​​",
         "炮台山循道衛理中學​​",
         "培僑中學​​",
-        "衛理中學"
+        "衛理中學",
+        "玫瑰崗學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -6950,9 +6950,9 @@
         "仁濟醫院王華湘中學": 1
       },
       "unmatched_schools": [
+        "香港兆基創意書院",
         "宣基中學",
         "NAIS諾德安達國際學校",
-        "香港兆基創意書院",
         "猶太教國際學校"
       ],
       "yearly_stats": {
@@ -7529,8 +7529,8 @@
         "啟思中學": 1
       },
       "unmatched_schools": [
-        "炮台山循道衛理中學",
-        "啟思中學"
+        "啟思中學",
+        "炮台山循道衛理中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -10958,56 +10958,56 @@
         "Pui Tak Canossian College": 1
       },
       "unmatched_schools": [
-        "Pui Ying Secondary School",
-        "Wah Yan College, Hong Kong",
-        "Yan Chai Hospital Wong Wha San Secondary School",
-        "Cheung Sha Wan Catholic Secondary School",
-        "Hotung Secondary School",
-        "Precious Blood Secondary School",
-        "St Joan of Arc Secondary School",
-        "Raimondi College",
-        "Delia Memorial School (Broadway)",
-        "St Stephen's Church College",
-        "Madam Lau Kam Lung Secondary School of Miu Fat Buddhist Monastery",
-        "SKH Tang Shiu Kin Secondary School",
-        "Concordia Lutheran School (NP)",
-        "Hon Wah College",
-        "Heung To Secondary School (Tseung Kwan O)",
-        "St Mark's School",
-        "Pui Tak Canossian College",
-        "Delia Memorial School (Hip Wo No.2 College)",
         "True Light Middle School of Hong Kong",
-        "Aberdeen Technical School",
-        "NLSI Lui Kwok Pat Fong College",
-        "Caritas Wu Cheng-Chung Secondary School",
-        "TWGHS Lee Ching Dea Memorial College",
-        "Delia Memorial School (Hip Wo)",
         "St Paul's School (Nam Tin)",
-        "CCC Kwei Wah Shan College",
-        "HK Tang King Po College",
-        "Lock Tao Secondary School",
-        "Chinese YMCA Secondary School",
-        "Kiangsu-Chekiang College",
-        "HKMA David Li Kwok Po College",
-        "Wah Yan College,KLN",
         "St Paul's Secondary School",
+        "Hon Wah College",
         "Our Lady's College",
-        "Chong Gene Hang College",
+        "St Stephen's Church College",
         "Buddhist Wong Fung Ling College",
+        "Wah Yan College, Hong Kong",
+        "HK Tang King Po College",
+        "NLSI Lui Kwok Pat Fong College",
+        "Concordia Lutheran School (NP)",
         "King Ling College",
+        "Aberdeen Technical School",
+        "Man Kwan QualiEd College",
+        "Yan Chai Hospital Wong Wha San Secondary School",
+        "Lock Tao Secondary School",
+        "Raimondi College",
+        "Heung To Secondary School (Tseung Kwan O)",
         "PLK Tong Nai Kan Junior Secondary School",
-        "Queen's College",
+        "HKMA David Li Kwok Po College",
+        "Chong Gene Hang College",
+        "Hotung Secondary School",
+        "Delia Memorial School (Glee Path)",
+        "Creative Secondary School",
+        "St Stephen's Girls' College",
         "The Church of Christ in China Heep Who College",
+        "Precious Blood Secondary School",
+        "Cheung Sha Wan Catholic Secondary School",
+        "Wah Yan College,KLN",
+        "Madam Lau Kam Lung Secondary School of Miu Fat Buddhist Monastery",
+        "Delia Memorial School (Hip Wo No.2 College)",
+        "St Joan of Arc Secondary School",
+        "Kiangsu-Chekiang College",
+        "SKH Tang Shiu Kin Secondary School",
+        "TWGHS Lee Ching Dea Memorial College",
+        "Pui Tak Canossian College",
+        "Academy of Innovation (Confucius Hall)",
+        "Islamic Kasim Tuet Memorial College",
+        "The True Light School of Hong Kong",
+        "Delia Memorial School (Broadway)",
+        "Caritas Wu Cheng-Chung Secondary School",
+        "Pui Ying Secondary School",
+        "Chinese YMCA Secondary School",
+        "St Mark's School",
+        "CCC Kwei Wah Shan College",
+        "Delia Memorial School (Hip Wo)",
         "The Methodist Church HK Wesley College",
         "Marymount Secondary School",
-        "Delia Memorial School (Glee Path)",
-        "Academy of Innovation (Confucius Hall)",
-        "Man Kwan QualiEd College",
-        "St Stephen's Girls' College",
-        "Islamic Kasim Tuet Memorial College",
-        "Creative Secondary School",
-        "The True Light School of Hong Kong",
-        "Yu Chun Keung Memorial College No.2"
+        "Yu Chun Keung Memorial College No.2",
+        "Queen's College"
       ],
       "yearly_stats": {
         "2025": {
