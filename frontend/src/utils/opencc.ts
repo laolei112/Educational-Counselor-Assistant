@@ -27,8 +27,6 @@ export enum ConversionMode {
   HK2T = 'hk2t', // 香港繁体到繁体
   T2JP = 't2jp', // 繁体到日文汉字
   JP2T = 'jp2t', // 日文汉字到繁体
-  TW2T = 'tw2t', // 台湾繁体到繁体
-  HK2T = 'hk2t' // 香港繁体到繁体
 }
 
 class OpenCCManager {
@@ -156,9 +154,8 @@ class OpenCCManager {
       'zh-CN-zh-TW': ConversionMode.S2TW,
       'zh-TW-zh-CN': ConversionMode.TW2S,
       'zh-CN-zh-HK': ConversionMode.S2HK,
-      'zh-HK-zh-CN': ConversionMode.HK2S,
-      'zh-TW-zh-HK': ConversionMode.TW2HK,
-      'zh-HK-zh-TW': ConversionMode.HK2TW
+      'zh-HK-zh-CN': ConversionMode.HK2S
+      // 注：zh-TW <-> zh-HK 直连模式不在 opencc 标准配置中，若需精细转换可分两步：TW→T→HK 或 HK→T→TW
     }
 
     const key = `${from}-${to}`
