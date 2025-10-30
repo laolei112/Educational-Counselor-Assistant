@@ -1,6 +1,8 @@
 export interface School {
   id: number
   name: string
+  nameTraditional?: string
+  nameEnglish?: string
   type: 'primary' | 'secondary'
   category?: 'elite' | 'traditional' | 'direct' | 'government' | 'private'
   band1Rate?: number

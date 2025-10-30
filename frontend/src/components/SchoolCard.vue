@@ -2,7 +2,7 @@
   <div class="school-card" @click="handleCardClick">
     <div class="card-header">
       <div class="title-row">
-        <h3 class="school-name">{{ school.name }}</h3>
+        <h3 class="school-name">{{ getSchoolName() }}</h3>
         <span 
           v-if="school.type === 'secondary' && school.schoolGroup"
           class="group-badge-inline"
@@ -32,20 +32,20 @@
           <span class="gender">{{ getGenderLabel(school.gender) }}</span>
         </template>
         <span class="divider">｜</span>
-        <span class="tuition">学费：{{ formatTuition(school.tuition) }}</span>
+        <span class="tuition">{{ getText('school.tuition') }}：{{ formatTuition(school.tuition) }}</span>
       </div>
 
       <div v-if="school.secondaryInfo && hasSecondaryInfo(school.secondaryInfo)" class="secondary-info">
         <div v-if="school.secondaryInfo.through_train" class="secondary-item">
-          <span class="secondary-label">结龙学校：</span>
+          <span class="secondary-label">{{ getText('school.throughTrain') }}：</span>
           <span class="secondary-value">{{ school.secondaryInfo.through_train }}</span>
         </div>
         <div v-if="school.secondaryInfo.direct" class="secondary-item">
-          <span class="secondary-label">直属中学：</span>
+          <span class="secondary-label">{{ getText('school.direct') }}：</span>
           <span class="secondary-value">{{ school.secondaryInfo.direct }}</span>
         </div>
         <div v-if="school.secondaryInfo.associated" class="secondary-item">
-          <span class="secondary-label">联系中学：</span>
+          <span class="secondary-label">{{ getText('school.associated') }}：</span>
           <span class="secondary-value">{{ school.secondaryInfo.associated }}</span>
         </div>
       </div>
@@ -60,19 +60,19 @@
           </span>
           <template v-if="school.transferInfo?.application_deadline">
             <span class="divider">｜</span>
-            <span class="deadline">截止：{{ school.transferInfo.application_deadline }}</span>
+            <span class="deadline">{{ getText('school.deadline') }}：{{ school.transferInfo.application_deadline }}</span>
           </template>
         </div>
         
         <!-- 小学显示升学比例 -->
         <div v-if="school.type === 'primary'" class="band-rate">
           <template v-if="school.promotionInfo?.band1_rate !== undefined">
-            <span class="rate-circle">升Band 1比例：{{ school.promotionInfo.band1_rate }}%</span>
+            <span class="rate-circle">{{ getText('school.band1Rate') }}：{{ school.promotionInfo.band1_rate }}%</span>
           </template>
-          <span class="arrow">详情→</span>
+          <span class="arrow">{{ getText('school.details') }}→</span>
         </div>
         <div v-if="school.type === 'secondary'" class="band-rate">
-          <span class="arrow">详情→</span>
+          <span class="arrow">{{ getText('school.details') }}→</span>
         </div>
       </div>
     </div>
@@ -82,6 +82,7 @@
 <script setup lang="ts">
 import type { School } from '@/types/school'
 import { formatTuition } from '@/utils/formatter'
+import { useLanguageStore } from '@/stores/language'
 
 interface Props {
   school: School
@@ -93,42 +94,35 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+const languageStore = useLanguageStore()
 
 const handleCardClick = () => {
   emit('click', props.school)
 }
 
+// 获取学校名称（根据当前语言）
+const getSchoolName = () => {
+  return languageStore.getSchoolName(props.school)
+}
+
+// 获取多语言文本
+const getText = (key: string) => {
+  return languageStore.getText(key)
+}
+
 const getSchoolTypeLabel = (type: string) => {
-  const labels = {
-    elite: '名校联盟',
-    traditional: '传统名校',
-    direct: '直资学校',
-    government: '官立学校',
-    private: '私立学校',
-    aided: '资助学校'
-  }
-  return labels[type as keyof typeof labels] || type
+  const typeKey = `school.type.${type}` as keyof typeof languageStore.getText
+  return languageStore.getText(typeKey)
 }
 
 const getStatusLabel = (status: string) => {
-  const labels = {
-    open: '开放申请',
-    closed: '申请截止',
-    deadline: '即将截止'
-  }
-  return labels[status as keyof typeof labels] || status
+  const statusKey = `school.applicationStatus.${status}` as keyof typeof languageStore.getText
+  return languageStore.getText(statusKey)
 }
 
 const getGenderLabel = (gender: string) => {
-  const labels = {
-    coed: '男女校',
-    boys: '男校',
-    girls: '女校',
-    '男': '男校',
-    '女': '女校',
-    '男女': '男女校'
-  }
-  return labels[gender as keyof typeof labels] || gender
+  const genderKey = `school.gender.${gender}` as keyof typeof languageStore.getText
+  return languageStore.getText(genderKey)
 }
 
 const hasSecondaryInfo = (secondaryInfo: any) => {

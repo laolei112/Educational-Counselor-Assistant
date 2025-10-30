@@ -10,6 +10,17 @@
     </div>
 
     <div class="container">
+      <!-- 顶部工具栏 -->
+      <div class="top-toolbar">
+        <div class="toolbar-left">
+          <!-- 语言切换器 -->
+          <LanguageSwitcher />
+        </div>
+        <div class="toolbar-right">
+          <!-- 可以添加其他工具按钮 -->
+        </div>
+      </div>
+
       <!-- 搜索和类型选择统一区域 -->
       <div class="search-type-section">
         <!-- 搜索框 -->
@@ -18,7 +29,7 @@
             <input
               v-model="searchKeyword"
               type="text"
-              placeholder="搜索学校名称、地区、校网等..."
+              placeholder="{{ getText('search.placeholder') }}"
               class="search-input"
               @input="handleSearchInput"
               @focus="handleSearchFocus"
@@ -49,26 +60,26 @@
               :disabled="isLoading"
               @click="handleTypeChange('primary')"
             >
-              小学
+              {{ getText('school.primary') }}
             </button>
             <button 
               :class="['type-btn', { active: currentType === 'secondary' }]"
               :disabled="isLoading"
               @click="handleTypeChange('secondary')"
             >
-              中学
+              {{ getText('school.secondary') }}
             </button>
           </div>
           <!-- 统计信息 -->
           <div class="stats-text">
             <span class="stats-item">
               <span class="stats-number">{{ stats.totalSchools }}</span>
-              <span class="stats-label">所学校</span>
+              <span class="stats-label">{{ getText('school.schools') }}</span>
             </span>
             <span class="stats-divider">|</span>
             <span class="stats-item">
               <span class="stats-number">{{ stats.openApplications }}</span>
-              <span class="stats-label">所开放申请</span>
+              <span class="stats-label">{{ getText('school.openApplications') }}</span>
             </span>
           </div>
         </div>
@@ -143,11 +154,19 @@
 import { onMounted, onUnmounted, computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSchoolStore } from '@/stores/school'
+import { useLanguageStore } from '@/stores/language'
 import SchoolCard from '@/components/SchoolCard.vue'
 import SchoolDetailModal from '@/components/SchoolDetailModal.vue'
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import type { School } from '@/types/school'
 
 const schoolStore = useSchoolStore()
+const languageStore = useLanguageStore()
+
+// 获取多语言文本
+const getText = (key: string) => {
+  return languageStore.getText(key)
+}
 const { 
   currentType, 
   filteredSchools, 
@@ -204,6 +223,9 @@ const handleScroll = async () => {
 
 // 组件挂载时获取数据并添加滚动监听
 onMounted(async () => {
+  // 初始化语言设置
+  languageStore.initLanguage()
+  
   await fetchSchools()
   window.addEventListener('scroll', handleScroll)
 })
@@ -285,6 +307,32 @@ const handleRetry = async () => {
 <style scoped>
 .home {
   min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.top-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  margin-bottom: 20px;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .hero-section {
