@@ -143,6 +143,14 @@ class TbPrimarySchools(models.Model, Base):
         help_text='学费信息'
     )
     
+    # 总班数（或小六学生估算数），用于快速统计/展示
+    total_classes = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name='总班数',
+        help_text='学校总班数或对应估算数值（来源于数据汇总）'
+    )
+    
     total_classes_info = models.JSONField(
         blank=True,
         null=True,
