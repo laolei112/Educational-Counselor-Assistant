@@ -205,7 +205,6 @@ import { ref, watch, onUnmounted, computed, onMounted } from 'vue'
 import type { School } from '@/types/school'
 import { formatTuition } from '@/utils/formatter'
 import { useLanguageStore } from '@/stores/language'
-import { openccManager } from '@/utils/opencc'
 
 interface Props {
   school: School
@@ -226,55 +225,25 @@ const showLanguageInfo = ref(false)
 const languageStore = useLanguageStore()
 const currentLanguage = computed(() => languageStore.currentLanguage)
 
-// 展示用的已转换文本
-const displayName = ref<string>('')
-const districtText = ref<string>('')
-const religionText = ref<string>('')
-const addressText = ref<string>('')
-const featuresTexts = ref<string[]>([])
-const teachingLanguageText = ref<string>('')
-
-const convertIfNeeded = async (text: string | undefined | null): Promise<string> => {
+// 同步转换（使用本地转换器）
+const convertIfNeeded = (text?: string | null): string => {
   const val = text || ''
   if (!val) return ''
-  if (currentLanguage.value === 'zh-TW') {
-    try {
-      return await openccManager.simplifiedToTaiwanTraditional(val)
-    } catch {
-      return val
-    }
-  }
-  // 简体直接返回
-  return val
+  return currentLanguage.value === 'zh-TW' ? languageStore.convertText(val) : val
 }
 
-const refreshTexts = async () => {
-  // 名称：优先使用后端提供的繁体名
+const displayName = computed(() => {
   if (currentLanguage.value === 'zh-TW' && props.school.nameTraditional) {
-    displayName.value = props.school.nameTraditional
-  } else {
-    displayName.value = await convertIfNeeded(props.school.name)
+    return props.school.nameTraditional
   }
-  districtText.value = await convertIfNeeded(props.school.district)
-  religionText.value = await convertIfNeeded(props.school.religion)
-  addressText.value = await convertIfNeeded(props.school.contact?.address)
-  teachingLanguageText.value = await convertIfNeeded(props.school.teachingLanguage || '中英文并重')
-  featuresTexts.value = Array.isArray(props.school.features)
-    ? await Promise.all(props.school.features.map(f => convertIfNeeded(f)))
-    : []
-}
-
-onMounted(() => {
-  refreshTexts()
+  return convertIfNeeded(props.school.name)
 })
 
-watch(() => props.school, () => {
-  refreshTexts()
-}, { deep: true })
-
-watch(currentLanguage, () => {
-  refreshTexts()
-})
+const districtText = computed(() => convertIfNeeded(props.school.district))
+const religionText = computed(() => convertIfNeeded(props.school.religion))
+const addressText = computed(() => convertIfNeeded(props.school.contact?.address))
+const teachingLanguageText = computed(() => convertIfNeeded(props.school.teachingLanguage || '中英文并重'))
+const featuresTexts = computed(() => Array.isArray(props.school.features) ? props.school.features.map(f => convertIfNeeded(f)) : [])
 
 // 监听弹窗显示状态，控制 body 滚动
 watch(() => props.visible, (newVisible) => {
