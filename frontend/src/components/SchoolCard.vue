@@ -111,8 +111,17 @@ const getText = (key: string) => {
 }
 
 const getSchoolTypeLabel = (type: string) => {
-  const typeKey = `school.type.${type}` as keyof typeof languageStore.getText
-  return languageStore.getText(typeKey)
+  if (!type) return ''
+  const raw = (type || '').toString().trim().toLowerCase().replace(/\s+sch$/i, '')
+  let key = raw
+  if (raw === '私立' || raw === '私立学校' || raw === 'private') key = 'private'
+  else if (raw === '直資' || raw === '直资' || raw === '直資學校' || raw === '直资学校' || raw === 'direct') key = 'direct'
+  else if (raw === '官立' || raw === '官立学校' || raw === 'government') key = 'government'
+  else if (raw === '資助' || raw === '资助' || raw === '資助學校' || raw === '资助学校' || raw === 'aided') key = 'aided'
+  else if (raw === '名校聯盟' || raw === '名校联盟' || raw === 'elite') key = 'elite'
+  else if (raw === '傳統名校' || raw === '传统名校' || raw === 'traditional') key = 'traditional'
+  const text = languageStore.getText(`school.type.${key}`)
+  return text !== `school.type.${key}` ? text : type
 }
 
 const getStatusLabel = (status: string) => {
@@ -121,8 +130,14 @@ const getStatusLabel = (status: string) => {
 }
 
 const getGenderLabel = (gender: string) => {
-  const genderKey = `school.gender.${gender}` as keyof typeof languageStore.getText
-  return languageStore.getText(genderKey)
+  if (!gender) return ''
+  const raw = (gender || '').toString().trim().toLowerCase()
+  let key = raw
+  if (raw === '男女' || raw === '男女校' || raw === 'coed') key = 'coed'
+  else if (raw === '男' || raw === '男校' || raw === 'boys') key = 'boys'
+  else if (raw === '女' || raw === '女校' || raw === 'girls') key = 'girls'
+  const text = languageStore.getText(`school.gender.${key}`)
+  return text !== `school.gender.${key}` ? text : gender
 }
 
 const hasSecondaryInfo = (secondaryInfo: any) => {

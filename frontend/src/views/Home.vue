@@ -29,7 +29,7 @@
             <input
               v-model="searchKeyword"
               type="text"
-              placeholder="{{ getText('search.placeholder') }}"
+              :placeholder="getText('search.placeholder')"
               class="search-input"
               @input="handleSearchInput"
               @focus="handleSearchFocus"

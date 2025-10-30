@@ -8,9 +8,9 @@
 
       <!-- 学校名称和状态 -->
       <div class="header">
-        <h2 class="school-name">{{ school.name }}</h2>
+        <h2 class="school-name">{{ displayName }}</h2>
         <div class="school-meta">
-          <span class="district">{{ school.district }}</span>
+          <span class="district">{{ districtText }}</span>
           <span class="separator">|</span>
           <span class="school-category">{{ getCategoryLabel(school.category) }}</span>
         </div>
@@ -45,7 +45,7 @@
               </label>
               <div class="teaching-language-wrapper">
                 <span class="language-text">
-                  {{ school.teachingLanguage || '中英文并重' }}
+                  {{ teachingLanguageText }}
                 </span>
               </div>
               <!-- 教学语言说明弹窗 -->
@@ -110,7 +110,7 @@
             </div>
             <div v-if="school.religion" class="info-item">
               <label>宗教</label>
-              <div>{{ school.religion }}</div>
+              <div>{{ religionText }}</div>
             </div>
             <div class="info-item">
               <label>性别类型</label>
@@ -123,7 +123,7 @@
         <section v-if="school.features && school.features.length" class="features">
           <h3>❤️ 学校特色</h3>
           <ul class="features-list">
-            <li v-for="feature in school.features" :key="feature">
+            <li v-for="(feature, idx) in featuresTexts" :key="idx">
               • {{ feature }}
             </li>
           </ul>
@@ -177,7 +177,7 @@
           <div class="contact-info">
             <div v-if="school.contact.address" class="contact-item">
               <label>地址：</label>
-              <span>{{ school.contact.address }}</span>
+              <span>{{ addressText }}</span>
             </div>
             <div v-if="school.contact.phone" class="contact-item">
               <label>电话：</label>
@@ -201,9 +201,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onUnmounted } from 'vue'
+import { ref, watch, onUnmounted, computed, onMounted } from 'vue'
 import type { School } from '@/types/school'
 import { formatTuition } from '@/utils/formatter'
+import { useLanguageStore } from '@/stores/language'
+import { openccManager } from '@/utils/opencc'
 
 interface Props {
   school: School
@@ -219,6 +221,60 @@ const emit = defineEmits<Emits>()
 
 // 控制教学语言说明弹窗显示
 const showLanguageInfo = ref(false)
+
+// 语言切换与文本转换
+const languageStore = useLanguageStore()
+const currentLanguage = computed(() => languageStore.currentLanguage)
+
+// 展示用的已转换文本
+const displayName = ref<string>('')
+const districtText = ref<string>('')
+const religionText = ref<string>('')
+const addressText = ref<string>('')
+const featuresTexts = ref<string[]>([])
+const teachingLanguageText = ref<string>('')
+
+const convertIfNeeded = async (text: string | undefined | null): Promise<string> => {
+  const val = text || ''
+  if (!val) return ''
+  if (currentLanguage.value === 'zh-TW') {
+    try {
+      return await openccManager.simplifiedToTaiwanTraditional(val)
+    } catch {
+      return val
+    }
+  }
+  // 简体直接返回
+  return val
+}
+
+const refreshTexts = async () => {
+  // 名称：优先使用后端提供的繁体名
+  if (currentLanguage.value === 'zh-TW' && props.school.nameTraditional) {
+    displayName.value = props.school.nameTraditional
+  } else {
+    displayName.value = await convertIfNeeded(props.school.name)
+  }
+  districtText.value = await convertIfNeeded(props.school.district)
+  religionText.value = await convertIfNeeded(props.school.religion)
+  addressText.value = await convertIfNeeded(props.school.contact?.address)
+  teachingLanguageText.value = await convertIfNeeded(props.school.teachingLanguage || '中英文并重')
+  featuresTexts.value = Array.isArray(props.school.features)
+    ? await Promise.all(props.school.features.map(f => convertIfNeeded(f)))
+    : []
+}
+
+onMounted(() => {
+  refreshTexts()
+})
+
+watch(() => props.school, () => {
+  refreshTexts()
+}, { deep: true })
+
+watch(currentLanguage, () => {
+  refreshTexts()
+})
 
 // 监听弹窗显示状态，控制 body 滚动
 watch(() => props.visible, (newVisible) => {
