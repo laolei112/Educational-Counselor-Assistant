@@ -103,10 +103,7 @@
             </div>
             <div class="info-item">
               <label>课程类型</label>
-              <div v-if="school.curriculum && school.curriculum.length">
-                {{ school.curriculum.join('+') }}
-              </div>
-              <div v-else>DSE</div>
+              <div>{{ curriculumTypesText }}</div>
             </div>
             <div v-if="school.religion" class="info-item">
               <label>宗教</label>
@@ -244,6 +241,21 @@ const religionText = computed(() => convertIfNeeded(props.school.religion))
 const addressText = computed(() => convertIfNeeded(props.school.contact?.address))
 const teachingLanguageText = computed(() => convertIfNeeded(props.school.teachingLanguage || '中英文并重'))
 const featuresTexts = computed(() => Array.isArray(props.school.features) ? props.school.features.map(f => convertIfNeeded(f)) : [])
+
+// 从 school.schoolCurriculum 中解析课程体系
+const curriculumTypesText = computed(() => {
+  const sc = (props.school as any).schoolCurriculum
+  if (!sc) return 'DSE'
+  try {
+    const data = typeof sc === 'string' ? JSON.parse(sc) : sc
+    const types = data && data['课程体系']
+    if (Array.isArray(types) && types.length) return types.join(' + ')
+    if (typeof types === 'string' && types.trim()) return types
+  } catch (_) {
+    // ignore parse error
+  }
+  return 'DSE'
+})
 
 // 监听弹窗显示状态，控制 body 滚动
 watch(() => props.visible, (newVisible) => {
