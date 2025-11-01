@@ -58,16 +58,8 @@
             </button>
           </div>
           
-          <!-- 移动端语言切换器 -->
-          <div class="mobile-language-switcher">
-            <LanguageSwitcher variant="mobile" />
-          </div>
-            
           <!-- Desktop Filters -->
           <div class="desktop-filters">
-            <!-- 语言切换器 -->
-            <LanguageSwitcher variant="filter" />
-            
             <!-- 片区筛选 -->
           <div class="filter-select-wrapper" @click="toggleFilterDropdown('district', $event)">
             <span class="filter-select-trigger">
@@ -230,17 +222,27 @@
           </div>
           </div>
 
-          <!-- Mobile Filter Button -->
-          <div class="mobile-filter-button">
-            <button class="mobile-filter-btn" @click="showMobileFilters = !showMobileFilters">
-              <span>{{ getText('mobileFilter.filterAndSort') }}</span>
-              <span class="filter-icon">⚙</span>
-            </button>
+          <!-- 移动端语言切换器和筛选按钮 -->
+          <div class="mobile-actions">
+            <div class="mobile-language-switcher">
+              <LanguageSwitcher variant="mobile" />
+            </div>
+            <div class="mobile-filter-button">
+              <button class="mobile-filter-btn" @click="showMobileFilters = !showMobileFilters">
+                <span>{{ getText('mobileFilter.filterAndSort') }}</span>
+                <span class="filter-icon">⚙</span>
+              </button>
+            </div>
           </div>
 
-          <!-- 统计信息 -->
-          <div class="stats-info">
-            <span class="stats-text">共 {{ filteredSchools.length }} 所学校</span>
+          <!-- 桌面端语言切换器和统计信息 -->
+          <div class="desktop-actions">
+            <div class="desktop-language-switcher">
+              <LanguageSwitcher variant="filter" />
+            </div>
+            <div class="stats-info">
+              <span class="stats-text">共 {{ filteredSchools.length }} 所学校</span>
+            </div>
           </div>
         </div>
       </div>
@@ -857,6 +859,18 @@ const handleRetry = async () => {
   display: none;
 }
 
+.mobile-actions {
+  display: none;
+}
+
+.desktop-actions {
+  display: flex;
+}
+
+.desktop-language-switcher {
+  display: block;
+}
+
 .type-btn {
   padding: 7px 18px;
   border-radius: 9999px;
@@ -959,7 +973,19 @@ const handleRetry = async () => {
   font-size: 14px;
   color: #6b7280;
   white-space: nowrap;
+}
+
+.desktop-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
   margin-left: auto;
+}
+
+.desktop-language-switcher {
+  display: block;
+  flex-shrink: 0;
 }
 
 /* Filter Dropdown Menu - 关键修复 */
@@ -1234,23 +1260,32 @@ const handleRetry = async () => {
     flex-shrink: 0;
     order: 1;
   }
-  
-  .mobile-language-switcher {
-    display: block;
-    flex-shrink: 0;
-    order: 3;
-    margin-right: 8px;
-  }
 
   .desktop-filters {
     display: none;
   }
 
+  .desktop-actions {
+    display: none;
+  }
+
+  .mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    order: 2;
+    margin-left: auto;
+  }
+  
+  .mobile-language-switcher {
+    display: block;
+    flex-shrink: 0;
+  }
+
   .mobile-filter-button {
     display: block;
     flex-shrink: 0;
-    order: 4;
-    margin-left: auto;
   }
   
   .stats-info {
