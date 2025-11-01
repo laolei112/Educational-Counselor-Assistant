@@ -59,7 +59,7 @@
         <!-- Desktop Filters -->
         <div class="desktop-filters">
           <!-- 片区筛选 -->
-          <div class="filter-select-wrapper" @click="toggleFilterDropdown('district')">
+          <div class="filter-select-wrapper" @click.stop="toggleFilterDropdown('district', $event)">
             <span class="filter-select-trigger">
               {{ filters.district ? languageStore.convertText(filters.district) : getText('filter.allDistrict') }}
             </span>
@@ -68,13 +68,13 @@
           
           <!-- 小学筛选：校网和学校类别 -->
           <template v-if="currentType === 'primary'">
-            <div class="filter-select-wrapper" @click="toggleFilterDropdown('schoolNet')">
+            <div class="filter-select-wrapper" @click.stop="toggleFilterDropdown('schoolNet', $event)">
               <span class="filter-select-trigger">
                 {{ filters.schoolNet ? languageStore.convertText(filters.schoolNet) : getText('filter.allSchoolNet') }}
               </span>
               <span class="filter-arrow" :class="{ 'is-open': activeFilterDropdown === 'schoolNet' }">▼</span>
             </div>
-            <div class="filter-select-wrapper" @click="toggleFilterDropdown('category')">
+            <div class="filter-select-wrapper" @click.stop="toggleFilterDropdown('category', $event)">
               <span class="filter-select-trigger">
                 {{ filters.category ? languageStore.convertText(filters.category) : getText('filter.allCategory') }}
               </span>
@@ -84,13 +84,21 @@
           
           <!-- 中学筛选：Banding -->
           <template v-else>
-            <div class="filter-select-wrapper" @click="toggleFilterDropdown('banding')">
+            <div class="filter-select-wrapper" @click.stop="toggleFilterDropdown('banding', $event)">
               <span class="filter-select-trigger">
                 {{ filters.banding ? languageStore.convertText(filters.banding) : getText('filter.allBanding') }}
               </span>
               <span class="filter-arrow" :class="{ 'is-open': activeFilterDropdown === 'banding' }">▼</span>
             </div>
           </template>
+          
+          <!-- 排序选择器 -->
+          <div class="filter-select-wrapper" @click.stop="toggleFilterDropdown('sort', $event)">
+            <span class="filter-select-trigger">
+              {{ sortBy === 'none' ? '排序' : sortBy === 'band' ? '按升Band比例' : sortBy === 'fee' ? '按学费高低' : '按区域' }}
+            </span>
+            <span class="filter-arrow" :class="{ 'is-open': activeFilterDropdown === 'sort' }">▼</span>
+          </div>
         </div>
 
         <!-- Mobile Filter Button -->
@@ -108,13 +116,13 @@
       </div>
 
       <!-- 下拉菜单 -->
-      <div v-if="activeFilterDropdown" class="filter-dropdown-menu" :class="{ 'is-open': activeFilterDropdown }">
+      <div v-if="activeFilterDropdown" class="filter-dropdown-menu" :class="{ 'is-open': activeFilterDropdown }" @click.stop>
         <!-- 片区下拉 -->
         <div v-if="activeFilterDropdown === 'district'" class="filter-dropdown-content">
           <div
             class="filter-dropdown-item"
             :class="{ active: filters.district === '' }"
-            @click="selectFilter('district', '')"
+            @click="selectFilter('district', '', $event)"
           >
             {{ getText('filter.allDistrict') }}
           </div>
@@ -123,7 +131,7 @@
             :key="district"
             class="filter-dropdown-item"
             :class="{ active: filters.district === district }"
-            @click="selectFilter('district', district)"
+            @click="selectFilter('district', district, $event)"
           >
             {{ languageStore.convertText(district) }}
           </div>
@@ -134,7 +142,7 @@
           <div
             class="filter-dropdown-item"
             :class="{ active: filters.schoolNet === '' }"
-            @click="selectFilter('schoolNet', '')"
+            @click="selectFilter('schoolNet', '', $event)"
           >
             {{ getText('filter.allSchoolNet') }}
           </div>
@@ -143,7 +151,7 @@
             :key="net"
             class="filter-dropdown-item"
             :class="{ active: filters.schoolNet === net }"
-            @click="selectFilter('schoolNet', net)"
+            @click="selectFilter('schoolNet', net, $event)"
           >
             {{ languageStore.convertText(net) }}
           </div>
@@ -154,7 +162,7 @@
           <div
             class="filter-dropdown-item"
             :class="{ active: filters.category === '' }"
-            @click="selectFilter('category', '')"
+            @click="selectFilter('category', '', $event)"
           >
             {{ getText('filter.allCategory') }}
           </div>
@@ -163,7 +171,7 @@
             :key="cat"
             class="filter-dropdown-item"
             :class="{ active: filters.category === cat }"
-            @click="selectFilter('category', cat)"
+            @click="selectFilter('category', cat, $event)"
           >
             {{ languageStore.convertText(cat) }}
           </div>
@@ -174,7 +182,7 @@
           <div
             class="filter-dropdown-item"
             :class="{ active: filters.banding === '' }"
-            @click="selectFilter('banding', '')"
+            @click="selectFilter('banding', '', $event)"
           >
             {{ getText('filter.allBanding') }}
           </div>
@@ -183,9 +191,41 @@
             :key="banding"
             class="filter-dropdown-item"
             :class="{ active: filters.banding === banding }"
-            @click="selectFilter('banding', banding)"
+            @click="selectFilter('banding', banding, $event)"
           >
             {{ languageStore.convertText(banding) }}
+          </div>
+        </div>
+        
+        <!-- 排序下拉 -->
+        <div v-if="activeFilterDropdown === 'sort'" class="filter-dropdown-content">
+          <div
+            class="filter-dropdown-item"
+            :class="{ active: sortBy === 'none' }"
+            @click="selectSort('none', $event)"
+          >
+            默认排序
+          </div>
+          <div
+            class="filter-dropdown-item"
+            :class="{ active: sortBy === 'band' }"
+            @click="selectSort('band', $event)"
+          >
+            按升Band比例
+          </div>
+          <div
+            class="filter-dropdown-item"
+            :class="{ active: sortBy === 'fee' }"
+            @click="selectSort('fee', $event)"
+          >
+            按学费高低
+          </div>
+          <div
+            class="filter-dropdown-item"
+            :class="{ active: sortBy === 'district' }"
+            @click="selectSort('district', $event)"
+          >
+            按区域
           </div>
         </div>
       </div>
@@ -221,7 +261,7 @@
         </div>
         <div v-else class="schools-grid">
           <SchoolCard 
-            v-for="school in currentPageData" 
+            v-for="school in sortedSchools" 
             :key="school.id"
             :school="school"
             @click="handleSchoolClick"
@@ -330,9 +370,13 @@ const handleScroll = async () => {
 // 活动中的下拉菜单
 const activeFilterDropdown = ref<string | null>(null)
 const showMobileFilters = ref(false)
+const sortBy = ref<'none' | 'band' | 'fee' | 'district'>('none')
 
 // 切换筛选下拉菜单
-const toggleFilterDropdown = (type: string) => {
+const toggleFilterDropdown = (type: string, event?: Event) => {
+  if (event) {
+    event.stopPropagation()
+  }
   if (activeFilterDropdown.value === type) {
     activeFilterDropdown.value = null
   } else {
@@ -347,7 +391,10 @@ const selectSchoolType = async (type: 'primary' | 'secondary') => {
 }
 
 // 选择筛选选项
-const selectFilter = async (type: keyof typeof filters.value, value: string) => {
+const selectFilter = async (type: keyof typeof filters.value, value: string, event?: Event) => {
+  if (event) {
+    event.stopPropagation()
+  }
   if (type === 'district') {
     filters.value.district = value
   } else if (type === 'schoolNet') {
@@ -372,11 +419,52 @@ const handleFilterChange = async () => {
   })
 }
 
+// 选择排序方式
+const selectSort = (sort: 'none' | 'band' | 'fee' | 'district', event?: Event) => {
+  if (event) {
+    event.stopPropagation()
+  }
+  sortBy.value = sort
+  activeFilterDropdown.value = null
+}
+
+// 排序后的学校列表
+const sortedSchools = computed(() => {
+  let schools = [...currentPageData.value]
+  
+  if (sortBy.value === 'band') {
+    schools.sort((a, b) => {
+      const aBand = a.promotionInfo?.band1_rate ?? a.band1Rate ?? 0
+      const bBand = b.promotionInfo?.band1_rate ?? b.band1Rate ?? 0
+      return bBand - aBand // 降序
+    })
+  } else if (sortBy.value === 'fee') {
+    schools.sort((a, b) => {
+      const aFee = a.tuition ?? 0
+      const bFee = b.tuition ?? 0
+      return bFee - aFee // 降序
+    })
+  } else if (sortBy.value === 'district') {
+    schools.sort((a, b) => {
+      const aDistrict = a.district ?? ''
+      const bDistrict = b.district ?? ''
+      return aDistrict.localeCompare(bDistrict)
+    })
+  }
+  
+  return schools
+})
+
 // 点击外部关闭下拉菜单
 const handleClickOutside = (event: Event) => {
   const target = event.target as HTMLElement
-  if (!target.closest('.filter-select-wrapper') && !target.closest('.filter-dropdown-menu') && !target.closest('.header-language-switcher')) {
-    activeFilterDropdown.value = null
+  // 检查点击是否在下拉菜单相关区域外
+  if (activeFilterDropdown.value) {
+    const isClickInFilterWrapper = target.closest('.filter-select-wrapper')
+    const isClickInDropdown = target.closest('.filter-dropdown-menu')
+    if (!isClickInFilterWrapper && !isClickInDropdown) {
+      activeFilterDropdown.value = null
+    }
   }
 }
 
@@ -570,6 +658,7 @@ const handleRetry = async () => {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   padding: 16px;
   position: relative;
+  z-index: 10;
 }
 
 .filter-container {
@@ -676,7 +765,7 @@ const handleRetry = async () => {
 /* Filter Dropdown Menu */
 .filter-dropdown-menu {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 4px);
   left: 16px;
   right: 16px;
   max-width: 1200px;
@@ -685,7 +774,7 @@ const handleRetry = async () => {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  z-index: 50;
+  z-index: 100;
   max-height: 300px;
   overflow-y: auto;
 }
