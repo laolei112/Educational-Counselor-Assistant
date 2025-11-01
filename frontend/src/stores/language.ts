@@ -237,6 +237,56 @@ export const useLanguageStore = defineStore('language', () => {
       'app.subtitle': {
         'zh-CN': '为您智能匹配最适合孩子的升学路径',
         'zh-TW': '為您智能匹配最適合孩子的升學路徑'
+      },
+      
+      // 移动端筛选面板
+      'mobileFilter.title': {
+        'zh-CN': '筛选与排序',
+        'zh-TW': '篩選與排序'
+      },
+      'mobileFilter.district': {
+        'zh-CN': '片区',
+        'zh-TW': '片區'
+      },
+      'mobileFilter.schoolNet': {
+        'zh-CN': '校网',
+        'zh-TW': '校網'
+      },
+      'mobileFilter.category': {
+        'zh-CN': '学校类别',
+        'zh-TW': '學校類別'
+      },
+      'mobileFilter.banding': {
+        'zh-CN': 'Banding',
+        'zh-TW': 'Banding'
+      },
+      'mobileFilter.sort': {
+        'zh-CN': '排序',
+        'zh-TW': '排序'
+      },
+      'mobileFilter.sortDefault': {
+        'zh-CN': '默认排序',
+        'zh-TW': '默認排序'
+      },
+      'mobileFilter.sortByBand': {
+        'zh-CN': '按升Band比例',
+        'zh-TW': '按升Band比例'
+      },
+      'mobileFilter.sortByFee': {
+        'zh-CN': '按学费高低',
+        'zh-TW': '按學費高低'
+      },
+      'mobileFilter.sortByDistrict': {
+        'zh-CN': '按区域',
+        'zh-TW': '按區域'
+      },
+      'mobileFilter.apply': {
+        'zh-CN': '应用筛选',
+        'zh-TW': '應用篩選'
+      },
+      'mobileFilter.filterAndSort': {
+        'zh-CN': '筛选与排序',
+        'zh-TW': '篩選與排序'
       }
     }
     

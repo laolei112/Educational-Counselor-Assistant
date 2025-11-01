@@ -183,7 +183,7 @@
           <!-- 排序选择器 -->
           <div class="filter-select-wrapper" @click="toggleFilterDropdown('sort', $event)">
             <span class="filter-select-trigger">
-              {{ sortBy === 'none' ? '排序' : sortBy === 'band' ? '按升Band比例' : sortBy === 'fee' ? '按学费高低' : '按区域' }}
+              {{ sortBy === 'none' ? getText('mobileFilter.sort') : sortBy === 'band' ? getText('mobileFilter.sortByBand') : sortBy === 'fee' ? getText('mobileFilter.sortByFee') : getText('mobileFilter.sortByDistrict') }}
             </span>
             <span class="filter-arrow" :class="{ 'is-open': activeFilterDropdown === 'sort' }">▼</span>
             
@@ -194,28 +194,28 @@
                    :class="{ active: sortBy === 'none' }"
                    @click.stop="selectSort('none', $event)"
                  >
-                   默认排序
+                   {{ getText('mobileFilter.sortDefault') }}
                  </div>
                  <div
                    class="filter-dropdown-item"
                    :class="{ active: sortBy === 'band' }"
                    @click.stop="selectSort('band', $event)"
                  >
-                   按升Band比例
+                   {{ getText('mobileFilter.sortByBand') }}
                  </div>
                  <div
                    class="filter-dropdown-item"
                    :class="{ active: sortBy === 'fee' }"
                    @click.stop="selectSort('fee', $event)"
                  >
-                   按学费高低
+                   {{ getText('mobileFilter.sortByFee') }}
                  </div>
                  <div
                    class="filter-dropdown-item"
                    :class="{ active: sortBy === 'district' }"
                    @click.stop="selectSort('district', $event)"
                  >
-                   按区域
+                   {{ getText('mobileFilter.sortByDistrict') }}
                  </div>
               </div>
             </div>
@@ -231,7 +231,7 @@
         <!-- Mobile Filter Button -->
         <div class="mobile-filter-button">
           <button class="mobile-filter-btn" @click="showMobileFilters = !showMobileFilters">
-            <span>筛选与排序</span>
+            <span>{{ getText('mobileFilter.filterAndSort') }}</span>
             <span class="filter-icon">⚙</span>
           </button>
         </div>
@@ -242,14 +242,14 @@
     <div v-if="showMobileFilters" class="mobile-filter-overlay" @click="showMobileFilters = false">
       <div class="mobile-filter-panel" @click.stop>
         <div class="mobile-filter-header">
-          <h3 class="mobile-filter-title">筛选与排序</h3>
+          <h3 class="mobile-filter-title">{{ getText('mobileFilter.title') }}</h3>
           <button class="mobile-filter-close" @click="showMobileFilters = false">✕</button>
         </div>
         
         <div class="mobile-filter-content">
           <!-- 片区筛选 -->
           <div class="mobile-filter-group">
-            <label class="mobile-filter-label">片区</label>
+            <label class="mobile-filter-label">{{ getText('mobileFilter.district') }}</label>
             <div class="mobile-filter-options">
               <button
                 :class="['mobile-filter-option', { active: filters.district === '' }]"
@@ -271,7 +271,7 @@
           <!-- 小学筛选：校网和学校类别 -->
           <template v-if="currentType === 'primary'">
             <div class="mobile-filter-group">
-              <label class="mobile-filter-label">校网</label>
+              <label class="mobile-filter-label">{{ getText('mobileFilter.schoolNet') }}</label>
               <div class="mobile-filter-options">
                 <button
                   :class="['mobile-filter-option', { active: filters.schoolNet === '' }]"
@@ -291,7 +291,7 @@
             </div>
             
             <div class="mobile-filter-group">
-              <label class="mobile-filter-label">学校类别</label>
+              <label class="mobile-filter-label">{{ getText('mobileFilter.category') }}</label>
               <div class="mobile-filter-options">
                 <button
                   :class="['mobile-filter-option', { active: filters.category === '' }]"
@@ -314,7 +314,7 @@
           <!-- 中学筛选：Banding -->
           <template v-else>
             <div class="mobile-filter-group">
-              <label class="mobile-filter-label">Banding</label>
+              <label class="mobile-filter-label">{{ getText('mobileFilter.banding') }}</label>
               <div class="mobile-filter-options">
                 <button
                   :class="['mobile-filter-option', { active: filters.banding === '' }]"
@@ -336,31 +336,31 @@
           
           <!-- 排序 -->
           <div class="mobile-filter-group">
-            <label class="mobile-filter-label">排序</label>
+            <label class="mobile-filter-label">{{ getText('mobileFilter.sort') }}</label>
             <div class="mobile-filter-options">
               <button
                 :class="['mobile-filter-option', { active: sortBy === 'none' }]"
                 @click="selectSort('none')"
               >
-                默认排序
+                {{ getText('mobileFilter.sortDefault') }}
               </button>
               <button
                 :class="['mobile-filter-option', { active: sortBy === 'band' }]"
                 @click="selectSort('band')"
               >
-                按升Band比例
+                {{ getText('mobileFilter.sortByBand') }}
               </button>
               <button
                 :class="['mobile-filter-option', { active: sortBy === 'fee' }]"
                 @click="selectSort('fee')"
               >
-                按学费高低
+                {{ getText('mobileFilter.sortByFee') }}
               </button>
               <button
                 :class="['mobile-filter-option', { active: sortBy === 'district' }]"
                 @click="selectSort('district')"
               >
-                按区域
+                {{ getText('mobileFilter.sortByDistrict') }}
               </button>
             </div>
           </div>
@@ -368,7 +368,7 @@
         
         <div class="mobile-filter-footer">
           <button class="mobile-filter-apply-btn" @click="showMobileFilters = false">
-            应用筛选
+            {{ getText('mobileFilter.apply') }}
           </button>
         </div>
       </div>
