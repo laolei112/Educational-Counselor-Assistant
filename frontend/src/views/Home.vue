@@ -1238,8 +1238,8 @@ const handleRetry = async () => {
   .mobile-language-switcher {
     display: block;
     flex-shrink: 0;
-    order: 2;
-    margin-left: 8px;
+    order: 3;
+    margin-right: 8px;
   }
 
   .desktop-filters {
@@ -1249,7 +1249,7 @@ const handleRetry = async () => {
   .mobile-filter-button {
     display: block;
     flex-shrink: 0;
-    order: 3;
+    order: 4;
     margin-left: auto;
   }
   
