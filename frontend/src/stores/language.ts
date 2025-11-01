@@ -205,6 +205,28 @@ export const useLanguageStore = defineStore('language', () => {
       'school.type.aided': {
         'zh-CN': '资助学校',
         'zh-TW': '資助學校'
+      },
+      
+      // 筛选器相关
+      'filter.all': {
+        'zh-CN': '全部',
+        'zh-TW': '全部'
+      },
+      'filter.allDistrict': {
+        'zh-CN': '全部片区',
+        'zh-TW': '全部片區'
+      },
+      'filter.allSchoolNet': {
+        'zh-CN': '全部校网',
+        'zh-TW': '全部校網'
+      },
+      'filter.allCategory': {
+        'zh-CN': '全部类型',
+        'zh-TW': '全部類型'
+      },
+      'filter.allBanding': {
+        'zh-CN': '全部Banding',
+        'zh-TW': '全部Banding'
       }
     }
     

@@ -85,7 +85,7 @@
               class="category-filter-item"
               @click="toggleFilterDropdown('district')"
             >
-              <span>{{ filters.district || '全部' }}</span>
+              <span>{{ filters.district ? languageStore.convertText(filters.district) : getText('filter.all') }}</span>
               <img
                 v-show="activeFilterDropdown === 'district'"
                 src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
@@ -106,7 +106,7 @@
                 class="category-filter-item"
                 @click="toggleFilterDropdown('schoolNet')"
               >
-                <span>{{ filters.schoolNet || '全部校网' }}</span>
+                <span>{{ filters.schoolNet ? languageStore.convertText(filters.schoolNet) : getText('filter.allSchoolNet') }}</span>
                 <img
                   v-show="activeFilterDropdown === 'schoolNet'"
                   src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
@@ -124,7 +124,7 @@
                 class="category-filter-item"
                 @click="toggleFilterDropdown('category')"
               >
-                <span>{{ filters.category || '全部类型' }}</span>
+                <span>{{ filters.category ? languageStore.convertText(filters.category) : getText('filter.allCategory') }}</span>
                 <img
                   v-show="activeFilterDropdown === 'category'"
                   src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
@@ -146,7 +146,7 @@
                 class="category-filter-item"
                 @click="toggleFilterDropdown('banding')"
               >
-                <span>{{ filters.banding || '全部类型' }}</span>
+                <span>{{ filters.banding ? languageStore.convertText(filters.banding) : getText('filter.allBanding') }}</span>
                 <img
                   v-show="activeFilterDropdown === 'banding'"
                   src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
@@ -172,7 +172,7 @@
                 :class="{ active: filters.district === '' }"
                 @click="selectFilter('district', '')"
               >
-                全部片区
+                {{ getText('filter.allDistrict') }}
               </div>
               <div
                 v-for="district in filterOptions.districts"
@@ -181,7 +181,7 @@
                 :class="{ active: filters.district === district }"
                 @click="selectFilter('district', district)"
               >
-                {{ district }}
+                {{ languageStore.convertText(district) }}
               </div>
             </div>
             
@@ -192,7 +192,7 @@
                 :class="{ active: filters.schoolNet === '' }"
                 @click="selectFilter('schoolNet', '')"
               >
-                全部校网
+                {{ getText('filter.allSchoolNet') }}
               </div>
               <div
                 v-for="net in filterOptions.schoolNets"
@@ -201,7 +201,7 @@
                 :class="{ active: filters.schoolNet === net }"
                 @click="selectFilter('schoolNet', net)"
               >
-                {{ net }}
+                {{ languageStore.convertText(net) }}
               </div>
             </div>
             
@@ -212,7 +212,7 @@
                 :class="{ active: filters.category === '' }"
                 @click="selectFilter('category', '')"
               >
-                全部类型
+                {{ getText('filter.allCategory') }}
               </div>
               <div
                 v-for="cat in filterOptions.categories"
@@ -221,7 +221,7 @@
                 :class="{ active: filters.category === cat }"
                 @click="selectFilter('category', cat)"
               >
-                {{ cat }}
+                {{ languageStore.convertText(cat) }}
               </div>
             </div>
             
@@ -232,7 +232,7 @@
                 :class="{ active: filters.banding === '' }"
                 @click="selectFilter('banding', '')"
               >
-                全部Banding
+                {{ getText('filter.allBanding') }}
               </div>
               <div
                 v-for="banding in filterOptions.bandings"
@@ -241,7 +241,7 @@
                 :class="{ active: filters.banding === banding }"
                 @click="selectFilter('banding', banding)"
               >
-                {{ banding }}
+                {{ languageStore.convertText(banding) }}
               </div>
             </div>
           </div>
