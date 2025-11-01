@@ -14,23 +14,8 @@
     </div>
 
     <div class="container">
-
       <!-- 搜索和类型选择统一区域 -->
       <div class="search-type-section">
-        <!-- 统计信息 -->
-        <div class="stats-section">
-          <div class="stats-text">
-            <span class="stats-item">
-              <span class="stats-number">{{ stats.totalSchools }}</span>
-              <span class="stats-label">{{ getText('school.schools') }}</span>
-            </span>
-            <span class="stats-divider">|</span>
-            <span class="stats-item">
-              <span class="stats-number">{{ stats.openApplications }}</span>
-              <span class="stats-label">{{ getText('school.openApplications') }}</span>
-            </span>
-          </div>
-        </div>
         <!-- 搜索框 -->
         <div class="search-container">
           <div class="search-input-wrapper">
@@ -102,7 +87,6 @@
                 class="arrow"
               />
             </div>
-            
             <!-- 小学筛选：校网和学校类别 -->
             <template v-if="currentType === 'primary'">
               <div
@@ -266,6 +250,20 @@
               </div>
             </div>
           </div>
+          <!-- 统计信息 -->
+          <div class="stats-section">
+            <div class="stats-text">
+              <span class="stats-item">
+                <span class="stats-number">{{ stats.totalSchools }}</span>
+                <span class="stats-label">{{ getText('school.schools') }}</span>
+              </span>
+              <span class="stats-divider">|</span>
+              <span class="stats-item">
+                <span class="stats-number">{{ stats.openApplications }}</span>
+                <span class="stats-label">{{ getText('school.openApplications') }}</span>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -274,8 +272,6 @@
         <span class="mock-badge">Mock模式</span>
         <span class="mock-text">当前使用模拟数据</span>
       </div>
-
-
       <!-- 加载状态 -->
       <div v-if="isLoading" class="loading-state">
         <div class="loading-spinner"></div>
