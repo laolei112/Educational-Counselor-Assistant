@@ -7,19 +7,13 @@
         alt="香港学校建筑" 
         class="hero-image"
       />
+      <!-- 语言切换器 - 右上角 -->
+      <div class="hero-language-switcher">
+        <LanguageSwitcher />
+      </div>
     </div>
 
     <div class="container">
-      <!-- 顶部工具栏 -->
-      <div class="top-toolbar">
-        <div class="toolbar-left">
-          <!-- 语言切换器 -->
-          <LanguageSwitcher />
-        </div>
-        <div class="toolbar-right">
-          <!-- 可以添加其他工具按钮 -->
-        </div>
-      </div>
 
       <!-- 搜索和类型选择统一区域 -->
       <div class="search-type-section">
@@ -555,27 +549,9 @@ const handleRetry = async () => {
   padding: 0 20px;
 }
 
-.top-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
-  margin-bottom: 20px;
-}
-
-.toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
 
 .hero-section {
+  position: relative;
   width: 100%;
   height: 200px;
   overflow: hidden;
@@ -586,6 +562,13 @@ const handleRetry = async () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.hero-language-switcher {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
 }
 
 .type-selector {

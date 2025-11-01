@@ -1,41 +1,35 @@
 <template>
   <div class="language-switcher">
-    <div class="language-dropdown" :class="{ 'is-open': isOpen }">
-      <button 
-        class="language-trigger" 
-        @click="toggleDropdown"
-        :aria-expanded="isOpen"
-        aria-haspopup="true"
-      >
-        <span class="current-language">{{ languageStore.currentLanguage === 'zh-CN' ? '简' : '繁' }}</span>
-        <svg 
-          class="dropdown-icon" 
-          :class="{ 'is-open': isOpen }"
-          width="12" 
-          height="8" 
-          viewBox="0 0 12 8" 
-          fill="none"
-        >
-          <path 
-            d="M1 1.5L6 6.5L11 1.5" 
-            stroke="currentColor" 
-            stroke-width="1.5" 
-            stroke-linecap="round" 
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
-      
-      <div class="language-menu" v-if="isOpen">
-        <button
+    <div 
+      class="category-filter-item"
+      @click="toggleDropdown"
+    >
+      <span>{{ languageStore.currentLanguage === 'zh-CN' ? '简' : '繁' }}</span>
+      <img
+        v-show="isOpen"
+        src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
+        alt="箭头"
+        class="arrow reverse"
+      />
+      <img
+        v-show="!isOpen"
+        src="https://i.gsxcdn.com/1691866252_ce958mjj.png"
+        alt="箭头"
+        class="arrow"
+      />
+    </div>
+    
+    <div class="filter-dropdown-menu" v-if="isOpen">
+      <div class="filter-dropdown-content">
+        <div
           v-for="lang in languages"
           :key="lang.value"
-          class="language-option"
-          :class="{ 'is-active': lang.value === languageStore.currentLanguage }"
+          class="filter-dropdown-item"
+          :class="{ active: lang.value === languageStore.currentLanguage }"
           @click="selectLanguage(lang.value)"
         >
-          <span class="language-name">{{ lang.label }}</span>
-        </button>
+          {{ lang.label }}
+        </div>
       </div>
     </div>
   </div>
@@ -84,104 +78,85 @@ onUnmounted(() => {
   display: inline-block;
 }
 
-.language-dropdown {
-  position: relative;
-}
-
-.language-trigger {
+.category-filter-item {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  padding: 4px 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  border: none;
   font-size: 14px;
-  font-weight: 500;
-  color: #374151;
+  color: #6b7280;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 60px;
-  justify-content: space-between;
+  white-space: nowrap;
+  user-select: none;
+  border-radius: 4px;
 }
 
-.language-trigger:hover {
-  border-color: #d1d5db;
-  background: #f9fafb;
+.category-filter-item:hover {
+  color: #374151;
+  background-color: rgba(255, 255, 255, 1);
 }
 
-.language-trigger:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.current-language {
+.category-filter-item span {
   flex: 1;
-  text-align: left;
 }
 
-.dropdown-icon {
-  transition: transform 0.2s ease;
-  color: #6b7280;
+.category-filter-item .arrow {
+  width: 12px;
+  height: 8px;
+  transition: all 0.2s ease;
 }
 
-.dropdown-icon.is-open {
+.category-filter-item .arrow.reverse {
   transform: rotate(180deg);
 }
 
-.language-menu {
+.filter-dropdown-menu {
   position: absolute;
-  top: 100%;
-  left: 0;
+  top: calc(100% + 8px);
   right: 0;
-  background: white;
+  background-color: white;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   z-index: 50;
-  margin-top: 4px;
-  overflow: hidden;
+  min-width: 80px;
 }
 
-.language-option {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 10px 12px;
-  background: white;
-  border: none;
+.filter-dropdown-content {
+  padding: 4px 0;
+}
+
+.filter-dropdown-item {
+  padding: 10px 16px;
   font-size: 14px;
   color: #374151;
   cursor: pointer;
   transition: background-color 0.15s ease;
-  text-align: left;
 }
 
-.language-option:hover {
-  background: #f3f4f6;
+.filter-dropdown-item:hover {
+  background-color: #f3f4f6;
 }
 
-.language-option.is-active {
-  background: #eff6ff;
+.filter-dropdown-item.active {
+  background-color: #eff6ff;
   color: #1d4ed8;
-  font-weight: 600;
-}
-
-.language-name {
-  flex: 1;
+  font-weight: 500;
 }
 
 /* 移动端适配 */
 @media (max-width: 768px) {
-  .language-trigger {
-    padding: 6px 10px;
+  .category-filter-item {
+    padding: 4px 6px;
     font-size: 13px;
-    min-width: 60px;
   }
   
-  .language-option {
-    padding: 8px 10px;
+  .filter-dropdown-item {
+    padding: 8px 12px;
     font-size: 13px;
   }
 }
