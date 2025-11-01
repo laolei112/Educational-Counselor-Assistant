@@ -669,6 +669,7 @@ const handleRetry = async () => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  position: relative;
 }
 
 .school-type-buttons {
@@ -765,11 +766,9 @@ const handleRetry = async () => {
 /* Filter Dropdown Menu */
 .filter-dropdown-menu {
   position: absolute;
-  top: calc(100% + 4px);
-  left: 16px;
-  right: 16px;
-  max-width: 1200px;
-  margin: 0 auto;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -777,6 +776,7 @@ const handleRetry = async () => {
   z-index: 100;
   max-height: 300px;
   overflow-y: auto;
+  min-width: 200px;
 }
 
 .filter-dropdown-content {
