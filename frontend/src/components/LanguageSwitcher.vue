@@ -152,8 +152,8 @@ const toggleLanguage = () => {
 /* Mobile 模式 - 移动端，紧挨筛选按钮 */
 .language-switcher.mobile-mode .toggle-track {
   border: 1px solid #e5e7eb;
-  width: 70px;
-  height: 28px;
+  width: 90px;
+  height: 32px;
   background: white;
 }
 
@@ -163,8 +163,9 @@ const toggleLanguage = () => {
 }
 
 .language-switcher.mobile-mode .toggle-option {
-  font-size: 12px;
-  padding: 5px 10px;
+  font-size: 14px;
+  padding: 7px 12px;
+  font-weight: 600;
 }
 
 .language-switcher.mobile-mode .toggle-track:hover {
