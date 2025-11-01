@@ -17,25 +17,8 @@
 
       <!-- 搜索和类型选择统一区域 -->
       <div class="search-type-section">
-        <!-- 学校类型选择和统计信息 -->
-        <div class="type-selector">
-          <div class="type-buttons">
-            <button 
-              :class="['type-btn', { active: currentType === 'primary' }]"
-              :disabled="isLoading"
-              @click="handleTypeChange('primary')"
-            >
-              {{ getText('school.primary') }}
-            </button>
-            <button 
-              :class="['type-btn', { active: currentType === 'secondary' }]"
-              :disabled="isLoading"
-              @click="handleTypeChange('secondary')"
-            >
-              {{ getText('school.secondary') }}
-            </button>
-          </div>
-          <!-- 统计信息 -->
+        <!-- 统计信息 -->
+        <div class="stats-section">
           <div class="stats-text">
             <span class="stats-item">
               <span class="stats-number">{{ stats.totalSchools }}</span>
@@ -80,6 +63,26 @@
         <!-- 筛选器 - 参考图片样式 -->
         <div class="filters-section">
           <div class="category-filter-menu">
+            <!-- 学校类型筛选 -->
+            <div
+              class="category-filter-item"
+              @click="toggleFilterDropdown('schoolType')"
+            >
+              <span>{{ currentType === 'primary' ? getText('school.primary') : getText('school.secondary') }}</span>
+              <img
+                v-show="activeFilterDropdown === 'schoolType'"
+                src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
+                alt="箭头"
+                class="arrow reverse"
+              />
+              <img
+                v-show="activeFilterDropdown !== 'schoolType'"
+                src="https://i.gsxcdn.com/1691866252_ce958mjj.png"
+                alt="箭头"
+                class="arrow"
+              />
+            </div>
+            
             <!-- 片区筛选 -->
             <div
               class="category-filter-item"
@@ -165,6 +168,24 @@
           
           <!-- 下拉菜单 -->
           <div v-if="activeFilterDropdown" class="filter-dropdown-menu" :class="{ 'is-open': activeFilterDropdown }">
+            <!-- 学校类型下拉 -->
+            <div v-if="activeFilterDropdown === 'schoolType'" class="filter-dropdown-content">
+              <div
+                class="filter-dropdown-item"
+                :class="{ active: currentType === 'primary' }"
+                @click="selectSchoolType('primary')"
+              >
+                {{ getText('school.primary') }}
+              </div>
+              <div
+                class="filter-dropdown-item"
+                :class="{ active: currentType === 'secondary' }"
+                @click="selectSchoolType('secondary')"
+              >
+                {{ getText('school.secondary') }}
+              </div>
+            </div>
+            
             <!-- 片区下拉 -->
             <div v-if="activeFilterDropdown === 'district'" class="filter-dropdown-content">
               <div
@@ -409,6 +430,12 @@ const toggleFilterDropdown = (type: string) => {
   }
 }
 
+// 选择学校类型
+const selectSchoolType = async (type: 'primary' | 'secondary') => {
+  activeFilterDropdown.value = null
+  await handleTypeChange(type)
+}
+
 // 选择筛选选项
 const selectFilter = async (type: keyof typeof filters.value, value: string) => {
   if (type === 'district') {
@@ -443,7 +470,7 @@ const handleClearFilters = async () => {
 // 点击外部关闭下拉菜单
 const handleClickOutside = (event: Event) => {
   const target = event.target as HTMLElement
-  if (!target.closest('.filters-section')) {
+  if (!target.closest('.filters-section') && !target.closest('.language-switcher')) {
     activeFilterDropdown.value = null
   }
 }
@@ -571,58 +598,13 @@ const handleRetry = async () => {
   z-index: 10;
 }
 
-.type-selector {
+.stats-section {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 0;
   background-color: transparent;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.type-buttons {
-  display: flex;
-  gap: 12px;
-  position: relative;
-}
-
-.type-btn {
-  padding: 8px 20px;
-  border: 2px solid #e5e7eb;
-  background-color: white;
-  color: #6b7280;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  font-weight: 600;
-  position: relative;
-  z-index: 1;
-}
-
-.type-btn:hover:not(:disabled) {
-  border-color: #3b82f6;
-  color: #3b82f6;
-  background-color: #f8fafc;
-}
-
-.type-btn.active {
-  background-color: white;
-  color: #3b82f6;
-  border-color: #3b82f6;
-  z-index: 2;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
-}
-
-.type-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.type-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  margin-bottom: 16px;
 }
 
 /* 统计信息样式 */
@@ -1077,22 +1059,8 @@ const handleRetry = async () => {
     padding: 0 12px;
   }
   
-  .type-selector {
-    flex-direction: column;
-    gap: 12px;
-    align-items: stretch;
-  }
-  
-  .type-buttons {
+  .stats-section {
     justify-content: center;
-    gap: 8px;
-  }
-  
-  .type-btn {
-    flex: 1;
-    padding: 10px 16px;
-    font-size: 14px;
-    min-width: 0;
   }
   
   .stats-text {

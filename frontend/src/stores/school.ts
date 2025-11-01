@@ -7,7 +7,7 @@ import type { PageQuery, PageData } from '@/api/types'
 export const useSchoolStore = defineStore('school', () => {
   // 状态
   const schools = ref<School[]>([])
-  const currentType = ref<'primary' | 'secondary'>('secondary')
+  const currentType = ref<'primary' | 'secondary'>('primary')
   const loading = ref(false)
   const error = ref<string | null>(null)
   const stats = ref<SchoolStats>({ totalSchools: 0, openApplications: 0 })
