@@ -226,14 +226,14 @@
           <div class="stats-info">
             <span class="stats-text">共 {{ filteredSchools.length }} 所学校</span>
           </div>
-        </div>
 
-        <!-- Mobile Filter Button -->
-        <div class="mobile-filter-button">
-          <button class="mobile-filter-btn" @click="showMobileFilters = !showMobileFilters">
-            <span>{{ getText('mobileFilter.filterAndSort') }}</span>
-            <span class="filter-icon">⚙</span>
-          </button>
+          <!-- Mobile Filter Button -->
+          <div class="mobile-filter-button">
+            <button class="mobile-filter-btn" @click="showMobileFilters = !showMobileFilters">
+              <span>{{ getText('mobileFilter.filterAndSort') }}</span>
+              <span class="filter-icon">⚙</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -918,17 +918,19 @@ const handleRetry = async () => {
 }
 
 .mobile-filter-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 6px;
+  padding: 8px 12px;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   background: white;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
 }
 
 .mobile-filter-btn:hover {
@@ -937,7 +939,8 @@ const handleRetry = async () => {
 }
 
 .filter-icon {
-  font-size: 16px;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
 .stats-info {
@@ -1208,7 +1211,15 @@ const handleRetry = async () => {
 
   .filter-row {
     width: 100%;
-    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+
+  .school-type-buttons {
+    flex-shrink: 0;
   }
 
   .desktop-filters {
@@ -1217,18 +1228,21 @@ const handleRetry = async () => {
 
   .mobile-filter-button {
     display: block;
-    width: 100%;
+    flex-shrink: 0;
   }
   
   .stats-info {
-    width: 100%;
-    text-align: center;
-    margin-top: 8px;
+    display: none;
   }
 
   .mobile-filter-btn {
-    width: 100%;
-    justify-content: center;
+    padding: 8px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .mobile-filter-btn span:first-child {
+    font-size: 13px;
   }
 
   .schools-grid {
@@ -1290,16 +1304,11 @@ const handleRetry = async () => {
 
   .mobile-filter-button {
     display: block;
-    width: 100%;
-    order: 2; /* 调整顺序 */
+    flex-shrink: 0;
   }
   
   .stats-info {
-    width: 100%;
-    text-align: center;
-    margin-left: 0;
-    order: 3;
-    margin-top: 8px;
+    display: none;
   }
   
   .school-type-buttons {
