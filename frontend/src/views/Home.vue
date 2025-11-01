@@ -756,8 +756,8 @@ const handleRetry = async () => {
   align-items: center;
   background: white;
   border-radius: 9999px;
-  padding: 0 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 0 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   position: relative;
 }
 
@@ -771,7 +771,7 @@ const handleRetry = async () => {
   flex: 1;
   border: none;
   outline: none;
-  padding: 12px 8px;
+  padding: 13px 8px;
   font-size: 14px;
   color: #1f2937;
   background: transparent;
@@ -828,6 +828,7 @@ const handleRetry = async () => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  justify-content: space-between; /* 添加这行 */
   position: relative;
 }
 
@@ -845,11 +846,11 @@ const handleRetry = async () => {
 }
 
 .type-btn {
-  padding: 8px 16px;
+  padding: 7px 18px;
   border-radius: 9999px;
   border: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   background-color: #f3f4f6;
@@ -857,8 +858,8 @@ const handleRetry = async () => {
 }
 
 .type-btn.active {
-  background-color: #e5e7eb;
-  color: #1f2937;
+  background-color: #e0e7ff;
+  color: #4f46e5;
 }
 
 .type-btn:hover {
@@ -878,9 +879,9 @@ const handleRetry = async () => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  padding: 7px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   cursor: pointer;
   background: white;
   min-width: 120px;
@@ -892,6 +893,7 @@ const handleRetry = async () => {
 
 .filter-select-wrapper:hover {
   border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .filter-select-trigger {
@@ -918,13 +920,20 @@ const handleRetry = async () => {
 .mobile-filter-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 8px 16px;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   background: white;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+}
+
+.mobile-filter-btn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
 }
 
 .filter-icon {
@@ -1233,6 +1242,21 @@ const handleRetry = async () => {
   }
 }
 
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-up-enter-from .mobile-filter-panel,
+.slide-up-leave-to .mobile-filter-panel {
+  transform: translateY(100%);
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+  opacity: 0;
+}
+
 /* 移动端筛选面板 */
 .mobile-filter-overlay {
   position: fixed;
@@ -1250,6 +1274,36 @@ const handleRetry = async () => {
 @media (max-width: 768px) {
   .mobile-filter-overlay {
     display: flex;
+  }
+
+  .filter-section {
+    padding: 12px 16px; /* 减少内边距 */
+  }
+  
+  .filter-container {
+    gap: 8px; /* 减小间距 */
+  }
+  
+  .desktop-filters {
+    display: none;
+  }
+
+  .mobile-filter-button {
+    display: block;
+    width: 100%;
+    order: 2; /* 调整顺序 */
+  }
+  
+  .stats-info {
+    width: 100%;
+    text-align: center;
+    margin-left: 0;
+    order: 3;
+    margin-top: 8px;
+  }
+  
+  .school-type-buttons {
+    order: 1;
   }
 }
 
