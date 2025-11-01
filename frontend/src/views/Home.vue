@@ -824,10 +824,9 @@ const handleRetry = async () => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  padding: 4px 8px;
+  background-color: transparent;
+  border: none;
   font-size: 14px;
   color: #6b7280;
   cursor: pointer;
@@ -837,8 +836,7 @@ const handleRetry = async () => {
 }
 
 .category-filter-item:hover {
-  border-color: #d1d5db;
-  background-color: #f9fafb;
+  color: #374151;
 }
 
 .category-filter-item span {
@@ -1199,7 +1197,7 @@ const handleRetry = async () => {
   .category-filter-item {
     flex: 1;
     min-width: 0;
-    padding: 10px 12px;
+    padding: 4px 6px;
     font-size: 13px;
   }
   
