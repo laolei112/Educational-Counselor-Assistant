@@ -68,22 +68,22 @@
             <!-- 下拉菜单直接放在wrapper内 -->
             <div v-if="activeFilterDropdown === 'district'" class="filter-dropdown-menu" @click.stop>
               <div class="filter-dropdown-content">
-                <div
-                  class="filter-dropdown-item"
-                  :class="{ active: filters.district === '' }"
-                  @click="selectFilter('district', '')"
-                >
-                  {{ getText('filter.allDistrict') }}
-                </div>
-                <div
-                  v-for="district in filterOptions.districts"
-                  :key="district"
-                  class="filter-dropdown-item"
-                  :class="{ active: filters.district === district }"
-                  @click="selectFilter('district', district)"
-                >
-                  {{ languageStore.convertText(district) }}
-                </div>
+                 <div
+                   class="filter-dropdown-item"
+                   :class="{ active: filters.district === '' }"
+                   @click.stop="selectFilter('district', '', $event)"
+                 >
+                   {{ getText('filter.allDistrict') }}
+                 </div>
+                 <div
+                   v-for="district in filterOptions.districts"
+                   :key="district"
+                   class="filter-dropdown-item"
+                   :class="{ active: filters.district === district }"
+                   @click.stop="selectFilter('district', district, $event)"
+                 >
+                   {{ languageStore.convertText(district) }}
+                 </div>
               </div>
             </div>
           </div>
@@ -98,22 +98,22 @@
               
               <div v-if="activeFilterDropdown === 'schoolNet'" class="filter-dropdown-menu" @click.stop>
                 <div class="filter-dropdown-content">
-                  <div
-                    class="filter-dropdown-item"
-                    :class="{ active: filters.schoolNet === '' }"
-                    @click="selectFilter('schoolNet', '')"
-                  >
-                    {{ getText('filter.allSchoolNet') }}
-                  </div>
-                  <div
-                    v-for="net in filterOptions.schoolNets"
-                    :key="net"
-                    class="filter-dropdown-item"
-                    :class="{ active: filters.schoolNet === net }"
-                    @click="selectFilter('schoolNet', net)"
-                  >
-                    {{ languageStore.convertText(net) }}
-                  </div>
+                   <div
+                     class="filter-dropdown-item"
+                     :class="{ active: filters.schoolNet === '' }"
+                     @click.stop="selectFilter('schoolNet', '', $event)"
+                   >
+                     {{ getText('filter.allSchoolNet') }}
+                   </div>
+                   <div
+                     v-for="net in filterOptions.schoolNets"
+                     :key="net"
+                     class="filter-dropdown-item"
+                     :class="{ active: filters.schoolNet === net }"
+                     @click.stop="selectFilter('schoolNet', net, $event)"
+                   >
+                     {{ languageStore.convertText(net) }}
+                   </div>
                 </div>
               </div>
             </div>
@@ -126,22 +126,22 @@
               
               <div v-if="activeFilterDropdown === 'category'" class="filter-dropdown-menu" @click.stop>
                 <div class="filter-dropdown-content">
-                  <div
-                    class="filter-dropdown-item"
-                    :class="{ active: filters.category === '' }"
-                    @click="selectFilter('category', '')"
-                  >
-                    {{ getText('filter.allCategory') }}
-                  </div>
-                  <div
-                    v-for="cat in filterOptions.categories"
-                    :key="cat"
-                    class="filter-dropdown-item"
-                    :class="{ active: filters.category === cat }"
-                    @click="selectFilter('category', cat)"
-                  >
-                    {{ languageStore.convertText(cat) }}
-                  </div>
+                   <div
+                     class="filter-dropdown-item"
+                     :class="{ active: filters.category === '' }"
+                     @click.stop="selectFilter('category', '', $event)"
+                   >
+                     {{ getText('filter.allCategory') }}
+                   </div>
+                   <div
+                     v-for="cat in filterOptions.categories"
+                     :key="cat"
+                     class="filter-dropdown-item"
+                     :class="{ active: filters.category === cat }"
+                     @click.stop="selectFilter('category', cat, $event)"
+                   >
+                     {{ languageStore.convertText(cat) }}
+                   </div>
                 </div>
               </div>
             </div>
@@ -157,22 +157,22 @@
               
               <div v-if="activeFilterDropdown === 'banding'" class="filter-dropdown-menu" @click.stop>
                 <div class="filter-dropdown-content">
-                  <div
-                    class="filter-dropdown-item"
-                    :class="{ active: filters.banding === '' }"
-                    @click="selectFilter('banding', '')"
-                  >
-                    {{ getText('filter.allBanding') }}
-                  </div>
-                  <div
-                    v-for="banding in filterOptions.bandings"
-                    :key="banding"
-                    class="filter-dropdown-item"
-                    :class="{ active: filters.banding === banding }"
-                    @click="selectFilter('banding', banding)"
-                  >
-                    {{ languageStore.convertText(banding) }}
-                  </div>
+                   <div
+                     class="filter-dropdown-item"
+                     :class="{ active: filters.banding === '' }"
+                     @click.stop="selectFilter('banding', '', $event)"
+                   >
+                     {{ getText('filter.allBanding') }}
+                   </div>
+                   <div
+                     v-for="banding in filterOptions.bandings"
+                     :key="banding"
+                     class="filter-dropdown-item"
+                     :class="{ active: filters.banding === banding }"
+                     @click.stop="selectFilter('banding', banding, $event)"
+                   >
+                     {{ languageStore.convertText(banding) }}
+                   </div>
                 </div>
               </div>
             </div>
@@ -187,34 +187,34 @@
             
             <div v-if="activeFilterDropdown === 'sort'" class="filter-dropdown-menu" @click.stop>
               <div class="filter-dropdown-content">
-                <div
-                  class="filter-dropdown-item"
-                  :class="{ active: sortBy === 'none' }"
-                  @click="selectSort('none')"
-                >
-                  默认排序
-                </div>
-                <div
-                  class="filter-dropdown-item"
-                  :class="{ active: sortBy === 'band' }"
-                  @click="selectSort('band')"
-                >
-                  按升Band比例
-                </div>
-                <div
-                  class="filter-dropdown-item"
-                  :class="{ active: sortBy === 'fee' }"
-                  @click="selectSort('fee')"
-                >
-                  按学费高低
-                </div>
-                <div
-                  class="filter-dropdown-item"
-                  :class="{ active: sortBy === 'district' }"
-                  @click="selectSort('district')"
-                >
-                  按区域
-                </div>
+                 <div
+                   class="filter-dropdown-item"
+                   :class="{ active: sortBy === 'none' }"
+                   @click.stop="selectSort('none', $event)"
+                 >
+                   默认排序
+                 </div>
+                 <div
+                   class="filter-dropdown-item"
+                   :class="{ active: sortBy === 'band' }"
+                   @click.stop="selectSort('band', $event)"
+                 >
+                   按升Band比例
+                 </div>
+                 <div
+                   class="filter-dropdown-item"
+                   :class="{ active: sortBy === 'fee' }"
+                   @click.stop="selectSort('fee', $event)"
+                 >
+                   按学费高低
+                 </div>
+                 <div
+                   class="filter-dropdown-item"
+                   :class="{ active: sortBy === 'district' }"
+                   @click.stop="selectSort('district', $event)"
+                 >
+                   按区域
+                 </div>
               </div>
             </div>
           </div>
@@ -378,9 +378,13 @@ const sortBy = ref<'none' | 'band' | 'fee' | 'district'>('none')
 
 // 切换筛选下拉菜单
 const toggleFilterDropdown = (type: string, event?: Event) => {
+  // 阻止事件冒泡，防止触发外部点击关闭
   if (event) {
     event.stopPropagation()
   }
+  
+  // 如果点击的是当前已打开的下拉菜单，则关闭它
+  // 如果点击的是其他下拉菜单，则切换过去
   if (activeFilterDropdown.value === type) {
     activeFilterDropdown.value = null
   } else {
@@ -394,8 +398,13 @@ const selectSchoolType = async (type: 'primary' | 'secondary') => {
   await handleTypeChange(type)
 }
 
-// 选择筛选选项 - 移除event参数,直接关闭菜单
-const selectFilter = async (type: keyof typeof filters.value, value: string) => {
+// 选择筛选选项 - 直接关闭菜单
+const selectFilter = async (type: keyof typeof filters.value, value: string, event?: Event) => {
+  // 阻止事件冒泡
+  if (event) {
+    event.stopPropagation()
+  }
+  
   if (type === 'district') {
     filters.value.district = value
   } else if (type === 'schoolNet') {
@@ -406,6 +415,7 @@ const selectFilter = async (type: keyof typeof filters.value, value: string) => 
     filters.value.banding = value
   }
   
+  // 关闭下拉菜单
   activeFilterDropdown.value = null
   await handleFilterChange()
 }
@@ -420,8 +430,13 @@ const handleFilterChange = async () => {
   })
 }
 
-// 选择排序方式 - 移除event参数
-const selectSort = (sort: 'none' | 'band' | 'fee' | 'district') => {
+// 选择排序方式
+const selectSort = (sort: 'none' | 'band' | 'fee' | 'district', event?: Event) => {
+  // 阻止事件冒泡
+  if (event) {
+    event.stopPropagation()
+  }
+  
   sortBy.value = sort
   activeFilterDropdown.value = null
 }
@@ -668,6 +683,7 @@ const handleRetry = async () => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  position: relative;
 }
 
 .school-type-buttons {
@@ -705,7 +721,7 @@ const handleRetry = async () => {
 
 .filter-select-wrapper {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
@@ -717,6 +733,7 @@ const handleRetry = async () => {
   font-size: 14px;
   transition: all 0.2s ease;
   user-select: none;
+  z-index: 1;
 }
 
 .filter-select-wrapper:hover {
@@ -770,7 +787,8 @@ const handleRetry = async () => {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  right: 0;
+  width: 100%;
+  min-width: max-content;
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -778,7 +796,7 @@ const handleRetry = async () => {
   z-index: 1000;
   max-height: 300px;
   overflow-y: auto;
-  min-width: 200px;
+  margin-top: 4px;
 }
 
 .filter-dropdown-content {
