@@ -6,8 +6,8 @@
         <LanguageSwitcher />
       </div>
       <div class="header-content">
-        <h1 class="header-title">{{ getText('app.title') || 'BetterSchool · 香港小学升学数据库' }}</h1>
-        <p class="header-subtitle">{{ getText('app.subtitle') || '为您智能匹配最适合孩子的升学路径' }}</p>
+        <h1 class="header-title">{{ getText('app.title') }}</h1>
+        <p class="header-subtitle">{{ getText('app.subtitle') }}</p>
         <div class="header-search-wrapper">
           <div class="header-search-icon">🔍</div>
           <input
@@ -40,24 +40,26 @@
     <!-- Filter + Sort Section -->
     <div class="filter-section">
       <div class="filter-container">
-        <!-- 学校类型切换 -->
-        <div class="school-type-buttons">
-          <button
-            :class="['type-btn', { active: currentType === 'primary' }]"
-            @click="selectSchoolType('primary')"
-          >
-            {{ getText('school.primary') }}
-          </button>
-          <button
-            :class="['type-btn', { active: currentType === 'secondary' }]"
-            @click="selectSchoolType('secondary')"
-          >
-            {{ getText('school.secondary') }}
-          </button>
-        </div>
+        <!-- 学校类型切换 + 筛选和排序 -->
+        <div class="filter-row">
+          <!-- 学校类型切换 -->
+          <div class="school-type-buttons">
+            <button
+              :class="['type-btn', { active: currentType === 'primary' }]"
+              @click="selectSchoolType('primary')"
+            >
+              {{ getText('school.primary') }}
+            </button>
+            <button
+              :class="['type-btn', { active: currentType === 'secondary' }]"
+              @click="selectSchoolType('secondary')"
+            >
+              {{ getText('school.secondary') }}
+            </button>
+          </div>
 
-        <!-- Desktop Filters -->
-        <div class="desktop-filters">
+          <!-- Desktop Filters -->
+          <div class="desktop-filters">
           <!-- 片区筛选 -->
           <div class="filter-select-wrapper" @click="toggleFilterDropdown('district', $event)">
             <span class="filter-select-trigger">
@@ -218,6 +220,12 @@
               </div>
             </div>
           </div>
+          </div>
+
+          <!-- 统计信息 -->
+          <div class="stats-info">
+            <span class="stats-text">共 {{ filteredSchools.length }} 所学校</span>
+          </div>
         </div>
 
         <!-- Mobile Filter Button -->
@@ -226,11 +234,6 @@
             <span>筛选与排序</span>
             <span class="filter-icon">⚙</span>
           </button>
-        </div>
-
-        <!-- 统计信息 -->
-        <div class="stats-info">
-          <span class="stats-text">共 {{ filteredSchools.length }} 所学校</span>
         </div>
       </div>
     </div>
@@ -711,9 +714,13 @@ const handleRetry = async () => {
 .header-section {
   background: linear-gradient(to right, #2563eb, #60a5fa);
   color: white;
-  padding: 40px 24px;
+  padding: 40px 24px 60px 24px;
   text-align: center;
   position: relative;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .header-language-switcher {
@@ -824,6 +831,14 @@ const handleRetry = async () => {
   position: relative;
 }
 
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
 .school-type-buttons {
   display: flex;
   gap: 8px;
@@ -855,6 +870,7 @@ const handleRetry = async () => {
   gap: 12px;
   flex-wrap: wrap;
   align-items: center;
+  flex: 1;
 }
 
 .filter-select-wrapper {
@@ -918,6 +934,8 @@ const handleRetry = async () => {
 .stats-info {
   font-size: 14px;
   color: #6b7280;
+  white-space: nowrap;
+  margin-left: auto;
 }
 
 /* Filter Dropdown Menu - 关键修复 */
@@ -1162,7 +1180,8 @@ const handleRetry = async () => {
 /* Responsive Design */
 @media (max-width: 768px) {
   .header-section {
-    padding: 32px 16px;
+    padding: 32px 16px 48px 16px;
+    min-height: 240px;
   }
 
   .header-title {
@@ -1178,6 +1197,11 @@ const handleRetry = async () => {
     align-items: stretch;
   }
 
+  .filter-row {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .desktop-filters {
     display: none;
   }
@@ -1185,6 +1209,12 @@ const handleRetry = async () => {
   .mobile-filter-button {
     display: block;
     width: 100%;
+  }
+  
+  .stats-info {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
   }
 
   .mobile-filter-btn {

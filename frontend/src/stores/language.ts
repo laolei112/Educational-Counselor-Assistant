@@ -227,6 +227,16 @@ export const useLanguageStore = defineStore('language', () => {
       'filter.allBanding': {
         'zh-CN': '全部Banding',
         'zh-TW': '全部Banding'
+      },
+      
+      // 应用信息
+      'app.title': {
+        'zh-CN': 'BetterSchool · 香港小学升学数据库',
+        'zh-TW': 'BetterSchool · 香港小學升學數據庫'
+      },
+      'app.subtitle': {
+        'zh-CN': '为您智能匹配最适合孩子的升学路径',
+        'zh-TW': '為您智能匹配最適合孩子的升學路徑'
       }
     }
     

@@ -177,5 +177,25 @@ export default {
     downloaded: '下載成功',
     imported: '導入成功',
     exported: '導出成功'
+  },
+
+  // 应用信息
+  app: {
+    title: 'BetterSchool · 香港小學升學數據庫',
+    subtitle: '為您智能匹配最適合孩子的升學路徑'
+  },
+
+  // 搜索相关
+  search: {
+    placeholder: '搜索學校名稱、地區、校網…'
+  },
+
+  // 筛选相关
+  filter: {
+    all: '全部',
+    allDistrict: '全部片區',
+    allSchoolNet: '全部校網',
+    allCategory: '全部類別',
+    allBanding: '全部Banding'
   }
 }
