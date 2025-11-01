@@ -10,33 +10,33 @@
         <p class="header-subtitle">{{ getText('app.subtitle') }}</p>
         <div class="header-search-wrapper">
           <div class="header-search-icon">🔍</div>
-          <input
-            v-model="searchKeyword"
-            type="text"
-            :placeholder="getText('search.placeholder')"
+            <input
+              v-model="searchKeyword"
+              type="text"
+              :placeholder="getText('search.placeholder')"
             class="header-search-input"
-            @input="handleSearchInput"
-            @focus="handleSearchFocus"
-            @blur="handleSearchBlur"
-          />
-          <div 
-            v-if="searchKeyword && !isLoading"
+              @input="handleSearchInput"
+              @focus="handleSearchFocus"
+              @blur="handleSearchBlur"
+            />
+            <div 
+              v-if="searchKeyword && !isLoading"
             class="header-clear-icon"
-            @click="handleClearSearch"
-            title="清空搜索"
-          >
-            ✕
-          </div>
-          <div 
-            v-if="isLoading"
+              @click="handleClearSearch"
+              title="清空搜索"
+            >
+              ✕
+            </div>
+            <div 
+              v-if="isLoading"
             class="header-loading-icon"
-          >
+            >
             <div class="spinner-small"></div>
           </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-
+        
     <!-- Filter + Sort Section -->
     <div class="filter-section">
       <div class="filter-container">
@@ -56,11 +56,11 @@
             >
               {{ getText('school.secondary') }}
             </button>
-          </div>
-
+            </div>
+            
           <!-- Desktop Filters -->
           <div class="desktop-filters">
-          <!-- 片区筛选 -->
+            <!-- 片区筛选 -->
           <div class="filter-select-wrapper" @click="toggleFilterDropdown('district', $event)">
             <span class="filter-select-trigger">
               {{ filters.district ? languageStore.convertText(filters.district) : getText('filter.allDistrict') }}
@@ -76,7 +76,7 @@
                    @click.stop="selectFilter('district', '', $event)"
                  >
                    {{ getText('filter.allDistrict') }}
-                 </div>
+            </div>
                  <div
                    v-for="district in filterOptions.districts"
                    :key="district"
@@ -91,7 +91,7 @@
           </div>
           
           <!-- 小学筛选:校网和学校类别 -->
-          <template v-if="currentType === 'primary'">
+            <template v-if="currentType === 'primary'">
             <div class="filter-select-wrapper" @click="toggleFilterDropdown('schoolNet', $event)">
               <span class="filter-select-trigger">
                 {{ filters.schoolNet ? languageStore.convertText(filters.schoolNet) : getText('filter.allSchoolNet') }}
@@ -106,8 +106,8 @@
                      @click.stop="selectFilter('schoolNet', '', $event)"
                    >
                      {{ getText('filter.allSchoolNet') }}
-                   </div>
-                   <div
+              </div>
+              <div
                      v-for="net in filterOptions.schoolNets"
                      :key="net"
                      class="filter-dropdown-item"
@@ -146,11 +146,11 @@
                    </div>
                 </div>
               </div>
-            </div>
-          </template>
-          
+              </div>
+            </template>
+            
           <!-- 中学筛选:Banding -->
-          <template v-else>
+            <template v-else>
             <div class="filter-select-wrapper" @click="toggleFilterDropdown('banding', $event)">
               <span class="filter-select-trigger">
                 {{ filters.banding ? languageStore.convertText(filters.banding) : getText('filter.allBanding') }}
@@ -165,7 +165,7 @@
                      @click.stop="selectFilter('banding', '', $event)"
                    >
                      {{ getText('filter.allBanding') }}
-                   </div>
+              </div>
                    <div
                      v-for="banding in filterOptions.bandings"
                      :key="banding"
@@ -174,7 +174,7 @@
                      @click.stop="selectFilter('banding', banding, $event)"
                    >
                      {{ languageStore.convertText(banding) }}
-                   </div>
+          </div>
                 </div>
               </div>
             </div>
@@ -189,29 +189,29 @@
             
             <div v-if="activeFilterDropdown === 'sort'" class="filter-dropdown-menu" @click.stop>
               <div class="filter-dropdown-content">
-                 <div
-                   class="filter-dropdown-item"
+              <div
+                class="filter-dropdown-item"
                    :class="{ active: sortBy === 'none' }"
                    @click.stop="selectSort('none', $event)"
-                 >
+              >
                    {{ getText('mobileFilter.sortDefault') }}
-                 </div>
-                 <div
-                   class="filter-dropdown-item"
+              </div>
+              <div
+                class="filter-dropdown-item"
                    :class="{ active: sortBy === 'band' }"
                    @click.stop="selectSort('band', $event)"
-                 >
+              >
                    {{ getText('mobileFilter.sortByBand') }}
-                 </div>
+              </div>
                  <div
                    class="filter-dropdown-item"
                    :class="{ active: sortBy === 'fee' }"
                    @click.stop="selectSort('fee', $event)"
                  >
                    {{ getText('mobileFilter.sortByFee') }}
-                 </div>
-                 <div
-                   class="filter-dropdown-item"
+            </div>
+              <div
+                class="filter-dropdown-item"
                    :class="{ active: sortBy === 'district' }"
                    @click.stop="selectSort('district', $event)"
                  >
@@ -222,17 +222,17 @@
           </div>
           </div>
 
-          <!-- 统计信息 -->
-          <div class="stats-info">
-            <span class="stats-text">共 {{ filteredSchools.length }} 所学校</span>
-          </div>
-
           <!-- Mobile Filter Button -->
           <div class="mobile-filter-button">
             <button class="mobile-filter-btn" @click="showMobileFilters = !showMobileFilters">
               <span>{{ getText('mobileFilter.filterAndSort') }}</span>
               <span class="filter-icon">⚙</span>
             </button>
+          </div>
+
+          <!-- 统计信息 -->
+          <div class="stats-info">
+            <span class="stats-text">共 {{ filteredSchools.length }} 所学校</span>
           </div>
         </div>
       </div>
@@ -265,9 +265,9 @@
               >
                 {{ languageStore.convertText(district) }}
               </button>
+              </div>
             </div>
-          </div>
-
+            
           <!-- 小学筛选：校网和学校类别 -->
           <template v-if="currentType === 'primary'">
             <div class="mobile-filter-group">
@@ -275,17 +275,17 @@
               <div class="mobile-filter-options">
                 <button
                   :class="['mobile-filter-option', { active: filters.schoolNet === '' }]"
-                  @click="selectFilter('schoolNet', '')"
-                >
-                  {{ getText('filter.allSchoolNet') }}
+                @click="selectFilter('schoolNet', '')"
+              >
+                {{ getText('filter.allSchoolNet') }}
                 </button>
                 <button
-                  v-for="net in filterOptions.schoolNets"
-                  :key="net"
+                v-for="net in filterOptions.schoolNets"
+                :key="net"
                   :class="['mobile-filter-option', { active: filters.schoolNet === net }]"
-                  @click="selectFilter('schoolNet', net)"
-                >
-                  {{ languageStore.convertText(net) }}
+                @click="selectFilter('schoolNet', net)"
+              >
+                {{ languageStore.convertText(net) }}
                 </button>
               </div>
             </div>
@@ -295,17 +295,17 @@
               <div class="mobile-filter-options">
                 <button
                   :class="['mobile-filter-option', { active: filters.category === '' }]"
-                  @click="selectFilter('category', '')"
-                >
-                  {{ getText('filter.allCategory') }}
+                @click="selectFilter('category', '')"
+              >
+                {{ getText('filter.allCategory') }}
                 </button>
                 <button
-                  v-for="cat in filterOptions.categories"
-                  :key="cat"
+                v-for="cat in filterOptions.categories"
+                :key="cat"
                   :class="['mobile-filter-option', { active: filters.category === cat }]"
-                  @click="selectFilter('category', cat)"
-                >
-                  {{ languageStore.convertText(cat) }}
+                @click="selectFilter('category', cat)"
+              >
+                {{ languageStore.convertText(cat) }}
                 </button>
               </div>
             </div>
@@ -318,17 +318,17 @@
               <div class="mobile-filter-options">
                 <button
                   :class="['mobile-filter-option', { active: filters.banding === '' }]"
-                  @click="selectFilter('banding', '')"
-                >
-                  {{ getText('filter.allBanding') }}
+                @click="selectFilter('banding', '')"
+              >
+                {{ getText('filter.allBanding') }}
                 </button>
                 <button
-                  v-for="banding in filterOptions.bandings"
-                  :key="banding"
+                v-for="banding in filterOptions.bandings"
+                :key="banding"
                   :class="['mobile-filter-option', { active: filters.banding === banding }]"
-                  @click="selectFilter('banding', banding)"
-                >
-                  {{ languageStore.convertText(banding) }}
+                @click="selectFilter('banding', banding)"
+              >
+                {{ languageStore.convertText(banding) }}
                 </button>
               </div>
             </div>
@@ -362,40 +362,40 @@
               >
                 {{ getText('mobileFilter.sortByDistrict') }}
               </button>
+          </div>
             </div>
           </div>
-        </div>
         
         <div class="mobile-filter-footer">
           <button class="mobile-filter-apply-btn" @click="showMobileFilters = false">
             {{ getText('mobileFilter.apply') }}
           </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 开发模式指示器 -->
-    <div v-if="enableMock" class="mock-indicator">
-      <span class="mock-badge">Mock模式</span>
-      <span class="mock-text">当前使用模拟数据</span>
-    </div>
+      <!-- 开发模式指示器 -->
+      <div v-if="enableMock" class="mock-indicator">
+        <span class="mock-badge">Mock模式</span>
+        <span class="mock-text">当前使用模拟数据</span>
+      </div>
 
-    <!-- 加载状态 -->
-    <div v-if="isLoading" class="loading-state">
-      <div class="loading-spinner"></div>
-      <p>正在加载学校信息...</p>
-    </div>
+      <!-- 加载状态 -->
+      <div v-if="isLoading" class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>正在加载学校信息...</p>
+      </div>
 
-    <!-- 错误状态 -->
-    <div v-else-if="hasError" class="error-state">
-      <div class="error-icon">⚠️</div>
-      <h3>加载失败</h3>
-      <p>{{ error }}</p>
-      <button class="retry-btn" @click="handleRetry">重试</button>
-    </div>
+      <!-- 错误状态 -->
+      <div v-else-if="hasError" class="error-state">
+        <div class="error-icon">⚠️</div>
+        <h3>加载失败</h3>
+        <p>{{ error }}</p>
+        <button class="retry-btn" @click="handleRetry">重试</button>
+      </div>
 
-    <!-- 学校列表 -->
-    <div v-else class="schools-list">
+      <!-- 学校列表 -->
+      <div v-else class="schools-list">
       <div class="schools-container">
         <div v-if="filteredSchools.length === 0" class="empty-state">
           <div class="empty-icon">📚</div>
@@ -403,25 +403,25 @@
           <p>{{ hasSearchResults ? '没有找到匹配的学校' : '当前类型下没找到学校数据' }}</p>
         </div>
         <div v-else class="schools-grid">
-          <SchoolCard 
+            <SchoolCard 
             v-for="school in sortedSchools" 
-            :key="school.id"
-            :school="school"
-            @click="handleSchoolClick"
+              :key="school.id"
+              :school="school"
+              @click="handleSchoolClick"
             class="school-card-item"
-          />
-        </div>
-        
-        <!-- 加载状态指示器 -->
-        <div v-if="isLoadingMore" class="loading-indicator">
-          <div class="loading-spinner-small"></div>
-          <span>正在加载更多...</span>
-        </div>
-        
-        <!-- 没有更多数据提示 -->
+            />
+          </div>
+          
+          <!-- 加载状态指示器 -->
+          <div v-if="isLoadingMore" class="loading-indicator">
+            <div class="loading-spinner-small"></div>
+            <span>正在加载更多...</span>
+          </div>
+          
+          <!-- 没有更多数据提示 -->
         <div v-else-if="!hasMoreData && currentPageData.length > 0" class="no-more-data">
           <div class="no-more-icon">📚</div>
-          <p>已加载全部 {{ pagination.total }} 所学校</p>
+            <p>已加载全部 {{ pagination.total }} 所学校</p>
         </div>
       </div>
     </div>
@@ -617,7 +617,7 @@ const handleClickOutside = (event: Event) => {
     const isClickInFilterWrapper = target.closest('.filter-select-wrapper')
     const isClickInDropdown = target.closest('.filter-dropdown-menu')
     if (!isClickInFilterWrapper && !isClickInDropdown) {
-      activeFilterDropdown.value = null
+    activeFilterDropdown.value = null
     }
   }
 }
@@ -1211,7 +1211,7 @@ const handleRetry = async () => {
 
   .filter-row {
     width: 100%;
-    display: flex;
+  display: flex;
     align-items: center;
     gap: 8px;
     flex-wrap: nowrap;
@@ -1220,6 +1220,7 @@ const handleRetry = async () => {
 
   .school-type-buttons {
     flex-shrink: 0;
+    order: 1;
   }
 
   .desktop-filters {
@@ -1229,6 +1230,8 @@ const handleRetry = async () => {
   .mobile-filter-button {
     display: block;
     flex-shrink: 0;
+    order: 2;
+    margin-left: auto;
   }
   
   .stats-info {
@@ -1309,10 +1312,6 @@ const handleRetry = async () => {
   
   .stats-info {
     display: none;
-  }
-  
-  .school-type-buttons {
-    order: 1;
   }
 }
 
@@ -1395,7 +1394,7 @@ const handleRetry = async () => {
 
 .mobile-filter-label {
   display: block;
-  font-size: 14px;
+    font-size: 14px;
   font-weight: 600;
   color: #374151;
   margin-bottom: 12px;
@@ -1412,7 +1411,7 @@ const handleRetry = async () => {
   border: 1px solid #e5e7eb;
   border-radius: 20px;
   background: white;
-  font-size: 14px;
+    font-size: 14px;
   color: #374151;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1436,7 +1435,7 @@ const handleRetry = async () => {
 }
 
 .mobile-filter-apply-btn {
-  width: 100%;
+    width: 100%;
   padding: 14px;
   background: linear-gradient(to right, #2563eb, #60a5fa);
   color: white;
@@ -1455,4 +1454,4 @@ const handleRetry = async () => {
 .mobile-filter-apply-btn:active {
   opacity: 0.8;
 }
-</style>
+</style> 

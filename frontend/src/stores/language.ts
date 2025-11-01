@@ -241,8 +241,8 @@ export const useLanguageStore = defineStore('language', () => {
       
       // 移动端筛选面板
       'mobileFilter.title': {
-        'zh-CN': '筛选与排序',
-        'zh-TW': '篩選與排序'
+        'zh-CN': '筛选',
+        'zh-TW': '篩選'
       },
       'mobileFilter.district': {
         'zh-CN': '片区',
