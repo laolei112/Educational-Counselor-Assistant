@@ -64,14 +64,14 @@
           </template>
         </div>
         
-        <!-- 小学显示升学比例 -->
-        <div v-if="school.type === 'primary'" class="band-rate">
+        <!-- 小学显示升学比例和详情 -->
+        <div v-if="school.type === 'primary'" class="band-rate-wrapper">
           <template v-if="school.promotionInfo?.band1_rate !== undefined">
             <span class="rate-circle">{{ getText('school.band1Rate') }}：{{ school.promotionInfo.band1_rate }}%</span>
           </template>
           <span class="arrow">{{ getText('school.details') }}→</span>
         </div>
-        <div v-if="school.type === 'secondary'" class="band-rate">
+        <div v-if="school.type === 'secondary'" class="band-rate-wrapper">
           <span class="arrow">{{ getText('school.details') }}→</span>
         </div>
       </div>
@@ -350,11 +350,21 @@ const hasSecondaryInfo = (secondaryInfo: any) => {
   white-space: nowrap;
 }
 
-.band-rate {
+.band-rate-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.band-rate-wrapper .rate-circle {
+  flex-shrink: 0;
+}
+
+.band-rate-wrapper .arrow {
+  flex-shrink: 0;
 }
 
 .rate-circle {
