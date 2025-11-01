@@ -1064,3 +1064,4 @@ const handleRetry = async () => {
     right: 0;
   }
 }
+</style>
