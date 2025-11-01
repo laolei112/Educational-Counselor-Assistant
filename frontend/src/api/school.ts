@@ -106,7 +106,7 @@ export class SchoolApi {
 
   /**
    * 获取中学筛选选项
-   * @returns 筛选选项（片区、分类等）
+   * @returns 筛选选项（片区、Banding等）
    */
   static async getSecondaryFilters() {
     return http.get<{
@@ -114,7 +114,7 @@ export class SchoolApi {
       categories: string[]
       genders: string[]
       religions: string[]
-      schoolGroups: string[]
+      schoolGroups: string[]  // Banding列表
     }>(API_PATHS.SCHOOLS.SECONDARY_FILTERS)
   }
 }

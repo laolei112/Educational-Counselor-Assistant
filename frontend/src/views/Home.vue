@@ -83,65 +83,136 @@
           </div>
         </div>
         
-        <!-- 筛选器 -->
+        <!-- 筛选器 - 参考图片样式 -->
         <div class="filters-section">
           <div class="filters-row">
             <!-- 片区筛选 -->
-            <div class="filter-item">
-              <label class="filter-label">片区</label>
-              <select 
-                v-model="filters.district"
-                class="filter-select"
-                @change="handleFilterChange"
-              >
-                <option value="">全部</option>
-                <option 
-                  v-for="district in filterOptions.districts"
-                  :key="district"
-                  :value="district"
-                >
-                  {{ district }}
-                </option>
-              </select>
-            </div>
+            <button
+              class="filter-btn"
+              @click="toggleFilterDropdown('district')"
+            >
+              <span class="filter-btn-text">{{ filters.district || '全部片区' }}</span>
+              <svg class="filter-btn-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
+                <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
             
-            <!-- 是否有升Band1比例 -->
-            <div v-if="currentType === 'primary'" class="filter-item">
-              <label class="filter-label">升Band1比例</label>
-              <select 
-                v-model="filters.hasBand1Rate"
-                class="filter-select"
-                @change="handleFilterChange"
+            <!-- 小学筛选：校网和学校类别 -->
+            <template v-if="currentType === 'primary'">
+              <button
+                class="filter-btn"
+                @click="toggleFilterDropdown('schoolNet')"
               >
-                <option :value="null">全部</option>
-                <option :value="true">有</option>
-                <option :value="false">无</option>
-              </select>
-            </div>
-            
-            <!-- 是否有中学信息（仅小学显示） -->
-            <div v-if="currentType === 'primary'" class="filter-item">
-              <label class="filter-label">中学信息</label>
-              <select 
-                v-model="filters.hasSecondaryInfo"
-                class="filter-select"
-                @change="handleFilterChange"
-              >
-                <option :value="null">全部</option>
-                <option :value="true">有</option>
-                <option :value="false">无</option>
-              </select>
-            </div>
-            
-            <!-- 清除筛选按钮 -->
-            <div class="filter-item filter-actions">
-              <button 
-                v-if="hasActiveFilters"
-                class="clear-filters-btn"
-                @click="handleClearFilters"
-              >
-                清除筛选
+                <span class="filter-btn-text">{{ filters.schoolNet || '全部校网' }}</span>
+                <svg class="filter-btn-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
+                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
               </button>
+              <button
+                class="filter-btn"
+                @click="toggleFilterDropdown('category')"
+              >
+                <span class="filter-btn-text">{{ filters.category || '全部类型' }}</span>
+                <svg class="filter-btn-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
+                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </template>
+            
+            <!-- 中学筛选：Banding -->
+            <template v-else>
+              <button
+                class="filter-btn"
+                @click="toggleFilterDropdown('banding')"
+              >
+                <span class="filter-btn-text">{{ filters.banding || '全部Banding' }}</span>
+                <svg class="filter-btn-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
+                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </template>
+          </div>
+          
+          <!-- 下拉菜单 -->
+          <div v-if="activeFilterDropdown" class="filter-dropdown-menu" :class="{ 'is-open': activeFilterDropdown }">
+            <!-- 片区下拉 -->
+            <div v-if="activeFilterDropdown === 'district'" class="filter-dropdown-content">
+              <div
+                class="filter-dropdown-item"
+                :class="{ active: filters.district === '' }"
+                @click="selectFilter('district', '')"
+              >
+                全部片区
+              </div>
+              <div
+                v-for="district in filterOptions.districts"
+                :key="district"
+                class="filter-dropdown-item"
+                :class="{ active: filters.district === district }"
+                @click="selectFilter('district', district)"
+              >
+                {{ district }}
+              </div>
+            </div>
+            
+            <!-- 校网下拉（仅小学） -->
+            <div v-if="activeFilterDropdown === 'schoolNet' && currentType === 'primary'" class="filter-dropdown-content">
+              <div
+                class="filter-dropdown-item"
+                :class="{ active: filters.schoolNet === '' }"
+                @click="selectFilter('schoolNet', '')"
+              >
+                全部校网
+              </div>
+              <div
+                v-for="net in filterOptions.schoolNets"
+                :key="net"
+                class="filter-dropdown-item"
+                :class="{ active: filters.schoolNet === net }"
+                @click="selectFilter('schoolNet', net)"
+              >
+                {{ net }}
+              </div>
+            </div>
+            
+            <!-- 学校类别下拉（仅小学） -->
+            <div v-if="activeFilterDropdown === 'category' && currentType === 'primary'" class="filter-dropdown-content">
+              <div
+                class="filter-dropdown-item"
+                :class="{ active: filters.category === '' }"
+                @click="selectFilter('category', '')"
+              >
+                全部类型
+              </div>
+              <div
+                v-for="cat in filterOptions.categories"
+                :key="cat"
+                class="filter-dropdown-item"
+                :class="{ active: filters.category === cat }"
+                @click="selectFilter('category', cat)"
+              >
+                {{ cat }}
+              </div>
+            </div>
+            
+            <!-- Banding下拉（仅中学） -->
+            <div v-if="activeFilterDropdown === 'banding' && currentType === 'secondary'" class="filter-dropdown-content">
+              <div
+                class="filter-dropdown-item"
+                :class="{ active: filters.banding === '' }"
+                @click="selectFilter('banding', '')"
+              >
+                全部Banding
+              </div>
+              <div
+                v-for="banding in filterOptions.bandings"
+                :key="banding"
+                class="filter-dropdown-item"
+                :class="{ active: filters.banding === banding }"
+                @click="selectFilter('banding', banding)"
+              >
+                {{ banding }}
+              </div>
             </div>
           </div>
         </div>
@@ -288,25 +359,63 @@ const handleScroll = async () => {
   }
 }
 
+// 活动中的下拉菜单
+const activeFilterDropdown = ref<string | null>(null)
+
 // 是否有活动的筛选条件
 const hasActiveFilters = computed(() => {
   return filters.value.district !== '' || 
-         filters.value.hasBand1Rate !== null || 
-         filters.value.hasSecondaryInfo !== null
+         filters.value.schoolNet !== '' || 
+         filters.value.category !== '' ||
+         filters.value.banding !== ''
 })
+
+// 切换筛选下拉菜单
+const toggleFilterDropdown = (type: string) => {
+  if (activeFilterDropdown.value === type) {
+    activeFilterDropdown.value = null
+  } else {
+    activeFilterDropdown.value = type
+  }
+}
+
+// 选择筛选选项
+const selectFilter = async (type: keyof typeof filters.value, value: string) => {
+  if (type === 'district') {
+    filters.value.district = value
+  } else if (type === 'schoolNet') {
+    filters.value.schoolNet = value
+  } else if (type === 'category') {
+    filters.value.category = value
+  } else if (type === 'banding') {
+    filters.value.banding = value
+  }
+  
+  activeFilterDropdown.value = null
+  await handleFilterChange()
+}
 
 // 处理筛选条件变化
 const handleFilterChange = async () => {
   await setFilters({
     district: filters.value.district,
-    hasBand1Rate: filters.value.hasBand1Rate,
-    hasSecondaryInfo: filters.value.hasSecondaryInfo
+    schoolNet: filters.value.schoolNet,
+    category: filters.value.category,
+    banding: filters.value.banding
   })
 }
 
 // 处理清除筛选
 const handleClearFilters = async () => {
   await clearFilters()
+}
+
+// 点击外部关闭下拉菜单
+const handleClickOutside = (event: Event) => {
+  const target = event.target as HTMLElement
+  if (!target.closest('.filters-section')) {
+    activeFilterDropdown.value = null
+  }
 }
 
 // 组件挂载时获取数据并添加滚动监听
@@ -319,11 +428,15 @@ onMounted(async () => {
   
   await fetchSchools()
   window.addEventListener('scroll', handleScroll)
+  document.addEventListener('click', handleClickOutside)
 })
 
 // 组件卸载时移除滚动监听
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
+  document.removeEventListener('click', handleClickOutside)
+  // 关闭下拉菜单
+  activeFilterDropdown.value = null
 })
 
 // 处理学校类型切换
@@ -656,61 +769,27 @@ const handleRetry = async () => {
   gap: 16px;
 }
 
-/* 筛选区域样式 */
+/* 筛选区域样式 - 参考图片设计 */
 .filters-section {
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid #e5e7eb;
+  position: relative;
 }
 
 .filters-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  align-items: flex-end;
+  gap: 12px;
+  align-items: center;
 }
 
-.filter-item {
+.filter-btn {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 6px;
-}
-
-.filter-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: #6b7280;
-}
-
-.filter-select {
-  padding: 8px 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #374151;
-  background-color: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 120px;
-}
-
-.filter-select:hover {
-  border-color: #d1d5db;
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.filter-actions {
-  margin-left: auto;
-}
-
-.clear-filters-btn {
   padding: 8px 16px;
-  background-color: #f3f4f6;
+  background-color: white;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 14px;
@@ -720,9 +799,61 @@ const handleRetry = async () => {
   white-space: nowrap;
 }
 
-.clear-filters-btn:hover {
-  background-color: #e5e7eb;
+.filter-btn:hover {
+  border-color: #d1d5db;
+  background-color: #f9fafb;
+}
+
+.filter-btn-text {
+  flex: 1;
+}
+
+.filter-btn-icon {
+  width: 12px;
+  height: 8px;
+  color: #9ca3af;
+  transition: transform 0.2s ease;
+}
+
+.filter-btn:active .filter-btn-icon {
+  transform: rotate(180deg);
+}
+
+/* 下拉菜单 */
+.filter-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  z-index: 50;
+  max-height: 300px;
+  overflow-y: auto;
+  min-width: 160px;
+}
+
+.filter-dropdown-content {
+  padding: 4px 0;
+}
+
+.filter-dropdown-item {
+  padding: 10px 16px;
+  font-size: 14px;
   color: #374151;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.filter-dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+.filter-dropdown-item.active {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 500;
 }
 
 .search-container {
@@ -1026,24 +1157,19 @@ const handleRetry = async () => {
   }
   
   .filters-row {
-    flex-direction: column;
-    gap: 12px;
+    gap: 8px;
   }
   
-  .filter-item {
-    width: 100%;
-  }
-  
-  .filter-select {
-    width: 100%;
+  .filter-btn {
+    flex: 1;
     min-width: 0;
+    padding: 10px 12px;
+    font-size: 13px;
   }
   
-  .filter-actions {
-    margin-left: 0;
-  }
-  
-  .clear-filters-btn {
+  .filter-dropdown-menu {
+    left: 0;
+    right: 0;
     width: 100%;
   }
 }

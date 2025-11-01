@@ -25,16 +25,25 @@ export const useSchoolStore = defineStore('school', () => {
   
   // 筛选状态
   const filters = ref({
+    // 小学筛选
     district: '',  // 片区
-    hasBand1Rate: null as boolean | null,  // 是否有升Band1比例（null表示不限）
-    hasSecondaryInfo: null as boolean | null  // 是否有中学信息（null表示不限）
+    schoolNet: '',  // 校网（仅小学）
+    category: '',  // 学校类别（仅小学）
+    // 中学筛选
+    banding: ''  // Banding/学校组别（仅中学，如1A, 1B等）
   })
   
   // 筛选选项数据
   const filterOptions = ref<{
     districts: string[]
+    schoolNets: string[]
+    categories: string[]
+    bandings: string[]
   }>({
-    districts: []
+    districts: [],
+    schoolNets: [],
+    categories: [],
+    bandings: []
   })
   
   // 无限滚动状态
@@ -247,12 +256,13 @@ export const useSchoolStore = defineStore('school', () => {
         ...query,
         page: append ? pagination.value.page + 1 : pagination.value.page,
         pageSize: pagination.value.pageSize,
-        // 片区筛选通过API传递
+        // 片区筛选
         ...(filters.value.district && { district: filters.value.district }),
-        // 是否有升Band1比例筛选（后端筛选）
-        ...(filters.value.hasBand1Rate !== null && { hasBand1Rate: filters.value.hasBand1Rate }),
-        // 是否有中学信息筛选（仅小学，后端筛选）
-        ...(currentType.value === 'primary' && filters.value.hasSecondaryInfo !== null && { hasSecondaryInfo: filters.value.hasSecondaryInfo })
+        // 小学筛选
+        ...(currentType.value === 'primary' && filters.value.schoolNet && { schoolNet: filters.value.schoolNet }),
+        ...(currentType.value === 'primary' && filters.value.category && { category: filters.value.category }),
+        // 中学筛选
+        ...(currentType.value === 'secondary' && filters.value.banding && { schoolGroup: filters.value.banding })
       }
 
       console.log(`📡 API 查询参数:`, apiQuery)
@@ -366,9 +376,12 @@ export const useSchoolStore = defineStore('school', () => {
     allSchools.value = [] // 清空所有学校数据
     hasMore.value = true // 重置更多数据状态
     // 重置筛选条件
-    filters.value.district = ''
-    filters.value.hasBand1Rate = null
-    filters.value.hasSecondaryInfo = null
+    filters.value = {
+      district: '',
+      schoolNet: '',
+      category: '',
+      banding: ''
+    }
     await fetchSchools()
     // 加载筛选选项
     await loadFilterOptions()
@@ -397,8 +410,9 @@ export const useSchoolStore = defineStore('school', () => {
   const clearFilters = async () => {
     filters.value = {
       district: '',
-      hasBand1Rate: null,
-      hasSecondaryInfo: null
+      schoolNet: '',
+      category: '',
+      banding: ''
     }
     pagination.value.page = 1
     allSchools.value = []
@@ -421,25 +435,30 @@ export const useSchoolStore = defineStore('school', () => {
         const response = await schoolApi.getPrimaryFilters()
         if (response.success && response.data) {
           filterOptions.value.districts = response.data.districts || []
+          filterOptions.value.schoolNets = response.data.schoolNets || []
+          filterOptions.value.categories = response.data.categories || []
         }
       } else {
-        // 中学暂时没有filters接口，从已有数据中提取片区列表
-        // 或者可以调用列表API的第一页来获取可能的片区
-        // 这里先使用空数组，后续可以添加接口
+        // 中学筛选选项
         try {
           const response = await schoolApi.getSecondaryFilters()
           if (response.success && response.data) {
             filterOptions.value.districts = response.data.districts || []
+            filterOptions.value.bandings = response.data.schoolGroups || []
           }
         } catch {
           // 如果接口不存在，暂时使用空数组
           filterOptions.value.districts = []
+          filterOptions.value.bandings = []
         }
       }
     } catch (err) {
       console.error('加载筛选选项失败:', err)
       // 失败时不设置，使用空数组
       filterOptions.value.districts = []
+      filterOptions.value.schoolNets = []
+      filterOptions.value.categories = []
+      filterOptions.value.bandings = []
     }
   }
 
@@ -494,12 +513,13 @@ export const useSchoolStore = defineStore('school', () => {
         keyword,
         page: append ? pagination.value.page + 1 : pagination.value.page,
         pageSize: pagination.value.pageSize,
-        // 片区筛选通过API传递
+        // 片区筛选
         ...(filters.value.district && { district: filters.value.district }),
-        // 是否有升Band1比例筛选（后端筛选）
-        ...(filters.value.hasBand1Rate !== null && { hasBand1Rate: filters.value.hasBand1Rate }),
-        // 是否有中学信息筛选（仅小学，后端筛选）
-        ...(currentType.value === 'primary' && filters.value.hasSecondaryInfo !== null && { hasSecondaryInfo: filters.value.hasSecondaryInfo })
+        // 小学筛选
+        ...(currentType.value === 'primary' && filters.value.schoolNet && { schoolNet: filters.value.schoolNet }),
+        ...(currentType.value === 'primary' && filters.value.category && { category: filters.value.category }),
+        // 中学筛选
+        ...(currentType.value === 'secondary' && filters.value.banding && { schoolGroup: filters.value.banding })
       }
 
       let response: { success: boolean; data: PageData<School>; message?: string }
