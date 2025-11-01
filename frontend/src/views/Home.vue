@@ -235,6 +235,142 @@
       </div>
     </div>
 
+    <!-- 移动端筛选面板 -->
+    <div v-if="showMobileFilters" class="mobile-filter-overlay" @click="showMobileFilters = false">
+      <div class="mobile-filter-panel" @click.stop>
+        <div class="mobile-filter-header">
+          <h3 class="mobile-filter-title">筛选与排序</h3>
+          <button class="mobile-filter-close" @click="showMobileFilters = false">✕</button>
+        </div>
+        
+        <div class="mobile-filter-content">
+          <!-- 片区筛选 -->
+          <div class="mobile-filter-group">
+            <label class="mobile-filter-label">片区</label>
+            <div class="mobile-filter-options">
+              <button
+                :class="['mobile-filter-option', { active: filters.district === '' }]"
+                @click="selectFilter('district', '')"
+              >
+                {{ getText('filter.allDistrict') }}
+              </button>
+              <button
+                v-for="district in filterOptions.districts"
+                :key="district"
+                :class="['mobile-filter-option', { active: filters.district === district }]"
+                @click="selectFilter('district', district)"
+              >
+                {{ languageStore.convertText(district) }}
+              </button>
+            </div>
+          </div>
+
+          <!-- 小学筛选：校网和学校类别 -->
+          <template v-if="currentType === 'primary'">
+            <div class="mobile-filter-group">
+              <label class="mobile-filter-label">校网</label>
+              <div class="mobile-filter-options">
+                <button
+                  :class="['mobile-filter-option', { active: filters.schoolNet === '' }]"
+                  @click="selectFilter('schoolNet', '')"
+                >
+                  {{ getText('filter.allSchoolNet') }}
+                </button>
+                <button
+                  v-for="net in filterOptions.schoolNets"
+                  :key="net"
+                  :class="['mobile-filter-option', { active: filters.schoolNet === net }]"
+                  @click="selectFilter('schoolNet', net)"
+                >
+                  {{ languageStore.convertText(net) }}
+                </button>
+              </div>
+            </div>
+            
+            <div class="mobile-filter-group">
+              <label class="mobile-filter-label">学校类别</label>
+              <div class="mobile-filter-options">
+                <button
+                  :class="['mobile-filter-option', { active: filters.category === '' }]"
+                  @click="selectFilter('category', '')"
+                >
+                  {{ getText('filter.allCategory') }}
+                </button>
+                <button
+                  v-for="cat in filterOptions.categories"
+                  :key="cat"
+                  :class="['mobile-filter-option', { active: filters.category === cat }]"
+                  @click="selectFilter('category', cat)"
+                >
+                  {{ languageStore.convertText(cat) }}
+                </button>
+              </div>
+            </div>
+          </template>
+          
+          <!-- 中学筛选：Banding -->
+          <template v-else>
+            <div class="mobile-filter-group">
+              <label class="mobile-filter-label">Banding</label>
+              <div class="mobile-filter-options">
+                <button
+                  :class="['mobile-filter-option', { active: filters.banding === '' }]"
+                  @click="selectFilter('banding', '')"
+                >
+                  {{ getText('filter.allBanding') }}
+                </button>
+                <button
+                  v-for="banding in filterOptions.bandings"
+                  :key="banding"
+                  :class="['mobile-filter-option', { active: filters.banding === banding }]"
+                  @click="selectFilter('banding', banding)"
+                >
+                  {{ languageStore.convertText(banding) }}
+                </button>
+              </div>
+            </div>
+          </template>
+          
+          <!-- 排序 -->
+          <div class="mobile-filter-group">
+            <label class="mobile-filter-label">排序</label>
+            <div class="mobile-filter-options">
+              <button
+                :class="['mobile-filter-option', { active: sortBy === 'none' }]"
+                @click="selectSort('none')"
+              >
+                默认排序
+              </button>
+              <button
+                :class="['mobile-filter-option', { active: sortBy === 'band' }]"
+                @click="selectSort('band')"
+              >
+                按升Band比例
+              </button>
+              <button
+                :class="['mobile-filter-option', { active: sortBy === 'fee' }]"
+                @click="selectSort('fee')"
+              >
+                按学费高低
+              </button>
+              <button
+                :class="['mobile-filter-option', { active: sortBy === 'district' }]"
+                @click="selectSort('district')"
+              >
+                按区域
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mobile-filter-footer">
+          <button class="mobile-filter-apply-btn" @click="showMobileFilters = false">
+            应用筛选
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- 开发模式指示器 -->
     <div v-if="enableMock" class="mock-indicator">
       <span class="mock-badge">Mock模式</span>
@@ -418,6 +554,8 @@ const selectFilter = async (type: keyof typeof filters.value, value: string, eve
   // 关闭下拉菜单
   activeFilterDropdown.value = null
   await handleFilterChange()
+  
+  // 移动端选择后不立即关闭面板，让用户可以看到所有选项
 }
 
 // 处理筛选条件变化
@@ -1063,5 +1201,165 @@ const handleRetry = async () => {
     left: 0;
     right: 0;
   }
+}
+
+/* 移动端筛选面板 */
+.mobile-filter-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: none; /* 默认隐藏，在移动端显示 */
+  align-items: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .mobile-filter-overlay {
+    display: flex;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mobile-filter-panel {
+  width: 100%;
+  max-height: 80vh;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.mobile-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mobile-filter-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.mobile-filter-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-filter-close:hover {
+  background-color: #f3f4f6;
+}
+
+.mobile-filter-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.mobile-filter-group {
+  margin-bottom: 24px;
+}
+
+.mobile-filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-filter-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+.mobile-filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mobile-filter-option {
+  padding: 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  background: white;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-filter-option:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.mobile-filter-option.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.mobile-filter-footer {
+  padding: 20px;
+  border-top: 1px solid #e5e7eb;
+  background: white;
+}
+
+.mobile-filter-apply-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(to right, #2563eb, #60a5fa);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.mobile-filter-apply-btn:hover {
+  opacity: 0.9;
+}
+
+.mobile-filter-apply-btn:active {
+  opacity: 0.8;
 }
 </style>
