@@ -85,51 +85,87 @@
         
         <!-- 筛选器 - 参考图片样式 -->
         <div class="filters-section">
-          <div class="filters-row">
+          <div class="category-filter-menu">
             <!-- 片区筛选 -->
-            <button
-              class="filter-btn"
+            <div
+              class="category-filter-item"
               @click="toggleFilterDropdown('district')"
             >
-              <span class="filter-btn-text">{{ filters.district || '全部片区' }}</span>
-              <svg class="filter-btn-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
-                <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
+              <span>{{ filters.district || '全部' }}</span>
+              <img
+                v-show="activeFilterDropdown === 'district'"
+                src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
+                alt="箭头"
+                class="arrow reverse"
+              />
+              <img
+                v-show="activeFilterDropdown !== 'district'"
+                src="https://i.gsxcdn.com/1691866252_ce958mjj.png"
+                alt="箭头"
+                class="arrow"
+              />
+            </div>
             
             <!-- 小学筛选：校网和学校类别 -->
             <template v-if="currentType === 'primary'">
-              <button
-                class="filter-btn"
+              <div
+                class="category-filter-item"
                 @click="toggleFilterDropdown('schoolNet')"
               >
-                <span class="filter-btn-text">{{ filters.schoolNet || '全部校网' }}</span>
-                <svg class="filter-btn-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
-                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
-              <button
-                class="filter-btn"
+                <span>{{ filters.schoolNet || '全部校网' }}</span>
+                <img
+                  v-show="activeFilterDropdown === 'schoolNet'"
+                  src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
+                  alt="箭头"
+                  class="arrow reverse"
+                />
+                <img
+                  v-show="activeFilterDropdown !== 'schoolNet'"
+                  src="https://i.gsxcdn.com/1691866252_ce958mjj.png"
+                  alt="箭头"
+                  class="arrow"
+                />
+              </div>
+              <div
+                class="category-filter-item"
                 @click="toggleFilterDropdown('category')"
               >
-                <span class="filter-btn-text">{{ filters.category || '全部类型' }}</span>
-                <svg class="filter-btn-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
-                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
+                <span>{{ filters.category || '全部类型' }}</span>
+                <img
+                  v-show="activeFilterDropdown === 'category'"
+                  src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
+                  alt="箭头"
+                  class="arrow reverse"
+                />
+                <img
+                  v-show="activeFilterDropdown !== 'category'"
+                  src="https://i.gsxcdn.com/1691866252_ce958mjj.png"
+                  alt="箭头"
+                  class="arrow"
+                />
+              </div>
             </template>
             
             <!-- 中学筛选：Banding -->
             <template v-else>
-              <button
-                class="filter-btn"
+              <div
+                class="category-filter-item"
                 @click="toggleFilterDropdown('banding')"
               >
-                <span class="filter-btn-text">{{ filters.banding || '全部Banding' }}</span>
-                <svg class="filter-btn-icon" width="12" height="8" viewBox="0 0 12 8" fill="none">
-                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
+                <span>{{ filters.banding || '全部类型' }}</span>
+                <img
+                  v-show="activeFilterDropdown === 'banding'"
+                  src="https://i.gsxcdn.com/1691866251_48o2a31n.png"
+                  alt="箭头"
+                  class="arrow reverse"
+                />
+                <img
+                  v-show="activeFilterDropdown !== 'banding'"
+                  src="https://i.gsxcdn.com/1691866252_ce958mjj.png"
+                  alt="箭头"
+                  class="arrow"
+                />
+              </div>
             </template>
           </div>
           
@@ -777,14 +813,14 @@ const handleRetry = async () => {
   position: relative;
 }
 
-.filters-row {
+.category-filter-menu {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
 }
 
-.filter-btn {
+.category-filter-item {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -797,25 +833,25 @@ const handleRetry = async () => {
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  user-select: none;
 }
 
-.filter-btn:hover {
+.category-filter-item:hover {
   border-color: #d1d5db;
   background-color: #f9fafb;
 }
 
-.filter-btn-text {
+.category-filter-item span {
   flex: 1;
 }
 
-.filter-btn-icon {
+.category-filter-item .arrow {
   width: 12px;
   height: 8px;
-  color: #9ca3af;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.filter-btn:active .filter-btn-icon {
+.category-filter-item .arrow.reverse {
   transform: rotate(180deg);
 }
 
@@ -1156,11 +1192,11 @@ const handleRetry = async () => {
     padding-top: 12px;
   }
   
-  .filters-row {
+  .category-filter-menu {
     gap: 8px;
   }
   
-  .filter-btn {
+  .category-filter-item {
     flex: 1;
     min-width: 0;
     padding: 10px 12px;
