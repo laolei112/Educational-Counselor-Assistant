@@ -25,6 +25,8 @@ def serialize_primary_school(school):
     return {
         "id": school.id,
         "name": school.school_name,
+        "nameTraditional": school.school_name_traditional,
+        "nameEnglish": school.school_name_english,
         "type": "primary",
         "category": school.school_category,
         "district": school.district,
@@ -53,6 +55,10 @@ def serialize_primary_school(school):
         
         # 班级信息
         "totalClasses": total_classes,
+        "schoolScale": {
+            "classes": total_classes if total_classes is not None else 0,
+            "students": 0
+        },
         "classesInfo": school.total_classes_info if school.total_classes_info else {},
         
         # 教学信息
@@ -64,6 +70,8 @@ def serialize_primary_school(school):
         "transferInfo": school.transfer_info if school.transfer_info else {},
         # 升学信息
         "promotionInfo": school.promotion_info if school.promotion_info else {},
+        # Band1比例（从promotion_info中提取）
+        "band1Rate": school.promotion_info.get('band1_rate') if school.promotion_info and isinstance(school.promotion_info, dict) else None,
         
         # 其他
         "isFullDay": school.is_full_day(),
@@ -91,6 +99,11 @@ def primary_schools_list_optimized(request):
         religion = request.GET.get('religion')
         teaching_language = request.GET.get('teachingLanguage')
         keyword = request.GET.get('keyword', '').strip()
+        
+        # 筛选参数
+        has_band1_rate = request.GET.get('hasBand1Rate')
+        has_secondary_info = request.GET.get('hasSecondaryInfo')
+        
         page = int(request.GET.get('page', 1))
         page_size = min(int(request.GET.get('pageSize', 20)), 100)
         
@@ -104,6 +117,8 @@ def primary_schools_list_optimized(request):
             religion=religion,
             teaching_language=teaching_language,
             keyword=keyword,
+            has_band1_rate=has_band1_rate,
+            has_secondary_info=has_secondary_info,
             page=page,
             page_size=page_size
         )
@@ -141,6 +156,40 @@ def primary_schools_list_optimized(request):
                 Q(school_name__icontains=keyword) | 
                 Q(district__icontains=keyword)
             )
+        
+        # 筛选：是否有升Band1比例
+        if has_band1_rate is not None:
+            if has_band1_rate.lower() in ('true', '1'):
+                # 筛选有Band1比例的学校（promotion_info JSON中包含band1_rate字段且不为null）
+                queryset = queryset.extra(
+                    where=["JSON_EXTRACT(promotion_info, '$.band1_rate') IS NOT NULL AND JSON_EXTRACT(promotion_info, '$.band1_rate') != 'null'"]
+                )
+            elif has_band1_rate.lower() in ('false', '0'):
+                # 筛选没有Band1比例的学校
+                queryset = queryset.extra(
+                    where=["JSON_EXTRACT(promotion_info, '$.band1_rate') IS NULL OR JSON_EXTRACT(promotion_info, '$.band1_rate') = 'null'"]
+                )
+        
+        # 筛选：是否有中学信息
+        if has_secondary_info is not None:
+            if has_secondary_info.lower() in ('true', '1'):
+                # 筛选有中学信息的学校（secondary_info JSON中包含through_train、direct或associated字段）
+                queryset = queryset.extra(
+                    where=[
+                        "(JSON_EXTRACT(secondary_info, '$.through_train') IS NOT NULL AND JSON_EXTRACT(secondary_info, '$.through_train') != 'null' AND JSON_EXTRACT(secondary_info, '$.through_train') != '')"
+                        " OR (JSON_EXTRACT(secondary_info, '$.direct') IS NOT NULL AND JSON_EXTRACT(secondary_info, '$.direct') != 'null' AND JSON_EXTRACT(secondary_info, '$.direct') != '')"
+                        " OR (JSON_EXTRACT(secondary_info, '$.associated') IS NOT NULL AND JSON_EXTRACT(secondary_info, '$.associated') != 'null' AND JSON_EXTRACT(secondary_info, '$.associated') != '')"
+                    ]
+                )
+            elif has_secondary_info.lower() in ('false', '0'):
+                # 筛选没有中学信息的学校
+                queryset = queryset.extra(
+                    where=[
+                        "(JSON_EXTRACT(secondary_info, '$.through_train') IS NULL OR JSON_EXTRACT(secondary_info, '$.through_train') = 'null' OR JSON_EXTRACT(secondary_info, '$.through_train') = '')"
+                        " AND (JSON_EXTRACT(secondary_info, '$.direct') IS NULL OR JSON_EXTRACT(secondary_info, '$.direct') = 'null' OR JSON_EXTRACT(secondary_info, '$.direct') = '')"
+                        " AND (JSON_EXTRACT(secondary_info, '$.associated') IS NULL OR JSON_EXTRACT(secondary_info, '$.associated') = 'null' OR JSON_EXTRACT(secondary_info, '$.associated') = '')"
+                    ]
+                )
         
         # 排序：按Band 1比例降序，比例相同时按学校名称排序
         # 使用JSON字段查询Band 1比例

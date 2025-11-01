@@ -7,7 +7,7 @@
         :aria-expanded="isOpen"
         aria-haspopup="true"
       >
-        <span class="current-language">{{ languageStore.languageLabels[languageStore.currentLanguage] }}</span>
+        <span class="current-language">{{ languageStore.currentLanguage === 'zh-CN' ? '简' : '繁' }}</span>
         <svg 
           class="dropdown-icon" 
           :class="{ 'is-open': isOpen }"
@@ -35,7 +35,6 @@
           @click="selectLanguage(lang.value)"
         >
           <span class="language-name">{{ lang.label }}</span>
-          <span class="language-code">{{ lang.code }}</span>
         </button>
       </div>
     </div>
@@ -50,8 +49,8 @@ const languageStore = useLanguageStore()
 const isOpen = ref(false)
 
 const languages = [
-  { value: 'zh-CN' as Language, label: '简体中文', code: '简' },
-  { value: 'zh-TW' as Language, label: '繁體中文', code: '繁' }
+  { value: 'zh-CN' as Language, label: '简' },
+  { value: 'zh-TW' as Language, label: '繁' }
 ]
 
 const toggleDropdown = () => {
@@ -102,7 +101,7 @@ onUnmounted(() => {
   color: #374151;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 120px;
+  min-width: 60px;
   justify-content: space-between;
 }
 
@@ -148,7 +147,6 @@ onUnmounted(() => {
 .language-option {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
   padding: 10px 12px;
   background: white;
@@ -174,32 +172,17 @@ onUnmounted(() => {
   flex: 1;
 }
 
-.language-code {
-  font-size: 12px;
-  color: #6b7280;
-  font-weight: 500;
-  margin-left: 8px;
-}
-
-.language-option.is-active .language-code {
-  color: #1d4ed8;
-}
-
 /* 移动端适配 */
 @media (max-width: 768px) {
   .language-trigger {
     padding: 6px 10px;
     font-size: 13px;
-    min-width: 100px;
+    min-width: 60px;
   }
   
   .language-option {
     padding: 8px 10px;
     font-size: 13px;
-  }
-  
-  .language-code {
-    font-size: 11px;
   }
 }
 </style>

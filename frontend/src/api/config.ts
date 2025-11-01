@@ -21,6 +21,8 @@ export const API_PATHS = {
     SECONDARY: '/schools/secondary/',     // GET 获取中学列表
     DETAIL: '/schools/:id/',              // GET 获取学校详情
     STATS: '/schools/stats/',             // GET 获取学校统计信息
+    PRIMARY_FILTERS: '/schools/primary/filters/',  // GET 获取小学筛选选项
+    SECONDARY_FILTERS: '/schools/secondary/filters/',  // GET 获取中学筛选选项
   },
   
   // 其他可能的接口

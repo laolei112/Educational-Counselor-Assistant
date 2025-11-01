@@ -23,35 +23,6 @@
 
       <!-- 搜索和类型选择统一区域 -->
       <div class="search-type-section">
-        <!-- 搜索框 -->
-        <div class="search-container">
-          <div class="search-input-wrapper">
-            <input
-              v-model="searchKeyword"
-              type="text"
-              :placeholder="getText('search.placeholder')"
-              class="search-input"
-              @input="handleSearchInput"
-              @focus="handleSearchFocus"
-              @blur="handleSearchBlur"
-            />
-            <div 
-              v-if="searchKeyword && !isLoading"
-              class="clear-icon"
-              @click="handleClearSearch"
-              title="清空搜索"
-            >
-              ✕
-            </div>
-            <div 
-              v-if="isLoading"
-              class="loading-icon"
-            >
-              <div class="spinner"></div>
-            </div>
-          </div>
-        </div>
-
         <!-- 学校类型选择和统计信息 -->
         <div class="type-selector">
           <div class="type-buttons">
@@ -81,6 +52,97 @@
               <span class="stats-number">{{ stats.openApplications }}</span>
               <span class="stats-label">{{ getText('school.openApplications') }}</span>
             </span>
+          </div>
+        </div>
+        <!-- 搜索框 -->
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <input
+              v-model="searchKeyword"
+              type="text"
+              :placeholder="getText('search.placeholder')"
+              class="search-input"
+              @input="handleSearchInput"
+              @focus="handleSearchFocus"
+              @blur="handleSearchBlur"
+            />
+            <div 
+              v-if="searchKeyword && !isLoading"
+              class="clear-icon"
+              @click="handleClearSearch"
+              title="清空搜索"
+            >
+              ✕
+            </div>
+            <div 
+              v-if="isLoading"
+              class="loading-icon"
+            >
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 筛选器 -->
+        <div class="filters-section">
+          <div class="filters-row">
+            <!-- 片区筛选 -->
+            <div class="filter-item">
+              <label class="filter-label">片区</label>
+              <select 
+                v-model="filters.district"
+                class="filter-select"
+                @change="handleFilterChange"
+              >
+                <option value="">全部</option>
+                <option 
+                  v-for="district in filterOptions.districts"
+                  :key="district"
+                  :value="district"
+                >
+                  {{ district }}
+                </option>
+              </select>
+            </div>
+            
+            <!-- 是否有升Band1比例 -->
+            <div v-if="currentType === 'primary'" class="filter-item">
+              <label class="filter-label">升Band1比例</label>
+              <select 
+                v-model="filters.hasBand1Rate"
+                class="filter-select"
+                @change="handleFilterChange"
+              >
+                <option :value="null">全部</option>
+                <option :value="true">有</option>
+                <option :value="false">无</option>
+              </select>
+            </div>
+            
+            <!-- 是否有中学信息（仅小学显示） -->
+            <div v-if="currentType === 'primary'" class="filter-item">
+              <label class="filter-label">中学信息</label>
+              <select 
+                v-model="filters.hasSecondaryInfo"
+                class="filter-select"
+                @change="handleFilterChange"
+              >
+                <option :value="null">全部</option>
+                <option :value="true">有</option>
+                <option :value="false">无</option>
+              </select>
+            </div>
+            
+            <!-- 清除筛选按钮 -->
+            <div class="filter-item filter-actions">
+              <button 
+                v-if="hasActiveFilters"
+                class="clear-filters-btn"
+                @click="handleClearFilters"
+              >
+                清除筛选
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -180,7 +242,9 @@ const {
   hasSearchResults,
   currentPageData,
   hasMoreData,
-  isLoadingMore
+  isLoadingMore,
+  filters,
+  filterOptions
 } = storeToRefs(schoolStore)
 const { 
   setSchoolType, 
@@ -188,7 +252,10 @@ const {
   clearError, 
   searchSchools, 
   clearSearch, 
-  loadMore
+  loadMore,
+  setFilters,
+  clearFilters,
+  initFilters
 } = schoolStore
 
 // 移除本地状态，使用store中的固定页面大小
@@ -221,10 +288,34 @@ const handleScroll = async () => {
   }
 }
 
+// 是否有活动的筛选条件
+const hasActiveFilters = computed(() => {
+  return filters.value.district !== '' || 
+         filters.value.hasBand1Rate !== null || 
+         filters.value.hasSecondaryInfo !== null
+})
+
+// 处理筛选条件变化
+const handleFilterChange = async () => {
+  await setFilters({
+    district: filters.value.district,
+    hasBand1Rate: filters.value.hasBand1Rate,
+    hasSecondaryInfo: filters.value.hasSecondaryInfo
+  })
+}
+
+// 处理清除筛选
+const handleClearFilters = async () => {
+  await clearFilters()
+}
+
 // 组件挂载时获取数据并添加滚动监听
 onMounted(async () => {
   // 初始化语言设置
   languageStore.initLanguage()
+  
+  // 初始化筛选选项
+  await initFilters()
   
   await fetchSchools()
   window.addEventListener('scroll', handleScroll)
@@ -565,6 +656,75 @@ const handleRetry = async () => {
   gap: 16px;
 }
 
+/* 筛选区域样式 */
+.filters-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.filter-select:hover {
+  border-color: #d1d5db;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.filter-actions {
+  margin-left: auto;
+}
+
+.clear-filters-btn {
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.clear-filters-btn:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
 .search-container {
   display: flex;
   justify-content: center;
@@ -857,6 +1017,34 @@ const handleRetry = async () => {
   
   .no-more-data p {
     font-size: 14px;
+  }
+  
+  /* 筛选器移动端样式 */
+  .filters-section {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+  
+  .filters-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .filter-item {
+    width: 100%;
+  }
+  
+  .filter-select {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .filter-actions {
+    margin-left: 0;
+  }
+  
+  .clear-filters-btn {
+    width: 100%;
   }
 }
 </style> 

@@ -20,6 +20,10 @@ export interface PageQuery {
   schoolGroup?: string  // 学校组别
   gender?: string  // 学生性别
   religion?: string  // 宗教
+  
+  // 筛选参数
+  hasBand1Rate?: boolean  // 是否有升Band1比例
+  hasSecondaryInfo?: boolean  // 是否有中学信息（仅小学）
 }
 
 // 分页响应数据

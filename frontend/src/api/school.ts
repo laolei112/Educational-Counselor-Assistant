@@ -89,6 +89,34 @@ export class SchoolApi {
       keyword
     })
   }
+
+  /**
+   * 获取小学筛选选项
+   * @returns 筛选选项（片区、分类等）
+   */
+  static async getPrimaryFilters() {
+    return http.get<{
+      districts: string[]
+      categories: string[]
+      genders: string[]
+      religions: string[]
+      schoolNets: string[]
+    }>(API_PATHS.SCHOOLS.PRIMARY_FILTERS)
+  }
+
+  /**
+   * 获取中学筛选选项
+   * @returns 筛选选项（片区、分类等）
+   */
+  static async getSecondaryFilters() {
+    return http.get<{
+      districts: string[]
+      categories: string[]
+      genders: string[]
+      religions: string[]
+      schoolGroups: string[]
+    }>(API_PATHS.SCHOOLS.SECONDARY_FILTERS)
+  }
 }
 
 // 导出便捷的函数接口
@@ -127,5 +155,9 @@ export const schoolApi = {
     
   // 按地区获取学校
   getByDistrict: (district: string, query: Omit<PageQuery, 'district'> = {}) =>
-    SchoolApi.getSchools({ ...query, district })
+    SchoolApi.getSchools({ ...query, district }),
+  
+  // 获取筛选选项
+  getPrimaryFilters: SchoolApi.getPrimaryFilters,
+  getSecondaryFilters: SchoolApi.getSecondaryFilters
 } 

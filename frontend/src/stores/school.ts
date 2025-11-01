@@ -23,6 +23,20 @@ export const useSchoolStore = defineStore('school', () => {
   // 搜索状态
   const searchKeyword = ref('')
   
+  // 筛选状态
+  const filters = ref({
+    district: '',  // 片区
+    hasBand1Rate: null as boolean | null,  // 是否有升Band1比例（null表示不限）
+    hasSecondaryInfo: null as boolean | null  // 是否有中学信息（null表示不限）
+  })
+  
+  // 筛选选项数据
+  const filterOptions = ref<{
+    districts: string[]
+  }>({
+    districts: []
+  })
+  
   // 无限滚动状态
   const hasMore = ref(true)
   const loadingMore = ref(false)
@@ -175,6 +189,7 @@ export const useSchoolStore = defineStore('school', () => {
   const hasSearchResults = computed(() => searchKeyword.value.length > 0)
   
   // 当前页面数据 - 使用 allSchools.value 显示所有已加载的数据
+  // 注意：筛选现在在后端进行，所以这里直接返回 allSchools.value
   const currentPageData = computed(() => {
     return allSchools.value
   })
@@ -187,6 +202,13 @@ export const useSchoolStore = defineStore('school', () => {
 
   // Actions
   
+  /**
+   * 获取筛选选项（在初始化时调用）
+   */
+  const initFilters = async () => {
+    await loadFilterOptions()
+  }
+
   /**
    * 获取学校列表（支持无限滚动）
    */
@@ -220,10 +242,17 @@ export const useSchoolStore = defineStore('school', () => {
       error.value = null
 
       // 根据学校类型选择不同的API
-      const apiQuery = {
+      // 将筛选条件合并到查询参数中
+      const apiQuery: PageQuery = {
         ...query,
         page: append ? pagination.value.page + 1 : pagination.value.page,
-        pageSize: pagination.value.pageSize
+        pageSize: pagination.value.pageSize,
+        // 片区筛选通过API传递
+        ...(filters.value.district && { district: filters.value.district }),
+        // 是否有升Band1比例筛选（后端筛选）
+        ...(filters.value.hasBand1Rate !== null && { hasBand1Rate: filters.value.hasBand1Rate }),
+        // 是否有中学信息筛选（仅小学，后端筛选）
+        ...(currentType.value === 'primary' && filters.value.hasSecondaryInfo !== null && { hasSecondaryInfo: filters.value.hasSecondaryInfo })
       }
 
       console.log(`📡 API 查询参数:`, apiQuery)
@@ -336,7 +365,82 @@ export const useSchoolStore = defineStore('school', () => {
     searchKeyword.value = '' // 清空搜索
     allSchools.value = [] // 清空所有学校数据
     hasMore.value = true // 重置更多数据状态
+    // 重置筛选条件
+    filters.value.district = ''
+    filters.value.hasBand1Rate = null
+    filters.value.hasSecondaryInfo = null
     await fetchSchools()
+    // 加载筛选选项
+    await loadFilterOptions()
+  }
+  
+  /**
+   * 设置筛选条件
+   */
+  const setFilters = async (newFilters: Partial<typeof filters.value>) => {
+    filters.value = { ...filters.value, ...newFilters }
+    pagination.value.page = 1 // 重置到第一页
+    allSchools.value = [] // 清空所有学校数据
+    hasMore.value = true // 重置更多数据状态
+    
+    // 如果有搜索关键词，执行搜索，否则获取列表
+    if (searchKeyword.value.trim()) {
+      await searchSchools(searchKeyword.value.trim())
+    } else {
+      await fetchSchools()
+    }
+  }
+  
+  /**
+   * 清除筛选条件
+   */
+  const clearFilters = async () => {
+    filters.value = {
+      district: '',
+      hasBand1Rate: null,
+      hasSecondaryInfo: null
+    }
+    pagination.value.page = 1
+    allSchools.value = []
+    hasMore.value = true
+    
+    // 如果有搜索关键词，执行搜索，否则获取列表
+    if (searchKeyword.value.trim()) {
+      await searchSchools(searchKeyword.value.trim())
+    } else {
+      await fetchSchools()
+    }
+  }
+  
+  /**
+   * 加载筛选选项（片区列表等）
+   */
+  const loadFilterOptions = async () => {
+    try {
+      if (currentType.value === 'primary') {
+        const response = await schoolApi.getPrimaryFilters()
+        if (response.success && response.data) {
+          filterOptions.value.districts = response.data.districts || []
+        }
+      } else {
+        // 中学暂时没有filters接口，从已有数据中提取片区列表
+        // 或者可以调用列表API的第一页来获取可能的片区
+        // 这里先使用空数组，后续可以添加接口
+        try {
+          const response = await schoolApi.getSecondaryFilters()
+          if (response.success && response.data) {
+            filterOptions.value.districts = response.data.districts || []
+          }
+        } catch {
+          // 如果接口不存在，暂时使用空数组
+          filterOptions.value.districts = []
+        }
+      }
+    } catch (err) {
+      console.error('加载筛选选项失败:', err)
+      // 失败时不设置，使用空数组
+      filterOptions.value.districts = []
+    }
   }
 
   /**
@@ -385,11 +489,17 @@ export const useSchoolStore = defineStore('school', () => {
       }
       error.value = null
 
-      const apiQuery = {
+      const apiQuery: PageQuery = {
         ...query,
         keyword,
         page: append ? pagination.value.page + 1 : pagination.value.page,
-        pageSize: pagination.value.pageSize
+        pageSize: pagination.value.pageSize,
+        // 片区筛选通过API传递
+        ...(filters.value.district && { district: filters.value.district }),
+        // 是否有升Band1比例筛选（后端筛选）
+        ...(filters.value.hasBand1Rate !== null && { hasBand1Rate: filters.value.hasBand1Rate }),
+        // 是否有中学信息筛选（仅小学，后端筛选）
+        ...(currentType.value === 'primary' && filters.value.hasSecondaryInfo !== null && { hasSecondaryInfo: filters.value.hasSecondaryInfo })
       }
 
       let response: { success: boolean; data: PageData<School>; message?: string }
@@ -476,7 +586,7 @@ export const useSchoolStore = defineStore('school', () => {
     await fetchSchools()
   }
 
-  return {
+    return {
     // 状态
     schools,
     currentType,
@@ -486,6 +596,8 @@ export const useSchoolStore = defineStore('school', () => {
     enableMock,
     pagination,
     searchKeyword,
+    filters,
+    filterOptions,
     allSchools,
     hasMore,
     loadingMore,
@@ -507,6 +619,10 @@ export const useSchoolStore = defineStore('school', () => {
     clearSearch,
     loadMore,
     clearError,
-    toggleMockMode
+    toggleMockMode,
+    setFilters,
+    clearFilters,
+    loadFilterOptions,
+    initFilters
   }
-}) 
+})
