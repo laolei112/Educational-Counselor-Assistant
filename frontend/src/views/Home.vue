@@ -56,10 +56,18 @@
             >
               {{ getText('school.secondary') }}
             </button>
-            </div>
+          </div>
+          
+          <!-- 移动端语言切换器 -->
+          <div class="mobile-language-switcher">
+            <LanguageSwitcher variant="mobile" />
+          </div>
             
           <!-- Desktop Filters -->
           <div class="desktop-filters">
+            <!-- 语言切换器 -->
+            <LanguageSwitcher variant="filter" />
+            
             <!-- 片区筛选 -->
           <div class="filter-select-wrapper" @click="toggleFilterDropdown('district', $event)">
             <span class="filter-select-trigger">
@@ -845,6 +853,10 @@ const handleRetry = async () => {
   gap: 8px;
 }
 
+.mobile-language-switcher {
+  display: none;
+}
+
 .type-btn {
   padding: 7px 18px;
   border-radius: 9999px;
@@ -1222,6 +1234,13 @@ const handleRetry = async () => {
     flex-shrink: 0;
     order: 1;
   }
+  
+  .mobile-language-switcher {
+    display: block;
+    flex-shrink: 0;
+    order: 2;
+    margin-left: 8px;
+  }
 
   .desktop-filters {
     display: none;
@@ -1230,7 +1249,7 @@ const handleRetry = async () => {
   .mobile-filter-button {
     display: block;
     flex-shrink: 0;
-    order: 2;
+    order: 3;
     margin-left: auto;
   }
   

@@ -285,8 +285,12 @@ export const useLanguageStore = defineStore('language', () => {
         'zh-TW': '應用篩選'
       },
       'mobileFilter.filterAndSort': {
-        'zh-CN': '筛选与排序',
-        'zh-TW': '篩選與排序'
+        'zh-CN': '筛选',
+        'zh-TW': '篩選'
+      },
+      'mobileFilter.language': {
+        'zh-CN': '语言',
+        'zh-TW': '語言'
       }
     }
     
