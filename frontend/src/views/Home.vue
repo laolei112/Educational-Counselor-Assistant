@@ -2,9 +2,6 @@
   <div class="home">
     <!-- Header Section - 渐变背景,带搜索框 -->
     <div class="header-section">
-      <div class="header-language-switcher">
-        <LanguageSwitcher />
-      </div>
       <div class="header-content">
         <h1 class="header-title">{{ getText('app.title') }}</h1>
         <p class="header-subtitle">{{ getText('app.subtitle') }}</p>
@@ -634,8 +631,7 @@ const handleClickOutside = (event: Event) => {
 
 // 组件挂载时获取数据并添加滚动监听
 onMounted(async () => {
-  // 初始化语言设置
-  languageStore.initLanguage()
+  // 语言设置已在 store 初始化时自动从 localStorage 加载，无需再次初始化
   
   // 初始化筛选选项
   await initFilters()
@@ -731,13 +727,6 @@ const handleRetry = async () => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-.header-language-switcher {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 10;
 }
 
 .header-content {

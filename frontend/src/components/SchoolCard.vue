@@ -358,13 +358,19 @@ const hasSecondaryInfo = (secondaryInfo: any) => {
 }
 
 .rate-circle {
-  background: #fbbf24;
-  color: #92400e;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 13px;
+  background: #fef3c7; /* amber-100 */
+  color: #92400e; /* amber-800 */
+  padding: 4px 10px; /* py-1 px-2.5 */
+  border-radius: 9999px; /* rounded-full */
+  font-weight: 500; /* font-medium */
+  font-size: 12px; /* text-xs */
   white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .rate-circle {
+    font-size: 14px; /* md:text-sm */
+  }
 }
 
 .school-group {

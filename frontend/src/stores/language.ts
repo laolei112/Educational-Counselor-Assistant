@@ -5,8 +5,21 @@ import { convertTextByLanguage } from '@/utils/textConverter'
 export type Language = 'zh-CN' | 'zh-TW'
 
 export const useLanguageStore = defineStore('language', () => {
-  // 状态
-  const currentLanguage = ref<Language>('zh-CN')
+  // 状态 - 从 localStorage 初始化，如果没有则使用默认值
+  const getInitialLanguage = (): Language => {
+    const saved = localStorage.getItem('preferred-language') as Language
+    if (saved && ['zh-CN', 'zh-TW'].includes(saved)) {
+      return saved
+    }
+    // 根据浏览器语言自动检测
+    const browserLang = navigator.language
+    if (browserLang.startsWith('zh-TW') || browserLang.startsWith('zh-HK')) {
+      return 'zh-TW'
+    }
+    return 'zh-CN'
+  }
+  
+  const currentLanguage = ref<Language>(getInitialLanguage())
   
   // 计算属性
   const isSimplified = computed(() => currentLanguage.value === 'zh-CN')
@@ -30,16 +43,19 @@ export const useLanguageStore = defineStore('language', () => {
   }
   
   const initLanguage = () => {
+    // 只在 localStorage 中没有保存值时才初始化（避免覆盖用户选择）
     const saved = localStorage.getItem('preferred-language') as Language
     if (saved && ['zh-CN', 'zh-TW'].includes(saved)) {
       currentLanguage.value = saved
     } else {
-      // 根据浏览器语言自动检测
+      // 根据浏览器语言自动检测（仅在没有保存值的情况下）
       const browserLang = navigator.language
       if (browserLang.startsWith('zh-TW') || browserLang.startsWith('zh-HK')) {
         currentLanguage.value = 'zh-TW'
+        localStorage.setItem('preferred-language', 'zh-TW')
       } else {
         currentLanguage.value = 'zh-CN'
+        localStorage.setItem('preferred-language', 'zh-CN')
       }
     }
   }
