@@ -353,9 +353,7 @@ const hasSecondaryInfo = (secondaryInfo: any) => {
 .band-rate-wrapper {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
-  min-width: 200px;
   flex-shrink: 0;
 }
 
@@ -448,11 +446,13 @@ const hasSecondaryInfo = (secondaryInfo: any) => {
   
   .title-row {
     gap: 6px;
+    flex-wrap: wrap;
   }
   
   .school-name {
     font-size: 18px;
-    min-width: 0; /* 允许文本截断 */
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
   
   .group-badge-inline {

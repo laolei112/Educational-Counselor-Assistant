@@ -4,6 +4,7 @@ from django.views.decorators.http import require_http_methods
 from django.core.paginator import Paginator
 from django.db.models import F, Q, Case, When, Value, IntegerField
 from backend.models.tb_secondary_schools import TbSecondarySchools
+from backend.utils.text_converter import normalize_keyword
 import json
 import traceback
 from common.logger import logerror
@@ -24,6 +25,8 @@ def serialize_secondary_school(school):
     return {
         "id": school.id,
         "name": school.school_name,
+        "nameTraditional": school.school_name_traditional,
+        "nameEnglish": school.school_name_english,
         "type": "secondary",
         "district": school.district,
         "schoolNet": school.school_net,
@@ -100,26 +103,60 @@ def secondary_schools_list(request):
             queryset = queryset.filter(religion=religion)
             
         if keyword:
+            # 标准化关键词（将繁体转为简体，统一用于搜索）
+            normalized_keyword = normalize_keyword(keyword)
+            
+            # 构建搜索条件：同时搜索简体字段和繁体字段
+            # 对于学校名称，同时用标准化关键词和原始关键词搜索简体和繁体字段
+            # 这样可以确保无论用户输入简体还是繁体，都能匹配到
+            name_filter = (
+                Q(school_name__icontains=normalized_keyword) | 
+                Q(school_name__icontains=keyword) |
+                Q(school_name_traditional__icontains=normalized_keyword) |
+                Q(school_name_traditional__icontains=keyword)
+            )
+            
+            # 其他字段的搜索（同时使用标准化关键词和原始关键词）
+            other_filters = (
+                Q(district__icontains=normalized_keyword) | Q(district__icontains=keyword) |
+                Q(address__icontains=normalized_keyword) | Q(address__icontains=keyword) |
+                Q(school_category__icontains=normalized_keyword) | Q(school_category__icontains=keyword) |
+                Q(religion__icontains=normalized_keyword) | Q(religion__icontains=keyword) |
+                Q(school_net__icontains=normalized_keyword) | Q(school_net__icontains=keyword) |
+                Q(school_group__icontains=normalized_keyword) | Q(school_group__icontains=keyword) |
+                Q(admission_info__icontains=normalized_keyword) | Q(admission_info__icontains=keyword)
+            )
+            
             # 使用 Case 和 When 来实现排序：校名包含关键词的排在前面
-            queryset = queryset.filter(
-                Q(school_name__icontains=keyword) | 
-                Q(district__icontains=keyword) |
-                Q(address__icontains=keyword) |
-                Q(school_category__icontains=keyword) |
-                Q(religion__icontains=keyword) |
-                Q(school_net__icontains=keyword) |
-                Q(school_group__icontains=keyword) |
-                Q(admission_info__icontains=keyword)
-            ).annotate(
+            queryset = queryset.filter(name_filter | other_filters).annotate(
                 # 添加排序权重：校名包含关键词的权重最高
                 search_priority=Case(
+                    # 简体校名包含标准化关键词或原始关键词，优先级最高
+                    When(school_name__icontains=normalized_keyword, then=Value(1)),
                     When(school_name__icontains=keyword, then=Value(1)),
+                    # 繁体校名包含标准化关键词或原始关键词，优先级也最高
+                    When(school_name_traditional__icontains=normalized_keyword, then=Value(1)),
+                    When(school_name_traditional__icontains=keyword, then=Value(1)),
+                    # 地区包含关键词
+                    When(district__icontains=normalized_keyword, then=Value(2)),
                     When(district__icontains=keyword, then=Value(2)),
+                    # 地址包含关键词
+                    When(address__icontains=normalized_keyword, then=Value(3)),
                     When(address__icontains=keyword, then=Value(3)),
+                    # 分类包含关键词
+                    When(school_category__icontains=normalized_keyword, then=Value(4)),
                     When(school_category__icontains=keyword, then=Value(4)),
+                    # 宗教包含关键词
+                    When(religion__icontains=normalized_keyword, then=Value(5)),
                     When(religion__icontains=keyword, then=Value(5)),
+                    # 校网包含关键词
+                    When(school_net__icontains=normalized_keyword, then=Value(6)),
                     When(school_net__icontains=keyword, then=Value(6)),
+                    # 学校组别包含关键词
+                    When(school_group__icontains=normalized_keyword, then=Value(7)),
                     When(school_group__icontains=keyword, then=Value(7)),
+                    # 入学信息包含关键词
+                    When(admission_info__icontains=normalized_keyword, then=Value(8)),
                     When(admission_info__icontains=keyword, then=Value(8)),
                     default=Value(9),
                     output_field=IntegerField()
