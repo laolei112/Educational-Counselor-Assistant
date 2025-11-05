@@ -71,22 +71,25 @@ def build_transfer_info(row):
         "入学申请截至时间": clean_value(row.get("S1入学申请截至时间")),
         "申请详情地址": clean_value(row.get("S1申请详情地址")),
     }
-    s2_plus = {
-        "插班申请开始时间": clean_value(row.get("S2以上插班申请开始时间")),
-        "插班申请截止时间": clean_value(row.get("S2以上插班申请截止时间")),
-        "可插班年级": clean_value(row.get("S2以上可插班年级")),
-        "插班详情链接": clean_value(row.get("S2以上插班详情链接")),
+    transfer = {
+        "插班申请开始时间1": clean_value(row.get("插班开始时间1")),
+        "插班申请截止时间1": clean_value(row.get("插班截止时间1")),
+        "可插班年级1": clean_value(row.get("可插班年级1")),
+        "插班申请开始时间2": clean_value(row.get("插班开始时间2")),
+        "插班申请截止时间2": clean_value(row.get("插班截止时间2")),
+        "可插班年级2": clean_value(row.get("可插班年级2")),
+        "插班详情链接": clean_value(row.get("插班详情链接")),
     }
 
     # 去除空字段
     s1 = {k: v for k, v in s1.items() if v}
-    s2_plus = {k: v for k, v in s2_plus.items() if v}
+    transfer = {k: v for k, v in transfer.items() if v}
 
     transfer_info = {}
     if s1:
         transfer_info["S1"] = s1
-    if s2_plus:
-        transfer_info["S2及以上"] = s2_plus
+    if transfer:
+        transfer_info["插班"] = transfer
 
     return transfer_info or None
 
@@ -99,12 +102,15 @@ def import_from_excel(excel_path):
         "学校名称",
         "课程体系",
         "S1入学申请开始时间",
-        "S1入学申请截至时间",
+        "S1入学申请截止时间",
         "S1申请详情地址",
-        "S2以上插班申请开始时间",
-        "S2以上插班申请截止时间",
-        "S2以上可插班年级",
-        "S2以上插班详情链接",
+        "插班开始时间1",
+        "插班截止时间1",
+        "可插班年级1",
+        "插班开始时间2",
+        "插班截止时间2",
+        "可插班年级2",
+        "插班详情链接",
     ]
     for col in ["学校名称"]:
         if col not in df.columns:

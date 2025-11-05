@@ -79,6 +79,7 @@ def main():
         school = TbPrimarySchools.objects.filter(school_name=school_name).first()
         if not school:
             not_found += 1
+            print(f"未找到学校: {school_name}")
             continue
 
         school.total_classes = value
