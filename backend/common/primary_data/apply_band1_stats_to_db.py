@@ -8,6 +8,7 @@ import os
 import sys
 import django
 import json
+import traceback
 from pathlib import Path
 
 # 添加项目路径
@@ -203,7 +204,7 @@ def apply_stats_to_database(stats_file):
         
         except Exception as e:
             error_count += 1
-            print(f"❌ 错误: {primary_school:35s} - {str(e)}")
+            print(f"❌ 错误: {primary_school:35s} - {traceback.format_exc()}")
     
     # 打印总结
     print("\n" + "=" * 80)
