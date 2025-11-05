@@ -132,6 +132,72 @@
           <div class="admission-content" v-html="school.admissionInfo"></div>
         </section>
 
+        <!-- 插班信息部分（中学特有） -->
+        <section v-if="school.type === 'secondary' && school.transferInfo && (school.transferInfo.S1 || school.transferInfo.插班)" class="transfer-info">
+          <div class="transfer-header">
+            <h3>✏️ 入学申请</h3>
+            <span 
+              v-if="getTransferStatus()"
+              :class="['status-tag', `status-${getTransferStatus()}`]"
+            >
+              {{ getTransferStatusLabel() }}
+            </span>
+          </div>
+          
+          <!-- 申请卡片 -->
+          <div class="application-cards">
+            <!-- 中一申请卡片 -->
+            <div 
+              v-if="school.transferInfo.S1"
+              :class="['application-card', getCardStatus(school.transferInfo.S1)]"
+            >
+              <div class="card-status-badge">
+                {{ isCardOpen(school.transferInfo.S1) ? 'OPEN' : 'CLOSED' }}
+              </div>
+              <div class="card-content">
+                <div class="card-grade">中一</div>
+                <div class="card-period">
+                  {{ formatDateRange(school.transferInfo.S1.入学申请开始时间, school.transferInfo.S1.入学申请截至时间) }}
+                </div>
+              </div>
+            </div>
+
+            <!-- 插班申请卡片 -->
+            <div 
+              v-if="school.transferInfo.插班"
+              :class="['application-card', getCardStatus(school.transferInfo.插班, true)]"
+            >
+              <div class="card-status-badge">
+                {{ isCardOpen(school.transferInfo.插班, true) ? 'OPEN' : 'CLOSED' }}
+              </div>
+              <div class="card-content">
+                <div class="card-grade">{{ getTransferGradeText() }}</div>
+                <div class="card-period">
+                  {{ formatTransferDateRange() }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 申请详情说明 -->
+          <div v-if="school.admissionInfo" class="application-details">
+            <div class="details-text" v-html="extractAdmissionDetails()"></div>
+          </div>
+
+          <!-- 入学准则 -->
+          <div v-if="hasAdmissionCriteria()" class="admission-criteria">
+            <div class="criteria-list">
+              <div 
+                v-for="(criterion, idx) in extractAdmissionCriteria()" 
+                :key="idx"
+                class="criterion-item"
+              >
+                {{ criterion }}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- 课程设置部分（中学特有） -->
         <section v-if="school.type === 'secondary' && school.schoolCurriculum" class="curriculum">
           <h3>📚 课程设置（DSE）</h3>
@@ -306,6 +372,178 @@ const getGenderLabel = (gender: string) => {
     girls: '女校'
   }
   return labels[gender as keyof typeof labels] || gender
+}
+
+// 插班信息相关函数
+const getTransferStatus = () => {
+  if (!props.school.transferInfo) return null
+  const transferInfo = props.school.transferInfo
+  
+  // 检查是否有开放的申请
+  const now = new Date()
+  const hasOpen = 
+    (transferInfo.S1 && isCardOpen(transferInfo.S1)) ||
+    (transferInfo.插班 && isCardOpen(transferInfo.插班, true))
+  
+  if (hasOpen) return 'open'
+  return 'closed'
+}
+
+const getTransferStatusLabel = () => {
+  const status = getTransferStatus()
+  if (status === 'open') return '进行中'
+  return '已关闭'
+}
+
+const isCardOpen = (info: any, isTransfer = false): boolean => {
+  if (!info) return false
+  
+  const now = new Date()
+  
+  if (isTransfer) {
+    // 检查插班信息，可能有多个时间段
+    const start1 = info.插班申请开始时间1 ? parseDate(info.插班申请开始时间1) : null
+    const end1 = info.插班申请截止时间1 ? parseDate(info.插班申请截止时间1) : null
+    const start2 = info.插班申请开始时间2 ? parseDate(info.插班申请开始时间2) : null
+    const end2 = info.插班申请截止时间2 ? parseDate(info.插班申请截止时间2) : null
+    
+    if (start1 && end1 && now >= start1 && now <= end1) return true
+    if (start2 && end2 && now >= start2 && now <= end2) return true
+    return false
+  } else {
+    // S1申请
+    const start = info.入学申请开始时间 ? parseDate(info.入学申请开始时间) : null
+    const end = info.入学申请截至时间 ? parseDate(info.入学申请截至时间) : null
+    
+    if (start && end && now >= start && now <= end) return true
+    return false
+  }
+}
+
+const parseDate = (dateStr: string): Date | null => {
+  if (!dateStr || typeof dateStr !== 'string') return null
+  
+  const trimmed = dateStr.trim()
+  if (!trimmed) return null
+  
+  // 尝试多种日期格式
+  // 格式1: 2025.1.2, 2025-1-2, 2025/1/2
+  let match = trimmed.match(/^(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})$/)
+  if (match) {
+    const year = parseInt(match[1])
+    const month = parseInt(match[2]) - 1
+    const day = parseInt(match[3])
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      return new Date(year, month, day)
+    }
+  }
+  
+  // 格式2: 20250102
+  match = trimmed.match(/^(\d{4})(\d{2})(\d{2})$/)
+  if (match) {
+    const year = parseInt(match[1])
+    const month = parseInt(match[2]) - 1
+    const day = parseInt(match[3])
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      return new Date(year, month, day)
+    }
+  }
+  
+  // 尝试直接解析（ISO格式等）
+  const parsed = new Date(trimmed)
+  if (!isNaN(parsed.getTime())) {
+    // 验证日期是否合理
+    const year = parsed.getFullYear()
+    if (year >= 2000 && year <= 2100) {
+      return parsed
+    }
+  }
+  
+  return null
+}
+
+const formatDateRange = (start?: string, end?: string): string => {
+  if (!start || !end) return '-'
+  const formatDate = (dateStr: string): string => {
+    const date = parseDate(dateStr)
+    if (!date) return dateStr
+    return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
+  }
+  return `${formatDate(start)}-${formatDate(end)}`
+}
+
+const formatTransferDateRange = (): string => {
+  const transfer = props.school.transferInfo?.插班
+  if (!transfer) return '-'
+  
+  // 优先使用第一个时间段，如果没有则使用第二个
+  if (transfer.插班申请开始时间1 && transfer.插班申请截止时间1) {
+    return formatDateRange(transfer.插班申请开始时间1, transfer.插班申请截止时间1)
+  }
+  if (transfer.插班申请开始时间2 && transfer.插班申请截止时间2) {
+    return formatDateRange(transfer.插班申请开始时间2, transfer.插班申请截止时间2)
+  }
+  return '-'
+}
+
+const getTransferGradeText = (): string => {
+  const transfer = props.school.transferInfo?.插班
+  if (!transfer) return '中二至中五'
+  
+  // 优先使用第一个年级，如果没有则使用第二个
+  if (transfer.可插班年级1) {
+    return transfer.可插班年级1
+  }
+  if (transfer.可插班年级2) {
+    return transfer.可插班年级2
+  }
+  return '中二至中五'
+}
+
+const getCardStatus = (info: any, isTransfer = false): string => {
+  return isCardOpen(info, isTransfer) ? 'card-open' : 'card-closed'
+}
+
+const extractAdmissionDetails = (): string => {
+  if (!props.school.admissionInfo) return ''
+  // 提取申请详情部分（排除入学准则）
+  const text = props.school.admissionInfo
+  // 尝试提取入学准则之前的内容
+  const criteriaMatch = text.match(/入学准则|收生准则|录取标准/)
+  if (criteriaMatch) {
+    return text.substring(0, criteriaMatch.index)
+  }
+  // 如果没有找到入学准则，返回全部内容
+  return text
+}
+
+const hasAdmissionCriteria = (): boolean => {
+  return extractAdmissionCriteria().length > 0
+}
+
+const extractAdmissionCriteria = (): string[] => {
+  if (!props.school.admissionInfo) return []
+  const text = props.school.admissionInfo
+  
+  // 尝试提取入学准则
+  const criteriaMatch = text.match(/(入学准则|收生准则|录取标准)[：:]?\s*([^\n]+(?:\n[^\n]+)*)/i)
+  if (criteriaMatch) {
+    const criteriaText = criteriaMatch[2]
+    // 按行分割，过滤空行
+    const lines = criteriaText.split('\n').filter(line => line.trim())
+    // 提取带百分比的条目
+    const criteria = lines.filter(line => {
+      const trimmed = line.trim()
+      // 匹配包含百分比的条目，如 "1. 面试表现 35%;"
+      return /\d+%/.test(trimmed) && (/^\d+\./.test(trimmed) || /^[•·]/.test(trimmed))
+    })
+    return criteria.length > 0 ? criteria : lines.slice(0, 5) // 最多返回5条
+  }
+  
+  // 如果没有找到明确的准则部分，尝试在整个文本中查找带百分比的条目
+  const percentagePattern = /(\d+\.\s*[^：:]+[：:]?\s*\d+%[；;]?)/g
+  const matches = text.match(percentagePattern)
+  return matches || []
 }
 </script>
 
@@ -484,6 +722,158 @@ section h3 {
   color: #2c3e50;
   font-size: 15px;
   line-height: 1.8;
+}
+
+/* 插班信息样式 */
+.transfer-info {
+  margin-bottom: 32px;
+}
+
+.transfer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.transfer-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e9ecef;
+  flex: 1;
+}
+
+.status-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: 12px;
+}
+
+.status-tag.status-open {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-tag.status-closed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.application-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.application-card {
+  position: relative;
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
+.application-card.card-open {
+  background: #d1fae5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.application-card.card-closed {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #6b7280;
+}
+
+.card-status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.card-open .card-status-badge {
+  background: rgba(255, 255, 255, 0.9);
+  color: #065f46;
+}
+
+.card-closed .card-status-badge {
+  background: rgba(255, 255, 255, 0.9);
+  color: #6b7280;
+}
+
+.card-content {
+  flex: 1;
+  padding-right: 60px;
+}
+
+.card-grade {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.card-period {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.application-details {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.details-text {
+  color: #2c3e50;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.details-text p {
+  margin: 8px 0;
+}
+
+.details-text p:first-child {
+  margin-top: 0;
+}
+
+.details-text p:last-child {
+  margin-bottom: 0;
+}
+
+.admission-criteria {
+  margin-top: 16px;
+}
+
+.criteria-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.criterion-item {
+  color: #2c3e50;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 8px 0;
 }
 
 .admission-content p {
@@ -779,6 +1169,30 @@ section h3 {
 
   .info-icon {
     font-size: 16px;
+  }
+
+  .transfer-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .transfer-header h3 {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .status-tag {
+    margin-left: 0;
+  }
+
+  .application-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .application-card {
+    padding: 14px;
   }
 }
 

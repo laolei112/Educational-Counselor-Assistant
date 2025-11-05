@@ -44,6 +44,7 @@ export interface School {
   totalClasses?: number  // 全校总班数
   admissionInfo?: string  // 入学信息
   schoolCurriculum?: string  // 课程设置
+  transferInfo?: TransferInfo  // 插班信息
   address?: string
   phone?: string
   email?: string
@@ -51,6 +52,26 @@ export interface School {
   officialWebsite?: string
   createdAt?: string
   updatedAt?: string
+}
+
+// 插班信息类型定义
+export interface TransferInfo {
+  S1?: {
+    入学申请开始时间?: string
+    入学申请截至时间?: string
+    申请详情地址?: string
+  }
+  插班?: {
+    插班申请开始时间1?: string
+    插班申请截止时间1?: string
+    可插班年级1?: string
+    插班申请开始时间2?: string
+    插班申请截止时间2?: string
+    可插班年级2?: string
+    插班详情链接?: string
+  }
+  application_status?: 'open' | 'closed' | 'deadline'
+  application_deadline?: string
 }
 
 export interface SchoolStats {
