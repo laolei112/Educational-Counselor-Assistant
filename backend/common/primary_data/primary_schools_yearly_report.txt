@@ -3,7 +3,7 @@
 ================================================================================
 
 统计小学数量: 173 所
-生成时间: 2025-11-05 22:10:55
+生成时间: 2025-11-05 22:36:10
 
 
 ================================================================================
@@ -542,6 +542,161 @@
     未知: 1 人
   ⚠️ 未匹配到 Band 的学校: 1 所
     - 啓思中學
+
+================================================================================
+聖方濟各英文小學
+================================================================================
+区域: 深水埗区
+
+2023年:
+  升学总人数: 72
+  Band 1 人数: 84
+  Band 1 比例: 116.67%
+  升学中学详情:
+    聖若瑟書院 (Band 1B): 10 人
+    寶血會上智英文書院 (Band 1A): 8 人
+    拔萃男書院 (Band 1B): 7 人
+    協恩中學 (Band 1A): 5 人
+    何明華會督銀禧中學 (Band 1B): 4 人
+    瑪利諾修院學校（中學部） (Band 1A): 4 人
+    聖母玫瑰書院 (Band 1B): 4 人
+    喇沙書院 (Band 1A): 3 人
+    保良局顏寶鈴書院 (Band 1B): 3 人
+    聖保羅男女中學 (Band 1A): 3 人
+    長沙灣天主教英文中學 (Band 2A): 2 人
+    德望學校 (Band 1A): 2 人
+    瑪利諾神父教會學校 (Band 2A): 2 人
+    高主教書院 (Band 1B): 2 人
+    聖公會林護紀念中學 (Band 1A): 2 人
+    聖保羅書院 (Band 1A): 2 人
+    基督教崇真中學 (Band 1B): 2 人
+    滙基書院（東九龍） (Band 1B): 2 人
+    華仁書院（九龍） (Band 1B): 2 人
+    英華書院 (Band 1A): 2 人
+    港大同學會書院 (Band 1A): 1 人
+    沙田蘇浙公學 (Band 1B): 1 人
+    英皇書院 (Band 1A): 1 人
+    九龍真光中學 (Band 1B): 1 人
+    民生書院 (Band 1B): 1 人
+    NORD ANGLIA INTERNATIONAL SCHOOL (未知Band): 1 人
+    五旬節林漢光中學 (Band 1B): 1 人
+    保良局何蔭棠中學 (Band 1B): 1 人
+    保良局羅傑承（一九八三）中學 (Band 1B): 1 人
+    伊利沙伯中學 (Band 1B): 1 人
+    皇仁書院 (Band 1A): 1 人
+    沙田培英中學 (Band 1B): 1 人
+    沙田崇真中學 (Band 1A): 1 人
+    聖言中學 (Band 1A): 1 人
+    聖公會林裘謀中學 (Band 1B): 1 人
+    聖公會曾肇添中學 (Band 1A): 1 人
+    聖芳濟書院 (Band 1B): 1 人
+    聖羅撒書院 (Band 1B): 1 人
+  Band 分布:
+    Band 1A: 37 人
+    Band 1B: 47 人
+    Band 2A: 4 人
+    未知: 1 人
+  ⚠️ 未匹配到 Band 的学校: 1 所
+    - NORD ANGLIA INTERNATIONAL SCHOOL
+
+2024年:
+  升学总人数: 72
+  Band 1 人数: 76
+  Band 1 比例: 105.56%
+  升学中学详情:
+    拔萃男書院 (Band 1B): 10 人
+    聖若瑟書院 (Band 1B): 8 人
+    聖母玫瑰書院 (Band 1B): 7 人
+    寶血會上智英文書院 (Band 1A): 6 人
+    何明華會督銀禧中學 (Band 1B): 3 人
+    德望學校 (Band 1A): 3 人
+    喇沙書院 (Band 1A): 3 人
+    聖公會林護紀念中學 (Band 1A): 3 人
+    德雅中學 (Band 1C): 3 人
+    滙基書院（東九龍） (Band 1B): 3 人
+    長沙灣天主教英文中學 (Band 2A): 2 人
+    協恩中學 (Band 1A): 2 人
+    瑪利諾修院學校（中學部） (Band 1A): 2 人
+    保良局顏寶鈴書院 (Band 1B): 2 人
+    聖保羅男女中學 (Band 1A): 2 人
+    聖保羅書院 (Band 1A): 2 人
+    華仁書院（九龍） (Band 1B): 2 人
+    迦密柏雨中學 (Band 1A): 1 人
+    香港九龍塘基督教中華宣道會鄭榮之中學 (Band 1C): 1 人
+    金文泰中學 (Band 2B): 1 人
+    拔萃女書院 (Band 1A): 1 人
+    香島中學 (Band 1B): 1 人
+    將軍澳香島中學 (Band 2C): 1 人
+    香港浸會大學附屬學校王錦輝中小學 (Band 1B): 1 人
+    HKGUA COLLEGE (未知Band): 1 人
+    瑪利諾神父教會學校 (Band 2A): 1 人
+    保良局羅傑承（一九八三）中學 (Band 1B): 1 人
+    保祿六世書院 (Band 1B): 1 人
+    沙田循道衞理中學 (Band 1B): 1 人
+    沙田崇真中學 (Band 1A): 1 人
+    聖瑪加利男女英文中小學 (Band 1B): 1 人
+    聖保祿中學 (Band 1B): 1 人
+    基督教崇真中學 (Band 1B): 1 人
+    東華三院黃笏南中學 (Band 1B): 1 人
+    華英中學 (Band 1A): 1 人
+    香港華仁書院 (Band 1B): 1 人
+  Band 分布:
+    Band 1A: 27 人
+    Band 1B: 45 人
+    Band 1C: 4 人
+    Band 2A: 3 人
+    Band 2B: 1 人
+    Band 2C: 1 人
+    未知: 1 人
+  ⚠️ 未匹配到 Band 的学校: 1 所
+    - HKGUA COLLEGE
+
+2025年:
+  升学总人数: 72
+  Band 1 人数: 79
+  Band 1 比例: 109.72%
+  升学中学详情:
+    寶血會上智英文書院 (Band 1A): 8 人
+    聖若瑟書院 (Band 1B): 8 人
+    拔萃男書院 (Band 1B): 7 人
+    聖保祿學校 (Band 1A): 6 人
+    何明華會督銀禧中學 (Band 1B): 5 人
+    協恩中學 (Band 1A): 4 人
+    香港管理專業協會李國寶中學 (Band 1B): 3 人
+    喇沙書院 (Band 1A): 3 人
+    瑪利諾修院學校（中學部） (Band 1A): 3 人
+    聖母玫瑰書院 (Band 1B): 3 人
+    保良局顏寶鈴書院 (Band 1B): 3 人
+    沙田崇真中學 (Band 1A): 3 人
+    聖保羅書院 (Band 1A): 3 人
+    長沙灣天主教英文中學 (Band 2A): 2 人
+    德望學校 (Band 1A): 2 人
+    港大同學會書院 (Band 1A): 2 人
+    瑪利諾神父教會學校 (Band 2A): 2 人
+    華仁書院（九龍） (Band 1B): 2 人
+    佛教善德英文中學 (Band 1A): 1 人
+    迦密中學 (Band 1A): 1 人
+    中華基督教會全完中學 (Band 2A): 1 人
+    拔萃女書院 (Band 1A): 1 人
+    香島中學 (Band 1B): 1 人
+    香港四邑商工總會黃棣珊紀念中學 (Band 1B): 1 人
+    循道中學 (Band 1C): 1 人
+    保良局第一張永慶中學 (Band 1A): 1 人
+    保良局羅傑承（一九八三）中學 (Band 1B): 1 人
+    高主教書院 (Band 1B): 1 人
+    聖公會曾肇添中學 (Band 1A): 1 人
+    聖保羅男女中學 (Band 1A): 1 人
+    德信中學 (Band 2C): 1 人
+    荃灣官立中學 (Band 1A): 1 人
+    東華三院吳祥川紀念中學 (Band 2A): 1 人
+    東華三院黃笏南中學 (Band 1B): 1 人
+    滙基書院（東九龍） (Band 1B): 1 人
+  Band 分布:
+    Band 1A: 41 人
+    Band 1B: 37 人
+    Band 1C: 1 人
+    Band 2A: 6 人
+    Band 2C: 1 人
 
 ================================================================================
 保良局田家炳小學
@@ -10436,6 +10591,115 @@
     Band 3B: 9 人
 
 ================================================================================
+官立嘉道理爵士小學
+================================================================================
+区域: 灣仔区
+
+2024年:
+  升学总人数: 72
+  Band 1 人数: 18
+  Band 1 比例: 25.00%
+  升学中学详情:
+    中華基督教會桂華山中學 (Band 3B): 9 人
+    聖貞德中學 (Band 3A): 7 人
+    蘇浙公學 (Band 3A): 7 人
+    伊斯蘭脫維善紀念中學 (Band 2C): 5 人
+    聖公會鄧肇堅中學 (Band 1C): 4 人
+    香港真光中學 (Band 1B): 3 人
+    佛教黃鳳翎中學 (Band 3A): 3 人
+    北角協同中學 (Band 3): 3 人
+    皇仁書院 (Band 1A): 2 人
+    聖保祿中學 (Band 1B): 2 人
+    何東中學 (Band 2C): 2 人
+    明愛胡振中書院 (Band 3A): 2 人
+    景嶺書院 (Band 1B): 2 人
+    寶血女子中學 (Band 2): 1 人
+    香港鄧鏡波書院 (Band 2B): 1 人
+    聖士提反女子中學 (Band 1A): 1 人
+    聖士提反堂中學 (Band 2C): 1 人
+    漢華中學 (Band 2C): 1 人
+    培英中學 (Band 2C): 1 人
+    孔聖堂禮仁書院 (Band 3A): 1 人
+    地利亞修女紀念學校（吉利徑） (Band 3B): 1 人
+    地利亞修女紀念學校（協和） (Band 3): 1 人
+    地利亞修女紀念學校（協和二中） (Band 3C): 1 人
+    香港管理專業協會李國寶中學 (Band 1B): 1 人
+    華仁書院（九龍） (Band 1B): 1 人
+    聖馬可中學 (Band 1A): 1 人
+    仁濟醫院王華湘中學 (Band 1C): 1 人
+    基督教聖約教會堅樂中學 (Band 2A): 1 人
+    妙法寺劉金龍中學 (Band 2A): 1 人
+    餘振強紀念第二中學 (Band 3): 1 人
+    嘉諾撒培德書院 (Band 2C): 1 人
+  Band 分布:
+    Band 1A: 4 人
+    Band 1B: 9 人
+    Band 1C: 5 人
+    Band 2: 1 人
+    Band 2A: 2 人
+    Band 2B: 1 人
+    Band 2C: 11 人
+    Band 3: 5 人
+    Band 3A: 20 人
+    Band 3B: 10 人
+    Band 3C: 1 人
+
+2025年:
+  升学总人数: 72
+  Band 1 人数: 18
+  Band 1 比例: 25.00%
+  升学中学详情:
+    聖貞德中學 (Band 3A): 9 人
+    皇仁書院 (Band 1A): 6 人
+    北角協同中學 (Band 3): 6 人
+    蘇浙公學 (Band 3A): 5 人
+    伊斯蘭脫維善紀念中學 (Band 2C): 4 人
+    聖保祿中學 (Band 1B): 3 人
+    香港真光中學 (Band 1B): 3 人
+    啓思中學 (未知Band): 3 人
+    地利亞修女紀念學校（吉利徑） (Band 3B): 3 人
+    佛教黃鳳翎中學 (Band 3A): 2 人
+    中華基督教會桂華山中學 (Band 3B): 2 人
+    東華三院李潤田紀念中學 (Band 3A): 2 人
+    衞理中學 (Band 2A): 2 人
+    瑪利曼中學 (Band 1B): 1 人
+    聖公會鄧肇堅中學 (Band 1C): 1 人
+    高主教書院 (Band 1B): 1 人
+    香港華仁書院 (Band 1B): 1 人
+    寶血女子中學 (Band 2): 1 人
+    香港鄧鏡波書院 (Band 2B): 1 人
+    何東中學 (Band 2C): 1 人
+    漢華中學 (Band 2C): 1 人
+    長沙灣天主教英文中學 (Band 2A): 1 人
+    新生命教育協會呂郭碧鳳中學 (Band 1B): 1 人
+    聖母書院 (Band 2): 1 人
+    張振興伉儷書院 (Band 3): 1 人
+    樂道中學 (Band 3A): 1 人
+    中華基督教青年會中學 (Band 2B): 1 人
+    餘振強紀念第二中學 (Band 3): 1 人
+    保良局唐乃勤初中書院 (Band 2): 1 人
+    將軍澳香島中學 (Band 2C): 1 人
+    香港仔工業學校 (Band 3): 1 人
+    藍田聖保祿中學 (Band 1B): 1 人
+    地利亞修女紀念學校（百老匯） (Band 3C): 1 人
+    萬鈞匯知中學 (Band 3): 1 人
+  Band 分布:
+    Band 1A: 6 人
+    Band 1B: 11 人
+    Band 1C: 1 人
+    Band 2: 3 人
+    Band 2A: 3 人
+    Band 2B: 2 人
+    Band 2C: 7 人
+    Band 3: 10 人
+    Band 3A: 19 人
+    Band 3B: 5 人
+    Band 3C: 1 人
+    未知: 3 人
+  ⚠️ 未匹配到 Band 的学校: 1 所
+    - 啓思中學
+
+================================================================================
 大埔浸信會公立學校
 ================================================================================
 区域: 大埔区
@@ -11504,247 +11768,3 @@
     Band 3A: 39 人
     Band 3B: 10 人
     Band 3C: 7 人
-
-================================================================================
-官立嘉道理爵士小學
-================================================================================
-区域: 灣仔区
-
-2024年:
-  升学总人数: 72
-  Band 1 人数: 0
-  Band 1 比例: 0.00%
-  升学中学详情:
-    CCC Kwei Wah Shan College (未知Band): 9 人
-    St Joan of Arc Secondary School (未知Band): 7 人
-    Kiangsu-Chekiang College (未知Band): 7 人
-    Islamic Kasim Tuet Memorial College (未知Band): 5 人
-    SKH Tang Shiu Kin Secondary School (未知Band): 4 人
-    True Light Middle School of Hong Kong (未知Band): 3 人
-    Buddhist Wong Fung Ling College (未知Band): 3 人
-    Concordia Lutheran School (NP) (未知Band): 3 人
-    Queen's College (未知Band): 2 人
-    St Paul's Secondary School (未知Band): 2 人
-    Hotung Secondary School (未知Band): 2 人
-    Caritas Wu Cheng-Chung Secondary School (未知Band): 2 人
-    King Ling College (未知Band): 2 人
-    Precious Blood Secondary School (未知Band): 1 人
-    HK Tang King Po College (未知Band): 1 人
-    St Stephen's Girls' College (未知Band): 1 人
-    St Stephen's Church College (未知Band): 1 人
-    Hon Wah College (未知Band): 1 人
-    Pui Ying Secondary School (未知Band): 1 人
-    Academy of Innovation (Confucius Hall) (未知Band): 1 人
-    Delia Memorial School (Glee Path) (未知Band): 1 人
-    Delia Memorial School (Hip Wo) (未知Band): 1 人
-    Delia Memorial School (Hip Wo No.2 College) (未知Band): 1 人
-    HKMA David Li Kwok Po College (未知Band): 1 人
-    Wah Yan College,KLN (未知Band): 1 人
-    St Mark's School (未知Band): 1 人
-    Yan Chai Hospital Wong Wha San Secondary School (未知Band): 1 人
-    The Church of Christ in China Heep Who College (未知Band): 1 人
-    Madam Lau Kam Lung Secondary School of Miu Fat Buddhist Monastery (未知Band): 1 人
-    Yu Chun Keung Memorial College No.2 (未知Band): 1 人
-    Pui Tak Canossian College (未知Band): 1 人
-  Band 分布:
-    未知: 69 人
-  ⚠️ 未匹配到 Band 的学校: 32 所
-    - Queen's College
-    - St Paul's Secondary School
-    - True Light Middle School of Hong Kong
-
-2025年:
-  升学总人数: 72
-  Band 1 人数: 0
-  Band 1 比例: 0.00%
-  升学中学详情:
-    St Joan of Arc Secondary School (未知Band): 9 人
-    Queen's College (未知Band): 6 人
-    Concordia Lutheran School (NP) (未知Band): 6 人
-    Kiangsu-Chekiang College (未知Band): 5 人
-    Islamic Kasim Tuet Memorial College (未知Band): 4 人
-    St Paul's Secondary School (未知Band): 3 人
-    The True Light School of Hong Kong (未知Band): 3 人
-    Creative Secondary School (未知Band): 3 人
-    Delia Memorial School (Glee Path) (未知Band): 3 人
-    Buddhist Wong Fung Ling College (未知Band): 2 人
-    CCC Kwei Wah Shan College (未知Band): 2 人
-    TWGHS Lee Ching Dea Memorial College (未知Band): 2 人
-    The Methodist Church HK Wesley College (未知Band): 2 人
-    Marymount Secondary School (未知Band): 1 人
-    SKH Tang Shiu Kin Secondary School (未知Band): 1 人
-    Raimondi College (未知Band): 1 人
-    Wah Yan College, Hong Kong (未知Band): 1 人
-    Precious Blood Secondary School (未知Band): 1 人
-    HK Tang King Po College (未知Band): 1 人
-    Hotung Secondary School (未知Band): 1 人
-    Hon Wah College (未知Band): 1 人
-    Cheung Sha Wan Catholic Secondary School (未知Band): 1 人
-    NLSI Lui Kwok Pat Fong College (未知Band): 1 人
-    Our Lady's College (未知Band): 1 人
-    Chong Gene Hang College (未知Band): 1 人
-    Lock Tao Secondary School (未知Band): 1 人
-    Chinese YMCA Secondary School (未知Band): 1 人
-    Yu Chun Keung Memorial College No.2 (未知Band): 1 人
-    PLK Tong Nai Kan Junior Secondary School (未知Band): 1 人
-    Heung To Secondary School (Tseung Kwan O) (未知Band): 1 人
-    Aberdeen Technical School (未知Band): 1 人
-    St Paul's School (Nam Tin) (未知Band): 1 人
-    Delia Memorial School (Broadway) (未知Band): 1 人
-    Man Kwan QualiEd College (未知Band): 1 人
-  Band 分布:
-    未知: 71 人
-  ⚠️ 未匹配到 Band 的学校: 34 所
-    - Queen's College
-    - St Paul's Secondary School
-    - The True Light School of Hong Kong
-
-================================================================================
-聖方濟各英文小學
-================================================================================
-区域: 深水埗区
-
-2023年:
-  升学总人数: 72
-  Band 1 人数: 0
-  Band 1 比例: 0.00%
-  升学中学详情:
-    ST JOSEPH'S COLLEGE (未知Band): 10 人
-    HOLY TRINITY COLLEGE (未知Band): 8 人
-    DIOCESAN BOYS' SCHOOL (未知Band): 7 人
-    HEEP YUNN SCHOOL (未知Band): 5 人
-    BISHOP HALL JUBILEE SCHOOL (未知Band): 4 人
-    MARYKNOLL CONVENT SCH (SEC SECTION) (未知Band): 4 人
-    OUR LADY OF THE ROSARY COLLEGE (未知Band): 4 人
-    LA SALLE COLLEGE (未知Band): 3 人
-    PO LEUNG KUK NGAN PO LING COLLEGE (未知Band): 3 人
-    ST PAUL'S CO-EDUCATIONAL COLLEGE (未知Band): 3 人
-    CHEUNG SHA WAN CATHOLIC SECONDARY SCHOOL (未知Band): 2 人
-    GOOD HOPE SCHOOL (未知Band): 2 人
-    MARYKNOLL FATHERS' SCHOOL (未知Band): 2 人
-    RAIMONDI COLLEGE (未知Band): 2 人
-    SKH LAM WOO MEMORIAL SECONDARY SCHOOL (未知Band): 2 人
-    ST PAUL'S COLLEGE (未知Band): 2 人
-    TSUNG TSIN CHRISTIAN ACADEMY (未知Band): 2 人
-    UNITED CHRISTIAN COLLEGE (KOWLOON EAST) (未知Band): 2 人
-    WAH YAN COLLEGE, KOWLOON (未知Band): 2 人
-    YING WA COLLEGE (未知Band): 2 人
-    HKUGA COLLEGE (未知Band): 1 人
-    KIANGSU-CHEKIANG COLLEGE (SHATIN) (未知Band): 1 人
-    KING'S COLLEGE (未知Band): 1 人
-    KOWLOON TRUE LIGHT SCHOOL (未知Band): 1 人
-    MUNSANG COLLEGE (未知Band): 1 人
-    NORD ANGLIA INTERNATIONAL SCHOOL (未知Band): 1 人
-    PENTECOSTAL LAM HON KWONG SCHOOL (未知Band): 1 人
-    PO LEUNG KUK CELINE HO YAM TONG COLLEGE (未知Band): 1 人
-    PO LEUNG KUK LAWS FOUNDATION COLLEGE (未知Band): 1 人
-    QUEEN ELIZABETH SCHOOL (未知Band): 1 人
-    QUEEN'S COLLEGE (未知Band): 1 人
-    SHATIN PUI YING COLLEGE (未知Band): 1 人
-    SHATIN TSUNG TSIN SECONDARY SCHOOL (未知Band): 1 人
-    SING YIN SECONDARY SCHOOL (未知Band): 1 人
-    SKH LAM KAU MOW SECONDARY SCHOOL (未知Band): 1 人
-    SKH TSANG SHIU TIM SECONDARY SCHOOL (未知Band): 1 人
-    ST FRANCIS XAVIER'S COLLEGE (未知Band): 1 人
-    ST ROSE OF LIMA'S COLLEGE (未知Band): 1 人
-  Band 分布:
-    未知: 89 人
-  ⚠️ 未匹配到 Band 的学校: 38 所
-    - ST JOSEPH'S COLLEGE
-    - HOLY TRINITY COLLEGE
-    - DIOCESAN BOYS' SCHOOL
-
-2024年:
-  升学总人数: 72
-  Band 1 人数: 0
-  Band 1 比例: 0.00%
-  升学中学详情:
-    DIOCESAN BOYS' SCHOOL (未知Band): 10 人
-    ST JOSEPH'S COLLEGE (未知Band): 8 人
-    OUR LADY OF THE ROSARY COLLEGE (未知Band): 7 人
-    HOLY TRINITY COLLEGE (未知Band): 6 人
-    BISHOP HALL JUBILEE SCHOOL (未知Band): 3 人
-    GOOD HOPE SCHOOL (未知Band): 3 人
-    LA SALLE COLLEGE (未知Band): 3 人
-    SKH LAM WOO MEMORIAL SECONDARY SCHOOL (未知Band): 3 人
-    TAK NGA SECONDARY SCHOOL (未知Band): 3 人
-    UNITED CHRISTIAN COLLEGE (KOWLOON EAST) (未知Band): 3 人
-    CHEUNG SHA WAN CATHOLIC SECONDARY SCHOOL (未知Band): 2 人
-    HEEP YUNN SCHOOL (未知Band): 2 人
-    MARYKNOLL CONVENT SCH (SEC SECTION) (未知Band): 2 人
-    PO LEUNG KUK NGAN PO LING COLLEGE (未知Band): 2 人
-    ST PAUL'S CO-EDUCATIONAL COLLEGE (未知Band): 2 人
-    ST PAUL'S COLLEGE (未知Band): 2 人
-    WAH YAN COLLEGE, KOWLOON (未知Band): 2 人
-    CARMEL PAK U SECONDARY SCHOOL (未知Band): 1 人
-    CHRISTIAN ALLIANCE CHENG WING GEE COLL (未知Band): 1 人
-    CLEMENTI SECONDARY SCHOOL (未知Band): 1 人
-    DIOCESAN GIRLS' SCHOOL (未知Band): 1 人
-    HEUNG TO MIDDLE SCHOOL (未知Band): 1 人
-    HEUNG TO SECONDARY SCH (TSEUNG KWAN O) (未知Band): 1 人
-    HKBU A-SCH WONG KAM FAI SEC & PRI SCH (未知Band): 1 人
-    HKGUA COLLEGE (未知Band): 1 人
-    MARYKNOLL FATHERS' SCHOOL (未知Band): 1 人
-    PO LEUNG KUK LAWS FOUNDATION COLLEGE (未知Band): 1 人
-    POPE PAUL VI COLLEGE (未知Band): 1 人
-    SHA TIN METHODIST COLLEGE (未知Band): 1 人
-    SHATIN TSUNG TSIN SECONDARY SCHOOL (未知Band): 1 人
-    ST MARGARET'S CO-EDU ENG SEC & PRI SCH (未知Band): 1 人
-    ST PAUL'S SECONDARY SCHOOL (未知Band): 1 人
-    TSUNG TSIN CHRISTIAN ACADEMY (未知Band): 1 人
-    TWGHS WONG FUT NAM COLLEGE (未知Band): 1 人
-    WA YING COLLEGE (未知Band): 1 人
-    WAH YAN COLLEGE HONG KONG (未知Band): 1 人
-  Band 分布:
-    未知: 82 人
-  ⚠️ 未匹配到 Band 的学校: 36 所
-    - DIOCESAN BOYS' SCHOOL
-    - ST JOSEPH'S COLLEGE
-    - OUR LADY OF THE ROSARY COLLEGE
-
-2025年:
-  升学总人数: 72
-  Band 1 人数: 0
-  Band 1 比例: 0.00%
-  升学中学详情:
-    HOLY TRINITY COLLEGE (未知Band): 8 人
-    ST JOSEPH'S COLLEGE (未知Band): 8 人
-    DIOCESAN BOYS' SCHOOL (未知Band): 7 人
-    ST PAUL'S CONVENT SCHOOL (未知Band): 6 人
-    BISHOP HALL JUBILEE SCHOOL (未知Band): 5 人
-    HEEP YUNN SCHOOL (未知Band): 4 人
-    HKMA DAVID LI KWOK PO COLLEGE (未知Band): 3 人
-    LA SALLE COLLEGE (未知Band): 3 人
-    MARYKNOLL CONVENT SCH (SEC SECTION) (未知Band): 3 人
-    OUR LADY OF THE ROSARY COLLEGE (未知Band): 3 人
-    PO LEUNG KUK NGAN PO LING COLLEGE (未知Band): 3 人
-    SHATIN TSUNG TSIN SECONDARY SCHOOL (未知Band): 3 人
-    ST PAUL'S COLLEGE (未知Band): 3 人
-    CHEUNG SHA WAN CATHOLIC SECONDARY SCHOOL (未知Band): 2 人
-    GOOD HOPE SCHOOL (未知Band): 2 人
-    HKUGA COLLEGE (未知Band): 2 人
-    MARYKNOLL FATHERS' SCHOOL (未知Band): 2 人
-    WAH YAN COLLEGE, KOWLOON (未知Band): 2 人
-    BUDDHIST SIN TAK COLLEGE (未知Band): 1 人
-    CARMEL SECONDARY SCHOOL (未知Band): 1 人
-    CCC CHUEN YUEN COLLEGE (未知Band): 1 人
-    DIOCESAN GIRLS' SCHOOL (未知Band): 1 人
-    HEUNG TO MIDDLE SCHOOL (未知Band): 1 人
-    HKSYC&IA WONG TAI SHAN MEM COLLEGE (未知Band): 1 人
-    METHODIST COLLEGE (未知Band): 1 人
-    PLK NO.1 WH CHEUNG COLLEGE (未知Band): 1 人
-    PO LEUNG KUK LAWS FOUNDATION COLLEGE (未知Band): 1 人
-    RAIMONDI COLLEGE (未知Band): 1 人
-    SKH TSANG SHIU TIM SECONDARY SCHOOL (未知Band): 1 人
-    ST PAUL'S CO-EDUCATIONAL COLLEGE (未知Band): 1 人
-    TAK SUN SECONDARY SCHOOL (未知Band): 1 人
-    TSUEN WAN GOVERNMENT SECONDARY SCHOOL (未知Band): 1 人
-    TWGHS SC GAW MEMORIAL COLLEGE (未知Band): 1 人
-    TWGHS WONG FUT NAM COLLEGE (未知Band): 1 人
-    UNITED CHRISTIAN COLLEGE (KOWLOON EAST) (未知Band): 1 人
-  Band 分布:
-    未知: 86 人
-  ⚠️ 未匹配到 Band 的学校: 35 所
-    - HOLY TRINITY COLLEGE
-    - ST JOSEPH'S COLLEGE
-    - DIOCESAN BOYS' SCHOOL
