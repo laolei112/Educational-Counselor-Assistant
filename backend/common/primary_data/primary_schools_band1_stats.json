@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-11-05T13:09:09.010391",
+  "generated_at": "2025-11-05T22:10:55.140161",
   "total_schools": 173,
   "schools": [
     {
@@ -644,8 +644,8 @@
       },
       "unmatched_schools": [
         "國際基督教優質音樂中學",
-        "宣道國際學校",
-        "啟思中學"
+        "啟思中學",
+        "宣道國際學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -1121,10 +1121,10 @@
         "張祝珊英文中學": 1
       },
       "unmatched_schools": [
+        "海外升學",
         "德瑞國際學校",
         "啟思中學",
-        "蔡繼有學校",
-        "海外升學"
+        "蔡繼有學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -1405,9 +1405,9 @@
         "聖羅撒書院": 1
       },
       "unmatched_schools": [
-        "其他 (直資/國際/海外學校)",
+        "啟思中學",
         "啓思中學",
-        "啟思中學"
+        "其他 (直資/國際/海外學校)"
       ],
       "yearly_stats": {
         "2025": {
@@ -3184,8 +3184,8 @@
       },
       "unmatched_schools": [
         "啓思中學",
-        "啟思中學",
-        "弘爵國際學校"
+        "弘爵國際學校",
+        "啟思中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -3377,9 +3377,9 @@
         "國際基督教優質音樂中學暨小學": 1
       },
       "unmatched_schools": [
-        "聖道百卉書院",
+        "國際基督教優質音樂中學暨小學",
         "American School Hong Kong",
-        "國際基督教優質音樂中學暨小學"
+        "聖道百卉書院"
       ],
       "yearly_stats": {
         "2025": {
@@ -4050,9 +4050,9 @@
         "聖公會聖三一堂中學": 1
       },
       "unmatched_schools": [
-        "玫瑰崗中學",
+        "培僑中學​​",
         "啓思中學",
-        "培僑中學​​"
+        "玫瑰崗中學"
       ],
       "yearly_stats": {
         "2025": {
@@ -6525,11 +6525,11 @@
         "港大同學會書院": 1
       },
       "unmatched_schools": [
-        "香港道尔顿学校",
-        "其他",
         "其他及海外升學",
+        "耀中国际学校",
+        "香港道尔顿学校",
         "啟思中學",
-        "耀中国际学校"
+        "其他"
       ],
       "yearly_stats": {
         "2025": {
@@ -8460,12 +8460,12 @@
         "潔心林炳炎中學": 1
       },
       "unmatched_schools": [
-        "大光德萃書院",
         "韓國國際學校",
-        "美國國際學校",
-        "國際基督教優質音樂中學暨小學",
+        "大光德萃書院",
         "宣道國際學校",
-        "耀中國際學校"
+        "耀中國際學校",
+        "國際基督教優質音樂中學暨小學",
+        "美國國際學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -14307,8 +14307,8 @@
         "順利天主教中學": 1
       },
       "unmatched_schools": [
-        "蘇浙國際",
-        "加拿大國際學校"
+        "加拿大國際學校",
+        "蘇浙國際"
       ],
       "yearly_stats": {
         "2023": {
@@ -14638,10 +14638,10 @@
         "仁濟醫院王華湘中學": 1
       },
       "unmatched_schools": [
-        "宣基中學",
         "香港兆基創意書院",
-        "猶太教國際學校",
-        "NAIS諾德安達國際學校"
+        "NAIS諾德安達國際學校",
+        "宣基中學",
+        "猶太教國際學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -18412,9 +18412,9 @@
       ],
       "yearly_stats": {
         "2025": {
-          "total": 24,
+          "total": 95,
           "band1": 30,
-          "rate": 125.0,
+          "rate": 31.58,
           "schools": {
             "基督教崇真中學": 3,
             "香港神託會培基書院": 3,
@@ -18895,8 +18895,8 @@
       },
       "unmatched_schools": [
         "香港路德安達國際學校",
-        "沙頭角國際學校",
-        "International College Hong Kong"
+        "International College Hong Kong",
+        "沙頭角國際學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -20410,10 +20410,10 @@
         "佛教筏可紀念中學": 1
       },
       "unmatched_schools": [
-        "香港教育工作者聯會黃楚標中學",
+        "深圳市寶安區中英公學",
         "中華基督教會公理書院",
-        "香港美國學校",
-        "深圳市寶安區中英公學"
+        "香港教育工作者聯會黃楚標中學",
+        "香港美國學校"
       ],
       "yearly_stats": {
         "2025": {
@@ -21480,56 +21480,56 @@
         "Pui Tak Canossian College": 1
       },
       "unmatched_schools": [
-        "Delia Memorial School (Hip Wo No.2 College)",
-        "St Stephen's Girls' College",
-        "Queen's College",
-        "Heung To Secondary School (Tseung Kwan O)",
-        "Wah Yan College,KLN",
-        "Raimondi College",
-        "TWGHS Lee Ching Dea Memorial College",
-        "Concordia Lutheran School (NP)",
-        "Islamic Kasim Tuet Memorial College",
-        "Hotung Secondary School",
-        "Aberdeen Technical School",
-        "Yu Chun Keung Memorial College No.2",
-        "The Church of Christ in China Heep Who College",
-        "Buddhist Wong Fung Ling College",
-        "Man Kwan QualiEd College",
-        "Academy of Innovation (Confucius Hall)",
-        "Delia Memorial School (Hip Wo)",
-        "NLSI Lui Kwok Pat Fong College",
-        "St Joan of Arc Secondary School",
-        "Chong Gene Hang College",
-        "Precious Blood Secondary School",
-        "Yan Chai Hospital Wong Wha San Secondary School",
-        "Caritas Wu Cheng-Chung Secondary School",
-        "CCC Kwei Wah Shan College",
-        "HK Tang King Po College",
-        "Delia Memorial School (Glee Path)",
-        "True Light Middle School of Hong Kong",
-        "Madam Lau Kam Lung Secondary School of Miu Fat Buddhist Monastery",
-        "The Methodist Church HK Wesley College",
-        "Pui Ying Secondary School",
-        "Hon Wah College",
-        "Chinese YMCA Secondary School",
-        "Kiangsu-Chekiang College",
-        "PLK Tong Nai Kan Junior Secondary School",
-        "St Mark's School",
-        "Creative Secondary School",
-        "Pui Tak Canossian College",
-        "Lock Tao Secondary School",
-        "Delia Memorial School (Broadway)",
-        "King Ling College",
-        "SKH Tang Shiu Kin Secondary School",
-        "Marymount Secondary School",
-        "St Stephen's Church College",
-        "Cheung Sha Wan Catholic Secondary School",
-        "Wah Yan College, Hong Kong",
-        "Our Lady's College",
-        "HKMA David Li Kwok Po College",
-        "St Paul's Secondary School",
         "The True Light School of Hong Kong",
-        "St Paul's School (Nam Tin)"
+        "St Stephen's Church College",
+        "SKH Tang Shiu Kin Secondary School",
+        "Caritas Wu Cheng-Chung Secondary School",
+        "HKMA David Li Kwok Po College",
+        "Man Kwan QualiEd College",
+        "Kiangsu-Chekiang College",
+        "St Stephen's Girls' College",
+        "Delia Memorial School (Hip Wo No.2 College)",
+        "Cheung Sha Wan Catholic Secondary School",
+        "CCC Kwei Wah Shan College",
+        "Delia Memorial School (Broadway)",
+        "Marymount Secondary School",
+        "Our Lady's College",
+        "TWGHS Lee Ching Dea Memorial College",
+        "Chong Gene Hang College",
+        "Aberdeen Technical School",
+        "Concordia Lutheran School (NP)",
+        "St Joan of Arc Secondary School",
+        "Wah Yan College, Hong Kong",
+        "St Mark's School",
+        "Delia Memorial School (Glee Path)",
+        "PLK Tong Nai Kan Junior Secondary School",
+        "Madam Lau Kam Lung Secondary School of Miu Fat Buddhist Monastery",
+        "Raimondi College",
+        "Pui Tak Canossian College",
+        "True Light Middle School of Hong Kong",
+        "Queen's College",
+        "Academy of Innovation (Confucius Hall)",
+        "Chinese YMCA Secondary School",
+        "Delia Memorial School (Hip Wo)",
+        "King Ling College",
+        "Buddhist Wong Fung Ling College",
+        "Lock Tao Secondary School",
+        "St Paul's School (Nam Tin)",
+        "Islamic Kasim Tuet Memorial College",
+        "Hon Wah College",
+        "Wah Yan College,KLN",
+        "Precious Blood Secondary School",
+        "HK Tang King Po College",
+        "Hotung Secondary School",
+        "Heung To Secondary School (Tseung Kwan O)",
+        "Pui Ying Secondary School",
+        "St Paul's Secondary School",
+        "Yu Chun Keung Memorial College No.2",
+        "Creative Secondary School",
+        "The Methodist Church HK Wesley College",
+        "NLSI Lui Kwok Pat Fong College",
+        "Yan Chai Hospital Wong Wha San Secondary School",
+        "The Church of Christ in China Heep Who College"
       ],
       "yearly_stats": {
         "2025": {
@@ -21791,95 +21791,95 @@
         "ST ROSE OF LIMA'S COLLEGE": 1
       },
       "unmatched_schools": [
+        "HKUGA COLLEGE",
+        "HKUGA COLLEGE",
+        "TSUEN WAN GOVERNMENT SECONDARY SCHOOL",
+        "OUR LADY OF THE ROSARY COLLEGE",
+        "ST PAUL'S CO-EDUCATIONAL COLLEGE",
+        "CHRISTIAN ALLIANCE CHENG WING GEE COLL",
+        "ST FRANCIS XAVIER'S COLLEGE",
+        "RAIMONDI COLLEGE",
+        "QUEEN ELIZABETH SCHOOL",
+        "SHATIN TSUNG TSIN SECONDARY SCHOOL",
         "SHATIN TSUNG TSIN SECONDARY SCHOOL",
-        "CARMEL PAK U SECONDARY SCHOOL",
+        "DIOCESAN BOYS' SCHOOL",
+        "SKH TSANG SHIU TIM SECONDARY SCHOOL",
+        "RAIMONDI COLLEGE",
+        "MARYKNOLL FATHERS' SCHOOL",
+        "HEEP YUNN SCHOOL",
+        "ST ROSE OF LIMA'S COLLEGE",
+        "METHODIST COLLEGE",
+        "WA YING COLLEGE",
+        "TWGHS SC GAW MEMORIAL COLLEGE",
+        "SHATIN PUI YING COLLEGE",
+        "DIOCESAN BOYS' SCHOOL",
+        "ST PAUL'S COLLEGE",
+        "CCC CHUEN YUEN COLLEGE",
+        "ST JOSEPH'S COLLEGE",
+        "TWGHS WONG FUT NAM COLLEGE",
+        "HOLY TRINITY COLLEGE",
+        "WAH YAN COLLEGE HONG KONG",
+        "HOLY TRINITY COLLEGE",
+        "CHEUNG SHA WAN CATHOLIC SECONDARY SCHOOL",
+        "TAK NGA SECONDARY SCHOOL",
+        "MARYKNOLL CONVENT SCH (SEC SECTION)",
+        "SHA TIN METHODIST COLLEGE",
+        "HEUNG TO SECONDARY SCH (TSEUNG KWAN O)",
+        "MUNSANG COLLEGE",
+        "NORD ANGLIA INTERNATIONAL SCHOOL",
         "ST PAUL'S COLLEGE",
         "HEUNG TO MIDDLE SCHOOL",
-        "ST PAUL'S CO-EDUCATIONAL COLLEGE",
-        "PO LEUNG KUK LAWS FOUNDATION COLLEGE",
-        "HKUGA COLLEGE",
-        "ST JOSEPH'S COLLEGE",
-        "OUR LADY OF THE ROSARY COLLEGE",
-        "HKGUA COLLEGE",
-        "TWGHS WONG FUT NAM COLLEGE",
-        "BISHOP HALL JUBILEE SCHOOL",
-        "ST ROSE OF LIMA'S COLLEGE",
-        "TAK SUN SECONDARY SCHOOL",
-        "HEEP YUNN SCHOOL",
-        "TWGHS SC GAW MEMORIAL COLLEGE",
-        "ST PAUL'S CO-EDUCATIONAL COLLEGE",
-        "HOLY TRINITY COLLEGE",
-        "DIOCESAN BOYS' SCHOOL",
-        "POPE PAUL VI COLLEGE",
-        "SHATIN PUI YING COLLEGE",
-        "SING YIN SECONDARY SCHOOL",
-        "PO LEUNG KUK LAWS FOUNDATION COLLEGE",
-        "MUNSANG COLLEGE",
-        "HEUNG TO SECONDARY SCH (TSEUNG KWAN O)",
-        "MARYKNOLL FATHERS' SCHOOL",
-        "SKH TSANG SHIU TIM SECONDARY SCHOOL",
-        "HOLY TRINITY COLLEGE",
-        "SHA TIN METHODIST COLLEGE",
-        "OUR LADY OF THE ROSARY COLLEGE",
-        "ST FRANCIS XAVIER'S COLLEGE",
         "KOWLOON TRUE LIGHT SCHOOL",
-        "SKH LAM KAU MOW SECONDARY SCHOOL",
-        "RAIMONDI COLLEGE",
+        "PO LEUNG KUK NGAN PO LING COLLEGE",
+        "CARMEL PAK U SECONDARY SCHOOL",
+        "PLK NO.1 WH CHEUNG COLLEGE",
+        "ST PAUL'S SECONDARY SCHOOL",
+        "TSUNG TSIN CHRISTIAN ACADEMY",
+        "DIOCESAN GIRLS' SCHOOL",
+        "MARYKNOLL FATHERS' SCHOOL",
+        "SING YIN SECONDARY SCHOOL",
+        "LA SALLE COLLEGE",
+        "BISHOP HALL JUBILEE SCHOOL",
+        "UNITED CHRISTIAN COLLEGE (KOWLOON EAST)",
+        "HKBU A-SCH WONG KAM FAI SEC & PRI SCH",
+        "QUEEN'S COLLEGE",
+        "WAH YAN COLLEGE, KOWLOON",
         "CARMEL SECONDARY SCHOOL",
         "BUDDHIST SIN TAK COLLEGE",
-        "GOOD HOPE SCHOOL",
-        "QUEEN'S COLLEGE",
+        "HKGUA COLLEGE",
+        "SKH TSANG SHIU TIM SECONDARY SCHOOL",
+        "HEUNG TO MIDDLE SCHOOL",
         "KIANGSU-CHEKIANG COLLEGE (SHATIN)",
+        "YING WA COLLEGE",
+        "ST JOSEPH'S COLLEGE",
+        "TAK SUN SECONDARY SCHOOL",
+        "ST PAUL'S CONVENT SCHOOL",
+        "POPE PAUL VI COLLEGE",
+        "PO LEUNG KUK CELINE HO YAM TONG COLLEGE",
+        "DIOCESAN GIRLS' SCHOOL",
+        "BISHOP HALL JUBILEE SCHOOL",
+        "UNITED CHRISTIAN COLLEGE (KOWLOON EAST)",
+        "HKSYC&IA WONG TAI SHAN MEM COLLEGE",
+        "GOOD HOPE SCHOOL",
+        "WAH YAN COLLEGE, KOWLOON",
+        "ST MARGARET'S CO-EDU ENG SEC & PRI SCH",
+        "SKH LAM KAU MOW SECONDARY SCHOOL",
+        "CHEUNG SHA WAN CATHOLIC SECONDARY SCHOOL",
+        "PO LEUNG KUK NGAN PO LING COLLEGE",
+        "HKMA DAVID LI KWOK PO COLLEGE",
         "CLEMENTI SECONDARY SCHOOL",
-        "SHATIN TSUNG TSIN SECONDARY SCHOOL",
+        "HEEP YUNN SCHOOL",
         "SKH LAM WOO MEMORIAL SECONDARY SCHOOL",
         "TWGHS WONG FUT NAM COLLEGE",
-        "TAK NGA SECONDARY SCHOOL",
-        "ST MARGARET'S CO-EDU ENG SEC & PRI SCH",
-        "UNITED CHRISTIAN COLLEGE (KOWLOON EAST)",
-        "CCC CHUEN YUEN COLLEGE",
-        "LA SALLE COLLEGE",
-        "ST JOSEPH'S COLLEGE",
-        "WAH YAN COLLEGE, KOWLOON",
-        "METHODIST COLLEGE",
-        "WAH YAN COLLEGE, KOWLOON",
-        "CHEUNG SHA WAN CATHOLIC SECONDARY SCHOOL",
-        "HKUGA COLLEGE",
-        "ST PAUL'S CONVENT SCHOOL",
-        "HEEP YUNN SCHOOL",
-        "HEUNG TO MIDDLE SCHOOL",
-        "WA YING COLLEGE",
-        "RAIMONDI COLLEGE",
-        "KING'S COLLEGE",
-        "DIOCESAN GIRLS' SCHOOL",
-        "PLK NO.1 WH CHEUNG COLLEGE",
-        "BISHOP HALL JUBILEE SCHOOL",
-        "HKSYC&IA WONG TAI SHAN MEM COLLEGE",
-        "DIOCESAN BOYS' SCHOOL",
-        "PO LEUNG KUK CELINE HO YAM TONG COLLEGE",
-        "SKH TSANG SHIU TIM SECONDARY SCHOOL",
-        "UNITED CHRISTIAN COLLEGE (KOWLOON EAST)",
-        "PO LEUNG KUK NGAN PO LING COLLEGE",
-        "NORD ANGLIA INTERNATIONAL SCHOOL",
-        "DIOCESAN GIRLS' SCHOOL",
         "MARYKNOLL CONVENT SCH (SEC SECTION)",
-        "TSUNG TSIN CHRISTIAN ACADEMY",
-        "HKBU A-SCH WONG KAM FAI SEC & PRI SCH",
-        "TSUEN WAN GOVERNMENT SECONDARY SCHOOL",
-        "YING WA COLLEGE",
-        "LA SALLE COLLEGE",
-        "CHRISTIAN ALLIANCE CHENG WING GEE COLL",
-        "ST PAUL'S COLLEGE",
-        "ST PAUL'S SECONDARY SCHOOL",
-        "MARYKNOLL CONVENT SCH (SEC SECTION)",
-        "MARYKNOLL FATHERS' SCHOOL",
-        "QUEEN ELIZABETH SCHOOL",
+        "LA SALLE COLLEGE",
+        "PO LEUNG KUK LAWS FOUNDATION COLLEGE",
         "GOOD HOPE SCHOOL",
-        "PO LEUNG KUK NGAN PO LING COLLEGE",
-        "CHEUNG SHA WAN CATHOLIC SECONDARY SCHOOL",
         "PENTECOSTAL LAM HON KWONG SCHOOL",
-        "HKMA DAVID LI KWOK PO COLLEGE",
-        "WAH YAN COLLEGE HONG KONG"
+        "KING'S COLLEGE",
+        "PO LEUNG KUK LAWS FOUNDATION COLLEGE",
+        "ST PAUL'S CO-EDUCATIONAL COLLEGE",
+        "OUR LADY OF THE ROSARY COLLEGE"
       ],
       "yearly_stats": {
         "2025": {
