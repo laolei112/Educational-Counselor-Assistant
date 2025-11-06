@@ -130,41 +130,69 @@
               <thead>
                 <tr>
                   <th class="year-header">年份</th>
-                  <th class="total-header">总升学人数</th>
-                  <th class="band1-header">升入 Band 1</th>
                   <th class="rate-header">Band 1 比例</th>
-                  <th class="band2-header">升入 Band 2</th>
-                  <th class="band3-header">升入 Band 3</th>
+                  <th class="schools-header">升入学校</th>
+                  <th class="count-header">人数</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(yearData, year) in promotionDataByYear" :key="year">
-                  <td class="year-cell">{{ year }}</td>
-                  <td class="total-cell">{{ yearData.total || '-' }}</td>
-                  <td class="band1-cell">{{ yearData.band1 || '-' }}</td>
-                  <td class="rate-cell">
-                    <span v-if="yearData.band1Rate !== undefined" class="rate-value">
-                      {{ yearData.band1Rate.toFixed(2) }}%
-                    </span>
-                    <span v-else>-</span>
-                  </td>
-                  <td class="band2-cell">{{ yearData.band2 || '-' }}</td>
-                  <td class="band3-cell">{{ yearData.band3 || '-' }}</td>
-                </tr>
+                <template v-for="(yearData, year) in promotionDataByYear" :key="year">
+                  <template v-if="yearData.schools && Object.keys(yearData.schools).length > 0">
+                    <tr v-for="(schoolName, index) in Object.keys(yearData.schools)" :key="`${year}-${schoolName}`">
+                      <td v-if="index === 0" :rowspan="Object.keys(yearData.schools).length" class="year-cell">
+                        {{ year }}
+                      </td>
+                      <td v-if="index === 0" :rowspan="Object.keys(yearData.schools).length" class="rate-cell">
+                        <span v-if="yearData.band1Rate !== undefined" class="rate-value">
+                          {{ yearData.band1Rate.toFixed(2) }}%
+                        </span>
+                        <span v-else>-</span>
+                      </td>
+                      <td class="school-cell">{{ schoolName }}</td>
+                      <td class="count-cell">{{ yearData.schools[schoolName] }}</td>
+                    </tr>
+                  </template>
+                  <tr v-else>
+                    <td class="year-cell">{{ year }}</td>
+                    <td class="rate-cell">
+                      <span v-if="yearData.band1Rate !== undefined" class="rate-value">
+                        {{ yearData.band1Rate.toFixed(2) }}%
+                      </span>
+                      <span v-else>-</span>
+                    </td>
+                    <td class="school-cell">-</td>
+                    <td class="count-cell">-</td>
+                  </tr>
+                </template>
                 <!-- 如果没有按年份的数据，显示汇总数据 -->
-                <tr v-if="!hasYearlyData && promotionSummary">
-                  <td class="year-cell">汇总</td>
-                  <td class="total-cell">{{ promotionSummary.total || '-' }}</td>
-                  <td class="band1-cell">{{ promotionSummary.band1 || '-' }}</td>
-                  <td class="rate-cell">
-                    <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
-                      {{ promotionSummary.band1Rate.toFixed(2) }}%
-                    </span>
-                    <span v-else>-</span>
-                  </td>
-                  <td class="band2-cell">{{ promotionSummary.band2 || '-' }}</td>
-                  <td class="band3-cell">{{ promotionSummary.band3 || '-' }}</td>
-                </tr>
+                <template v-if="!hasYearlyData && promotionSummary">
+                  <template v-if="promotionSummary.schools && Object.keys(promotionSummary.schools).length > 0">
+                    <tr v-for="(schoolName, index) in Object.keys(promotionSummary.schools)" :key="`summary-${schoolName}`">
+                      <td v-if="index === 0" :rowspan="Object.keys(promotionSummary.schools).length" class="year-cell">
+                        汇总
+                      </td>
+                      <td v-if="index === 0" :rowspan="Object.keys(promotionSummary.schools).length" class="rate-cell">
+                        <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
+                          {{ promotionSummary.band1Rate.toFixed(2) }}%
+                        </span>
+                        <span v-else>-</span>
+                      </td>
+                      <td class="school-cell">{{ schoolName }}</td>
+                      <td class="count-cell">{{ promotionSummary.schools[schoolName] }}</td>
+                    </tr>
+                  </template>
+                  <tr v-else>
+                    <td class="year-cell">汇总</td>
+                    <td class="rate-cell">
+                      <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
+                        {{ promotionSummary.band1Rate.toFixed(2) }}%
+                      </span>
+                      <span v-else>-</span>
+                    </td>
+                    <td class="school-cell">-</td>
+                    <td class="count-cell">-</td>
+                  </tr>
+                </template>
               </tbody>
             </table>
           </div>
@@ -394,33 +422,45 @@ const promotionDataByYear = computed(() => {
   const promotionInfo = props.school.promotionInfo as any
   const yearlyData: Record<string, any> = {}
   
-  // 提取所有年份数据
-  Object.keys(promotionInfo).forEach(key => {
-    if (/^\d{4}$/.test(key)) {
-      const yearData = promotionInfo[key]
+  // 检查是否有 yearly_stats 结构
+  if (promotionInfo.yearly_stats && typeof promotionInfo.yearly_stats === 'object') {
+    Object.keys(promotionInfo.yearly_stats).forEach(year => {
+      const yearData = promotionInfo.yearly_stats[year]
       if (yearData && typeof yearData === 'object') {
-        const total = yearData.total || yearData.total_students || yearData.总人数
-        const band1 = yearData.band1 || yearData.band1_students || yearData['Band 1人数'] || yearData['Band1人数']
-        const band2 = yearData.band2 || yearData.band2_students || yearData['Band 2人数'] || yearData['Band2人数']
-        const band3 = yearData.band3 || yearData.band3_students || yearData['Band 3人数'] || yearData['Band3人数']
-        const band1Rate = yearData.band1_rate || yearData.band1Rate || yearData['Band 1比例']
+        const rate = yearData.rate || yearData.band1_rate || yearData.band1Rate
+        const schools = yearData.schools || {}
         
-        // 如果没有比例，根据人数计算
-        let calculatedRate: number | undefined
-        if (band1 !== undefined && total !== undefined && total > 0) {
-          calculatedRate = (Number(band1) / Number(total)) * 100
-        }
-        
-        yearlyData[key] = {
-          total,
-          band1,
-          band2,
-          band3,
-          band1Rate: band1Rate !== undefined ? Number(band1Rate) : calculatedRate
+        yearlyData[year] = {
+          band1Rate: rate !== undefined ? Number(rate) : undefined,
+          schools: schools
         }
       }
-    }
-  })
+    })
+  } else {
+    // 提取所有年份数据（直接是年份键）
+    Object.keys(promotionInfo).forEach(key => {
+      if (/^\d{4}$/.test(key)) {
+        const yearData = promotionInfo[key]
+        if (yearData && typeof yearData === 'object') {
+          const total = yearData.total || yearData.total_students || yearData.总人数
+          const band1 = yearData.band1 || yearData.band1_students || yearData['Band 1人数'] || yearData['Band1人数']
+          const band1Rate = yearData.band1_rate || yearData.band1Rate || yearData.rate || yearData['Band 1比例']
+          const schools = yearData.schools || {}
+          
+          // 如果没有比例，根据人数计算
+          let calculatedRate: number | undefined
+          if (band1Rate === undefined && band1 !== undefined && total !== undefined && total > 0) {
+            calculatedRate = (Number(band1) / Number(total)) * 100
+          }
+          
+          yearlyData[key] = {
+            band1Rate: band1Rate !== undefined ? Number(band1Rate) : calculatedRate,
+            schools: schools
+          }
+        }
+      }
+    })
+  }
   
   // 按年份降序排序（最近一年在前）
   const sortedYears = Object.keys(yearlyData).sort((a, b) => Number(b) - Number(a))
@@ -441,27 +481,15 @@ const promotionSummary = computed(() => {
   if (hasYearlyData.value) return null
   
   // 提取汇总数据
-  const total = promotionInfo.total || promotionInfo.total_students || promotionInfo.总人数
-  const band1 = promotionInfo.band1 || promotionInfo.band1_students || promotionInfo['Band 1人数'] || promotionInfo['Band1人数']
-  const band2 = promotionInfo.band2 || promotionInfo.band2_students || promotionInfo['Band 2人数'] || promotionInfo['Band2人数']
-  const band3 = promotionInfo.band3 || promotionInfo.band3_students || promotionInfo['Band 3人数'] || promotionInfo['Band3人数']
   const band1Rate = promotionInfo.band1_rate || promotionInfo.band1Rate || promotionInfo['Band 1比例']
-  
-  // 如果没有比例，根据人数计算
-  let calculatedRate: number | undefined
-  if (band1 !== undefined && total !== undefined && total > 0) {
-    calculatedRate = (Number(band1) / Number(total)) * 100
-  }
+  const schools = promotionInfo.schools || {}
   
   // 如果没有任何数据，返回 null
-  if (!total && !band1 && !band1Rate) return null
+  if (!band1Rate && Object.keys(schools).length === 0) return null
   
   return {
-    total,
-    band1,
-    band2,
-    band3,
-    band1Rate: band1Rate !== undefined ? Number(band1Rate) : calculatedRate
+    band1Rate: band1Rate !== undefined ? Number(band1Rate) : undefined,
+    schools: schools
   }
 })
 
@@ -1169,15 +1197,15 @@ section h3 {
 }
 
 .promotion-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #f8f9fa;
 }
 
 .promotion-table th {
   padding: 12px;
   text-align: center;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #dee2e6;
+  color: #495057;
   white-space: nowrap;
 }
 
@@ -1208,34 +1236,27 @@ section h3 {
   min-width: 100px;
 }
 
-.promotion-table .band1-header,
-.promotion-table .band1-cell {
-  min-width: 100px;
-  color: #10b981;
-  font-weight: 500;
-}
-
 .promotion-table .rate-header,
 .promotion-table .rate-cell {
   min-width: 120px;
 }
 
 .promotion-table .rate-value {
-  color: #10b981;
+  color: #2c3e50;
   font-weight: 600;
   font-size: 15px;
 }
 
-.promotion-table .band2-header,
-.promotion-table .band2-cell {
-  min-width: 100px;
-  color: #f59e0b;
+.promotion-table .schools-header,
+.promotion-table .school-cell {
+  min-width: 200px;
+  text-align: left;
+  padding-left: 16px;
 }
 
-.promotion-table .band3-header,
-.promotion-table .band3-cell {
-  min-width: 100px;
-  color: #ef4444;
+.promotion-table .count-header,
+.promotion-table .count-cell {
+  min-width: 80px;
 }
 
 /* 课程设置表格样式 */
