@@ -216,6 +216,10 @@
         <!-- 入学信息部分（中学特有） -->
         <section v-if="school.type === 'secondary' && school.admissionInfo" class="admission-info">
           <h3>📝 入学信息</h3>
+          <!-- 申请详情说明 -->
+          <div v-if="school.admissionInfo" class="application-details">
+            <div class="details-text" v-html="extractAdmissionDetails()"></div>
+          </div>
           <!-- 入学准则 -->
           <div v-if="hasAdmissionCriteria()" class="admission-criteria">
             <div class="criteria-list">
@@ -287,10 +291,7 @@
             </div>
           </div>
 
-          <!-- 申请详情说明 -->
-          <div v-if="school.admissionInfo" class="application-details">
-            <div class="details-text" v-html="extractAdmissionDetails()"></div>
-          </div>
+
         </section>
 
         <!-- 课程设置部分（中学特有） -->
@@ -851,6 +852,7 @@ const extractAdmissionCriteria = (): string[] => {
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   overscroll-behavior: contain;
@@ -1250,9 +1252,9 @@ section h3 {
 }
 
 .promotion-table-wrapper {
-  overflow-x: auto;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .promotion-table {
@@ -1260,7 +1262,7 @@ section h3 {
   border-collapse: collapse;
   font-size: 14px;
   background: white;
-  min-width: 600px;
+  table-layout: fixed;
 }
 
 .promotion-table thead {
@@ -1268,7 +1270,7 @@ section h3 {
 }
 
 .promotion-table th {
-  padding: 12px;
+  padding: 10px 8px;
   text-align: center;
   font-weight: 600;
   border: 1px solid #dee2e6;
@@ -1277,7 +1279,7 @@ section h3 {
 }
 
 .promotion-table td {
-  padding: 12px;
+  padding: 10px 8px;
   text-align: center;
   border: 1px solid #dee2e6;
   color: #2c3e50;
@@ -1313,14 +1315,17 @@ section h3 {
 
 .promotion-table .schools-header,
 .promotion-table .school-cell {
-  min-width: 200px;
   text-align: left;
-  padding-left: 16px;
+  padding-left: 12px;
+  padding-right: 12px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .promotion-table .count-header,
 .promotion-table .count-cell {
-  min-width: 80px;
+  min-width: 60px;
+  width: 60px;
 }
 
 /* 课程设置表格样式 */
@@ -1597,16 +1602,33 @@ section h3 {
 
   .promotion-table {
     font-size: 12px;
-    min-width: 500px;
   }
 
   .promotion-table th,
   .promotion-table td {
-    padding: 8px 6px;
+    padding: 8px 4px;
   }
 
   .promotion-table .rate-value {
     font-size: 13px;
+  }
+
+  .promotion-table .year-header,
+  .promotion-table .year-cell {
+    min-width: 50px;
+    width: 50px;
+  }
+
+  .promotion-table .rate-header,
+  .promotion-table .rate-cell {
+    min-width: 70px;
+    width: 70px;
+  }
+
+  .promotion-table .count-header,
+  .promotion-table .count-cell {
+    min-width: 50px;
+    width: 50px;
   }
 
   .info-icon {
