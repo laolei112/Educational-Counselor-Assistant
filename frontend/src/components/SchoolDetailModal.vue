@@ -122,6 +122,54 @@
           </ul>
         </section>
 
+        <!-- 升学数据部分（小学特有） -->
+        <section v-if="school.type === 'primary' && hasPromotionData" class="promotion-data">
+          <h3>📊 升学数据</h3>
+          <div class="promotion-table-wrapper">
+            <table class="promotion-table">
+              <thead>
+                <tr>
+                  <th class="year-header">年份</th>
+                  <th class="total-header">总升学人数</th>
+                  <th class="band1-header">升入 Band 1</th>
+                  <th class="rate-header">Band 1 比例</th>
+                  <th class="band2-header">升入 Band 2</th>
+                  <th class="band3-header">升入 Band 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(yearData, year) in promotionDataByYear" :key="year">
+                  <td class="year-cell">{{ year }}</td>
+                  <td class="total-cell">{{ yearData.total || '-' }}</td>
+                  <td class="band1-cell">{{ yearData.band1 || '-' }}</td>
+                  <td class="rate-cell">
+                    <span v-if="yearData.band1Rate !== undefined" class="rate-value">
+                      {{ yearData.band1Rate.toFixed(2) }}%
+                    </span>
+                    <span v-else>-</span>
+                  </td>
+                  <td class="band2-cell">{{ yearData.band2 || '-' }}</td>
+                  <td class="band3-cell">{{ yearData.band3 || '-' }}</td>
+                </tr>
+                <!-- 如果没有按年份的数据，显示汇总数据 -->
+                <tr v-if="!hasYearlyData && promotionSummary">
+                  <td class="year-cell">汇总</td>
+                  <td class="total-cell">{{ promotionSummary.total || '-' }}</td>
+                  <td class="band1-cell">{{ promotionSummary.band1 || '-' }}</td>
+                  <td class="rate-cell">
+                    <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
+                      {{ promotionSummary.band1Rate.toFixed(2) }}%
+                    </span>
+                    <span v-else>-</span>
+                  </td>
+                  <td class="band2-cell">{{ promotionSummary.band2 || '-' }}</td>
+                  <td class="band3-cell">{{ promotionSummary.band3 || '-' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <!-- 入学信息部分（中学特有） -->
         <section v-if="school.type === 'secondary' && school.admissionInfo" class="admission-info">
           <h3>📝 入学信息</h3>
@@ -325,6 +373,96 @@ const curriculumTypesText = computed(() => {
     // ignore parse error
   }
   return 'DSE'
+})
+
+// 升学数据处理
+const hasPromotionData = computed(() => {
+  return !!(props.school.promotionInfo && Object.keys(props.school.promotionInfo).length > 0)
+})
+
+// 检查是否有按年份的数据
+const hasYearlyData = computed(() => {
+  if (!props.school.promotionInfo) return false
+  const promotionInfo = props.school.promotionInfo as any
+  // 检查是否有年份字段（如 2024, 2023 等）
+  return Object.keys(promotionInfo).some(key => /^\d{4}$/.test(key))
+})
+
+// 按年份整理的升学数据（最近一年优先）
+const promotionDataByYear = computed(() => {
+  if (!props.school.promotionInfo) return {}
+  const promotionInfo = props.school.promotionInfo as any
+  const yearlyData: Record<string, any> = {}
+  
+  // 提取所有年份数据
+  Object.keys(promotionInfo).forEach(key => {
+    if (/^\d{4}$/.test(key)) {
+      const yearData = promotionInfo[key]
+      if (yearData && typeof yearData === 'object') {
+        const total = yearData.total || yearData.total_students || yearData.总人数
+        const band1 = yearData.band1 || yearData.band1_students || yearData['Band 1人数'] || yearData['Band1人数']
+        const band2 = yearData.band2 || yearData.band2_students || yearData['Band 2人数'] || yearData['Band2人数']
+        const band3 = yearData.band3 || yearData.band3_students || yearData['Band 3人数'] || yearData['Band3人数']
+        const band1Rate = yearData.band1_rate || yearData.band1Rate || yearData['Band 1比例']
+        
+        // 如果没有比例，根据人数计算
+        let calculatedRate: number | undefined
+        if (band1 !== undefined && total !== undefined && total > 0) {
+          calculatedRate = (Number(band1) / Number(total)) * 100
+        }
+        
+        yearlyData[key] = {
+          total,
+          band1,
+          band2,
+          band3,
+          band1Rate: band1Rate !== undefined ? Number(band1Rate) : calculatedRate
+        }
+      }
+    }
+  })
+  
+  // 按年份降序排序（最近一年在前）
+  const sortedYears = Object.keys(yearlyData).sort((a, b) => Number(b) - Number(a))
+  const sortedData: Record<string, any> = {}
+  sortedYears.forEach(year => {
+    sortedData[year] = yearlyData[year]
+  })
+  
+  return sortedData
+})
+
+// 汇总升学数据（如果没有按年份的数据）
+const promotionSummary = computed(() => {
+  if (!props.school.promotionInfo) return null
+  const promotionInfo = props.school.promotionInfo as any
+  
+  // 如果已经有按年份的数据，返回 null
+  if (hasYearlyData.value) return null
+  
+  // 提取汇总数据
+  const total = promotionInfo.total || promotionInfo.total_students || promotionInfo.总人数
+  const band1 = promotionInfo.band1 || promotionInfo.band1_students || promotionInfo['Band 1人数'] || promotionInfo['Band1人数']
+  const band2 = promotionInfo.band2 || promotionInfo.band2_students || promotionInfo['Band 2人数'] || promotionInfo['Band2人数']
+  const band3 = promotionInfo.band3 || promotionInfo.band3_students || promotionInfo['Band 3人数'] || promotionInfo['Band3人数']
+  const band1Rate = promotionInfo.band1_rate || promotionInfo.band1Rate || promotionInfo['Band 1比例']
+  
+  // 如果没有比例，根据人数计算
+  let calculatedRate: number | undefined
+  if (band1 !== undefined && total !== undefined && total > 0) {
+    calculatedRate = (Number(band1) / Number(total)) * 100
+  }
+  
+  // 如果没有任何数据，返回 null
+  if (!total && !band1 && !band1Rate) return null
+  
+  return {
+    total,
+    band1,
+    band2,
+    band3,
+    band1Rate: band1Rate !== undefined ? Number(band1Rate) : calculatedRate
+  }
 })
 
 // 监听弹窗显示状态，控制 body 滚动
@@ -1011,6 +1149,95 @@ section h3 {
   line-height: 2;
 }
 
+/* 升学数据表格样式 */
+.promotion-data {
+  margin-bottom: 32px;
+}
+
+.promotion-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.promotion-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: white;
+  min-width: 600px;
+}
+
+.promotion-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.promotion-table th {
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+}
+
+.promotion-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  color: #2c3e50;
+}
+
+.promotion-table tbody tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.promotion-table tbody tr:hover {
+  background: #e9ecef;
+}
+
+.promotion-table .year-header,
+.promotion-table .year-cell {
+  font-weight: 600;
+  color: #495057;
+  min-width: 80px;
+}
+
+.promotion-table .total-header,
+.promotion-table .total-cell {
+  min-width: 100px;
+}
+
+.promotion-table .band1-header,
+.promotion-table .band1-cell {
+  min-width: 100px;
+  color: #10b981;
+  font-weight: 500;
+}
+
+.promotion-table .rate-header,
+.promotion-table .rate-cell {
+  min-width: 120px;
+}
+
+.promotion-table .rate-value {
+  color: #10b981;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.promotion-table .band2-header,
+.promotion-table .band2-cell {
+  min-width: 100px;
+  color: #f59e0b;
+}
+
+.promotion-table .band3-header,
+.promotion-table .band3-cell {
+  min-width: 100px;
+  color: #ef4444;
+}
+
 /* 课程设置表格样式 */
 .curriculum-table-wrapper {
   overflow-x: auto;
@@ -1275,6 +1502,26 @@ section h3 {
   
   .content {
     padding: 16px;
+  }
+
+  /* 升学数据表格移动端样式 */
+  .promotion-table-wrapper {
+    margin: 0 -16px;
+    border-radius: 0;
+  }
+
+  .promotion-table {
+    font-size: 12px;
+    min-width: 500px;
+  }
+
+  .promotion-table th,
+  .promotion-table td {
+    padding: 8px 6px;
+  }
+
+  .promotion-table .rate-value {
+    font-size: 13px;
   }
 
   .info-icon {
