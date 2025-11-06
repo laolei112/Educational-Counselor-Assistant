@@ -123,8 +123,7 @@
 
         <!-- 入学信息部分（中学特有） -->
         <section v-if="school.type === 'secondary' && school.admissionInfo" class="admission-info">
-          <h3>📝 中一入学信息</h3>
-          <div class="admission-content" v-html="school.admissionInfo"></div>
+          <h3>📝 入学信息</h3>
         </section>
 
         <!-- 插班信息部分（中学特有） -->
