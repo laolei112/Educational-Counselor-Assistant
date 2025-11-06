@@ -165,7 +165,7 @@
                 {{ isCardOpen(school.transferInfo.插班, true) ? 'OPEN' : 'CLOSED' }}
               </div>
               <div class="card-content">
-                <div class="card-grade">{{ getTransferGradeText() }}</div>
+                <div class="card-grade">插班申请</div>
                 <div class="card-period">
                   {{ formatTransferDateRange() }}
                 </div>
