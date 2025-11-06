@@ -15,6 +15,7 @@
           <span class="school-category">{{ getCategoryLabel(school.category) }}</span>
         </div>
         <span 
+          v-if="school.applicationStatus"
           :class="['status-badge', `status-${school.applicationStatus}`]"
         >
           {{ getStatusLabel(school.applicationStatus) }}
@@ -127,12 +128,12 @@
         </section>
 
         <!-- 插班信息部分（中学特有） -->
-        <section v-if="school.type === 'secondary' && school.transferInfo && (school.transferInfo.S1 || school.transferInfo.插班)" class="transfer-info">          
+        <section v-if="school.type === 'secondary' && school.transferInfo && (hasValidS1Info(school.transferInfo.S1) || hasValidTransferInfo(school.transferInfo.插班))" class="transfer-info">          
           <!-- 申请卡片 -->
           <div class="application-cards">
             <!-- 中一申请卡片 -->
             <div 
-              v-if="school.transferInfo.S1"
+              v-if="hasValidS1Info(school.transferInfo.S1)"
               :class="['application-card', getCardStatus(school.transferInfo.S1)]"
             >
               <div class="card-status-badge">
@@ -158,7 +159,7 @@
 
             <!-- 插班申请卡片 -->
             <div 
-              v-if="school.transferInfo.插班"
+              v-if="school.transferInfo.插班 && hasValidTransferInfo(school.transferInfo.插班)"
               :class="['application-card', getCardStatus(school.transferInfo.插班, true)]"
             >
               <div class="card-status-badge">
@@ -406,20 +407,24 @@ const isCardOpen = (info: any, isTransfer = false): boolean => {
   
   if (isTransfer) {
     // 检查插班信息，可能有多个时间段
-    if (info.插班申请开始时间1.startsWith('开放申请') || info.插班申请开始时间2.startsWith('开放申请')) return true
-    if (info.插班申请开始时间1.startsWith('每年') || info.插班申请开始时间2.startsWith('每年')){
-      const month = parseMonth(info.插班申请开始时间1)
-      if (month) {
-        return now.getMonth() === month
-      }
-      const month2 = parseMonth(info.插班申请开始时间2)
-      if (month2) {
-        return now.getMonth() === month2
-      }
+    const startTime1 = info.插班申请开始时间1
+    const startTime2 = info.插班申请开始时间2
+    
+    if (startTime1 && typeof startTime1 === 'string' && startTime1.startsWith('开放申请')) return true
+    if (startTime2 && typeof startTime2 === 'string' && startTime2.startsWith('开放申请')) return true
+    
+    if (startTime1 && typeof startTime1 === 'string' && startTime1.startsWith('每年')) {
+      const month = parseMonth(startTime1)
+      if (month !== null && now.getMonth() === month) return true
     }
-    const start1 = info.插班申请开始时间1 ? parseDate(info.插班申请开始时间1) : null
+    if (startTime2 && typeof startTime2 === 'string' && startTime2.startsWith('每年')) {
+      const month2 = parseMonth(startTime2)
+      if (month2 !== null && now.getMonth() === month2) return true
+    }
+    
+    const start1 = startTime1 ? parseDate(startTime1) : null
     const end1 = info.插班申请截止时间1 ? parseDate(info.插班申请截止时间1) : null
-    const start2 = info.插班申请开始时间2 ? parseDate(info.插班申请开始时间2) : null
+    const start2 = startTime2 ? parseDate(startTime2) : null
     const end2 = info.插班申请截止时间2 ? parseDate(info.插班申请截止时间2) : null
     
     if (start1 && end1 && now >= start1 && now <= end1) return true
@@ -522,12 +527,30 @@ const formatTransferDateRange = (): string => {
   // 优先使用第一个时间段，如果没有则使用第二个
   let display = "";
   if (transfer.插班申请开始时间1 && transfer.插班申请截止时间1) {
-    display = formatDateRange(transfer.插班申请开始时间1, transfer.插班申请截止时间1)
-    display = `插班${transfer.可插班年级1}-${display}`
+    const dateRange = formatDateRange(transfer.插班申请开始时间1, transfer.插班申请截止时间1)
+    const grade = transfer.可插班年级1 || ''
+    if (grade && grade !== '/') {
+      display = `插班${grade}-${dateRange}`
+    } else {
+      display = dateRange
+    }
   }
   // 第二个时间段，显示时要换行
   if (transfer.插班申请开始时间2 && transfer.插班申请截止时间2) {
-    display += `\n插班${transfer.可插班年级2}-${formatDateRange(transfer.插班申请开始时间2, transfer.插班申请截止时间2)}`
+    const dateRange = formatDateRange(transfer.插班申请开始时间2, transfer.插班申请截止时间2)
+    const grade = transfer.可插班年级2 || ''
+    if (display) {
+      display += '\n'
+    }
+    if (grade && grade !== '/') {
+      display += `插班${grade}-${dateRange}`
+    } else {
+      display += dateRange
+    }
+  }
+  // 如果没有任何时间信息，返回默认值
+  if (!display) {
+    return '-'
   }
   return display
 }
@@ -561,6 +584,20 @@ const extractAdmissionDetails = (): string => {
   }
   // 如果没有找到入学准则，返回全部内容
   return text
+}
+
+const hasValidS1Info = (s1: any): boolean => {
+  if (!s1) return false
+  // 检查是否有有效的开始时间和结束时间
+  return !!(s1.入学申请开始时间 && s1.入学申请截至时间)
+}
+
+const hasValidTransferInfo = (transfer: any): boolean => {
+  if (!transfer) return false
+  // 检查是否有至少一个有效的时间段
+  const hasTime1 = transfer.插班申请开始时间1 && transfer.插班申请截止时间1
+  const hasTime2 = transfer.插班申请开始时间2 && transfer.插班申请截止时间2
+  return hasTime1 || hasTime2
 }
 
 const hasAdmissionCriteria = (): boolean => {
