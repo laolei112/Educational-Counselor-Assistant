@@ -122,6 +122,21 @@
           </ul>
         </section>
 
+        <!-- 教学特色部分（小学特有） -->
+        <section v-if="school.type === 'primary' && hasClassTeachingInfo" class="class-teaching-info">
+          <h3>🎓 教学特色</h3>
+          <div class="teaching-info-content">
+            <div v-if="classTeachingMode" class="info-item">
+              <label>班级教学模式：</label>
+              <div class="info-value">{{ classTeachingMode }}</div>
+            </div>
+            <div v-if="classArrangement" class="info-item">
+              <label>分班安排：</label>
+              <div class="info-value">{{ classArrangement }}</div>
+            </div>
+          </div>
+        </section>
+
         <!-- 升学数据部分（小学特有） -->
         <section v-if="school.type === 'primary' && hasPromotionData" class="promotion-data">
           <h3>📊 升学数据</h3>
@@ -387,6 +402,25 @@ const religionText = computed(() => convertIfNeeded(props.school.religion))
 const addressText = computed(() => convertIfNeeded(props.school.contact?.address))
 const teachingLanguageText = computed(() => convertIfNeeded(props.school.teachingLanguage || '中英文并重'))
 const featuresTexts = computed(() => Array.isArray(props.school.features) ? props.school.features.map(f => convertIfNeeded(f)) : [])
+
+// 教学特色信息
+const hasClassTeachingInfo = computed(() => {
+  const info = (props.school as any).classTeachingInfo
+  if (!info || typeof info !== 'object') return false
+  return !!(info.class_teaching_mode || info.class_arrangement)
+})
+
+const classTeachingMode = computed(() => {
+  const info = (props.school as any).classTeachingInfo
+  if (!info || typeof info !== 'object') return ''
+  return convertIfNeeded(info.class_teaching_mode || '')
+})
+
+const classArrangement = computed(() => {
+  const info = (props.school as any).classTeachingInfo
+  if (!info || typeof info !== 'object') return ''
+  return convertIfNeeded(info.class_arrangement || '')
+})
 
 // 从 school.schoolCurriculum 中解析课程体系
 const curriculumTypesText = computed(() => {
@@ -949,6 +983,39 @@ section h3 {
   line-height: 1.5;
 }
 
+/* 教学特色部分样式 */
+.class-teaching-info {
+  margin-bottom: 32px;
+}
+
+.teaching-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.teaching-info-content .info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.teaching-info-content .info-item label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.teaching-info-content .info-item .info-value {
+  font-size: 15px;
+  color: #2c3e50;
+  line-height: 1.6;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #667eea;
+}
+
 /* 入学信息样式 */
 .admission-content {
   color: #2c3e50;
@@ -1228,17 +1295,14 @@ section h3 {
 .promotion-table .year-cell {
   font-weight: 600;
   color: #495057;
-  min-width: 80px;
-}
-
-.promotion-table .total-header,
-.promotion-table .total-cell {
-  min-width: 100px;
+  min-width: 60px;
+  width: 60px;
 }
 
 .promotion-table .rate-header,
 .promotion-table .rate-cell {
-  min-width: 120px;
+  min-width: 90px;
+  width: 90px;
 }
 
 .promotion-table .rate-value {

@@ -52,6 +52,14 @@ export interface School {
   officialWebsite?: string
   createdAt?: string
   updatedAt?: string
+  
+  // 小学特有字段
+  classTeachingInfo?: {
+    class_teaching_mode?: string  // 班级教学模式
+    class_arrangement?: string  // 分班安排
+    class_structure_note?: string  // 班级结构备注
+  }
+  promotionInfo?: any  // 升学信息
 }
 
 // 插班信息类型定义
