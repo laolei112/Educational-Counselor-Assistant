@@ -21,11 +21,6 @@
         </span>
       </div>
 
-      <!-- 查看插班详细信息链接 -->
-      <div class="info-link">
-        <a href="#" class="detail-link">🔗 查看插班详细信息 ↗</a>
-      </div>
-
       <div class="content">
         <!-- 基本信息部分 -->
         <section class="basic-info">
@@ -133,17 +128,7 @@
         </section>
 
         <!-- 插班信息部分（中学特有） -->
-        <section v-if="school.type === 'secondary' && school.transferInfo && (school.transferInfo.S1 || school.transferInfo.插班)" class="transfer-info">
-          <div class="transfer-header">
-            <h3>✏️ 入学申请</h3>
-            <span 
-              v-if="getTransferStatus()"
-              :class="['status-tag', `status-${getTransferStatus()}`]"
-            >
-              {{ getTransferStatusLabel() }}
-            </span>
-          </div>
-          
+        <section v-if="school.type === 'secondary' && school.transferInfo && (school.transferInfo.S1 || school.transferInfo.插班)" class="transfer-info">          
           <!-- 申请卡片 -->
           <div class="application-cards">
             <!-- 中一申请卡片 -->
@@ -155,10 +140,20 @@
                 {{ isCardOpen(school.transferInfo.S1) ? 'OPEN' : 'CLOSED' }}
               </div>
               <div class="card-content">
-                <div class="card-grade">中一</div>
+                <div class="card-grade">中一申请</div>
                 <div class="card-period">
                   {{ formatDateRange(school.transferInfo.S1.入学申请开始时间, school.transferInfo.S1.入学申请截至时间) }}
                 </div>
+                <a 
+                  v-if="school.transferInfo.S1.申请详情地址"
+                  :href="school.transferInfo.S1.申请详情地址"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="card-link"
+                  @click.stop
+                >
+                  🔗 查看详情 ↗
+                </a>
               </div>
             </div>
 
@@ -175,6 +170,16 @@
                 <div class="card-period">
                   {{ formatTransferDateRange() }}
                 </div>
+                <a 
+                  v-if="school.transferInfo.插班.插班详情链接"
+                  :href="school.transferInfo.插班.插班详情链接"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="card-link"
+                  @click.stop
+                >
+                  🔗 查看详情 ↗
+                </a>
               </div>
             </div>
           </div>
@@ -402,6 +407,17 @@ const isCardOpen = (info: any, isTransfer = false): boolean => {
   
   if (isTransfer) {
     // 检查插班信息，可能有多个时间段
+    if (info.插班申请开始时间1.startsWith('开放申请') || info.插班申请开始时间2.startsWith('开放申请')) return true
+    if (info.插班申请开始时间1.startsWith('每年') || info.插班申请开始时间2.startsWith('每年')){
+      const month = parseMonth(info.插班申请开始时间1)
+      if (month) {
+        return now.getMonth() === month
+      }
+      const month2 = parseMonth(info.插班申请开始时间2)
+      if (month2) {
+        return now.getMonth() === month2
+      }
+    }
     const start1 = info.插班申请开始时间1 ? parseDate(info.插班申请开始时间1) : null
     const end1 = info.插班申请截止时间1 ? parseDate(info.插班申请截止时间1) : null
     const start2 = info.插班申请开始时间2 ? parseDate(info.插班申请开始时间2) : null
@@ -418,6 +434,23 @@ const isCardOpen = (info: any, isTransfer = false): boolean => {
     if (start && end && now >= start && now <= end) return true
     return false
   }
+}
+
+const parseMonth = (dateStr: string): number => {
+  if (!dateStr || typeof dateStr !== 'string') return null
+  const trimmed = dateStr.trim()
+  if (!trimmed) return null
+  // 格式：每年X月X日
+  const match = trimmed.match(/^每年(\d{1,2})月(\d{1,2})日$/)
+  if (match) {
+    return parseInt(match[1])
+  }
+  // 格式：每年X月xxx
+  const match2 = trimmed.match(/^每年(\d{1,2})月(.*)$/)
+  if (match2) {
+    return parseInt(match2[1])
+  }
+  return null
 }
 
 const parseDate = (dateStr: string): Date | null => {
@@ -440,6 +473,17 @@ const parseDate = (dateStr: string): Date | null => {
   
   // 格式2: 20250102
   match = trimmed.match(/^(\d{4})(\d{2})(\d{2})$/)
+  if (match) {
+    const year = parseInt(match[1])
+    const month = parseInt(match[2]) - 1
+    const day = parseInt(match[3])
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      return new Date(year, month, day)
+    }
+  }
+
+  // 格式3: 2025年1月2日
+  match = trimmed.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/)
   if (match) {
     const year = parseInt(match[1])
     const month = parseInt(match[2]) - 1
@@ -477,18 +521,21 @@ const formatTransferDateRange = (): string => {
   if (!transfer) return '-'
   
   // 优先使用第一个时间段，如果没有则使用第二个
+  let display = "";
   if (transfer.插班申请开始时间1 && transfer.插班申请截止时间1) {
-    return formatDateRange(transfer.插班申请开始时间1, transfer.插班申请截止时间1)
+    display = formatDateRange(transfer.插班申请开始时间1, transfer.插班申请截止时间1)
+    display = `插班${transfer.可插班年级1}-${display}`
   }
+  // 第二个时间段，显示时要换行
   if (transfer.插班申请开始时间2 && transfer.插班申请截止时间2) {
-    return formatDateRange(transfer.插班申请开始时间2, transfer.插班申请截止时间2)
+    display += `\n插班${transfer.可插班年级2}-${formatDateRange(transfer.插班申请开始时间2, transfer.插班申请截止时间2)}`
   }
-  return '-'
+  return display
 }
 
 const getTransferGradeText = (): string => {
   const transfer = props.school.transferInfo?.插班
-  if (!transfer) return '中二至中五'
+  if (!transfer) return '中一至中六'
   
   // 优先使用第一个年级，如果没有则使用第二个
   if (transfer.可插班年级1) {
@@ -640,22 +687,6 @@ const extractAdmissionCriteria = (): string[] => {
 .status-deadline {
   background: #fff3cd;
   color: #856404;
-}
-
-.info-link {
-  padding: 0 24px 16px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-}
-
-.detail-link {
-  color: #007bff;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.detail-link:hover {
-  text-decoration: underline;
 }
 
 .content {
@@ -832,6 +863,50 @@ section h3 {
 .card-period {
   font-size: 13px;
   opacity: 0.9;
+  margin-bottom: 8px;
+  white-space: pre-line;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.card-link {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.card-open .card-link {
+  background: rgba(255, 255, 255, 0.9);
+  color: #065f46;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.card-open .card-link:hover {
+  background: white;
+  color: #047857;
+  border-color: #10b981;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-closed .card-link {
+  background: rgba(255, 255, 255, 0.9);
+  color: #6b7280;
+  border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+.card-closed .card-link:hover {
+  background: white;
+  color: #4b5563;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .application-details {
@@ -1194,6 +1269,26 @@ section h3 {
   .application-card {
     padding: 14px;
   }
+
+  .card-content {
+    padding-right: 50px;
+  }
+
+  .card-grade {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .card-period {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .card-link {
+    font-size: 12px;
+    padding: 5px 10px;
+    margin-top: 6px;
+  }
 }
 
 /* 移动端样式调整 */
@@ -1220,6 +1315,40 @@ section h3 {
   .language-table .desc {
     font-size: 11px;
   }
+
+  /* 插班信息卡片在移动端的优化 */
+  .application-card {
+    padding: 12px;
+  }
+
+  .card-content {
+    padding-right: 45px;
+  }
+
+  .card-grade {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .card-period {
+    font-size: 11px;
+    line-height: 1.4;
+    word-break: break-all;
+  }
+
+  .card-link {
+    font-size: 11px;
+    padding: 4px 8px;
+    margin-top: 5px;
+    white-space: normal;
+  }
+
+  .card-status-badge {
+    font-size: 10px;
+    padding: 3px 6px;
+    top: 10px;
+    right: 10px;
+  }
 }
 
 /* 极小屏手机端单列布局 - 仅在非常小的屏幕上使用单列 */
@@ -1227,6 +1356,36 @@ section h3 {
   .info-grid {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  /* 插班信息卡片在极小屏幕上的优化 */
+  .application-card {
+    padding: 10px;
+  }
+
+  .card-content {
+    padding-right: 40px;
+  }
+
+  .card-grade {
+    font-size: 13px;
+  }
+
+  .card-period {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .card-link {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+
+  .card-status-badge {
+    font-size: 9px;
+    padding: 2px 5px;
+    top: 8px;
+    right: 8px;
   }
 }
 </style> 
