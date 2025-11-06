@@ -125,6 +125,18 @@
         <!-- 入学信息部分（中学特有） -->
         <section v-if="school.type === 'secondary' && school.admissionInfo" class="admission-info">
           <h3>📝 入学信息</h3>
+          <!-- 入学准则 -->
+          <div v-if="hasAdmissionCriteria()" class="admission-criteria">
+            <div class="criteria-list">
+              <div 
+                v-for="(criterion, idx) in extractAdmissionCriteria()" 
+                :key="idx"
+                class="criterion-item"
+              >
+                {{ criterion }}
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- 插班信息部分（中学特有） -->
@@ -187,19 +199,6 @@
           <!-- 申请详情说明 -->
           <div v-if="school.admissionInfo" class="application-details">
             <div class="details-text" v-html="extractAdmissionDetails()"></div>
-          </div>
-
-          <!-- 入学准则 -->
-          <div v-if="hasAdmissionCriteria()" class="admission-criteria">
-            <div class="criteria-list">
-              <div 
-                v-for="(criterion, idx) in extractAdmissionCriteria()" 
-                :key="idx"
-                class="criterion-item"
-              >
-                {{ criterion }}
-              </div>
-            </div>
           </div>
         </section>
 

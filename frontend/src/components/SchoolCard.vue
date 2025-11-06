@@ -53,10 +53,10 @@
       <div class="bottom-row">
         <div class="status-info">
           <span 
-            v-if="school.transferInfo?.application_status"
-            :class="['status-badge', `status-${school.transferInfo.application_status}`]"
+            v-if="applicationStatus"
+            :class="['status-badge', `status-${applicationStatus}`]"
           >
-            {{ getStatusLabel(school.transferInfo.application_status) }}
+            {{ getStatusLabel(applicationStatus) }}
           </span>
           <template v-if="school.transferInfo?.application_deadline">
             <span class="divider">｜</span>
@@ -80,6 +80,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { School } from '@/types/school'
 import { formatTuition } from '@/utils/formatter'
 import { useLanguageStore } from '@/stores/language'
@@ -99,6 +100,164 @@ const languageStore = useLanguageStore()
 const handleCardClick = () => {
   emit('click', props.school)
 }
+
+// 检查申请是否开放
+const isCardOpen = (info: any, isTransfer = false): boolean => {
+  if (!info) return false
+  
+  const now = new Date()
+  
+  if (isTransfer) {
+    // 检查插班信息，可能有多个时间段
+    const startTime1 = info.插班申请开始时间1
+    const startTime2 = info.插班申请开始时间2
+    
+    if (startTime1 && typeof startTime1 === 'string' && startTime1.startsWith('开放申请')) return true
+    if (startTime2 && typeof startTime2 === 'string' && startTime2.startsWith('开放申请')) return true
+    
+    if (startTime1 && typeof startTime1 === 'string' && startTime1.startsWith('每年')) {
+      const month = parseMonth(startTime1)
+      if (month !== null && now.getMonth() === month) return true
+    }
+    if (startTime2 && typeof startTime2 === 'string' && startTime2.startsWith('每年')) {
+      const month2 = parseMonth(startTime2)
+      if (month2 !== null && now.getMonth() === month2) return true
+    }
+    
+    const start1 = startTime1 ? parseDate(startTime1) : null
+    const end1 = info.插班申请截止时间1 ? parseDate(info.插班申请截止时间1) : null
+    const start2 = startTime2 ? parseDate(startTime2) : null
+    const end2 = info.插班申请截止时间2 ? parseDate(info.插班申请截止时间2) : null
+    
+    if (start1 && end1 && now >= start1 && now <= end1) return true
+    if (start2 && end2 && now >= start2 && now <= end2) return true
+    return false
+  } else {
+    // S1申请
+    const start = info.入学申请开始时间 ? parseDate(info.入学申请开始时间) : null
+    const end = info.入学申请截至时间 ? parseDate(info.入学申请截至时间) : null
+    
+    if (start && end && now >= start && now <= end) return true
+    return false
+  }
+}
+
+const parseMonth = (dateStr: string): number | null => {
+  if (!dateStr || typeof dateStr !== 'string') return null
+  const trimmed = dateStr.trim()
+  if (!trimmed) return null
+  // 格式：每年X月X日
+  const match = trimmed.match(/^每年(\d{1,2})月(\d{1,2})日$/)
+  if (match) {
+    return parseInt(match[1]) - 1 // 月份从0开始
+  }
+  // 格式：每年X月xxx
+  const match2 = trimmed.match(/^每年(\d{1,2})月(.*)$/)
+  if (match2) {
+    return parseInt(match2[1]) - 1 // 月份从0开始
+  }
+  return null
+}
+
+const parseDate = (dateStr: string): Date | null => {
+  if (!dateStr || typeof dateStr !== 'string') return null
+  
+  const trimmed = dateStr.trim()
+  if (!trimmed) return null
+  
+  // 尝试多种日期格式
+  // 格式1: 2025.1.2, 2025-1-2, 2025/1/2
+  let match = trimmed.match(/^(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})(?:\s+\d{1,2}:\d{1,2}:\d{1,2})?$/)
+  if (match) {
+    const year = parseInt(match[1])
+    const month = parseInt(match[2]) - 1
+    const day = parseInt(match[3])
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      return new Date(year, month, day)
+    }
+  }
+  
+  // 格式2: 20250102
+  match = trimmed.match(/^(\d{4})(\d{2})(\d{2})$/)
+  if (match) {
+    const year = parseInt(match[1])
+    const month = parseInt(match[2]) - 1
+    const day = parseInt(match[3])
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      return new Date(year, month, day)
+    }
+  }
+
+  // 格式3: 2025年1月2日
+  match = trimmed.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/)
+  if (match) {
+    const year = parseInt(match[1])
+    const month = parseInt(match[2]) - 1
+    const day = parseInt(match[3])
+    if (month >= 0 && month <= 11 && day >= 1 && day <= 31) {
+      return new Date(year, month, day)
+    }
+  }
+  
+  // 尝试直接解析（ISO格式等）
+  const parsed = new Date(trimmed)
+  if (!isNaN(parsed.getTime())) {
+    // 验证日期是否合理
+    const year = parsed.getFullYear()
+    if (year >= 2000 && year <= 2100) {
+      return parsed
+    }
+  }
+  
+  return null
+}
+
+// 计算申请状态
+const applicationStatus = computed(() => {
+  // 优先使用后端返回的状态
+  if (props.school.transferInfo?.application_status) {
+    return props.school.transferInfo.application_status
+  }
+  
+  // 如果没有后端状态，则根据实际数据计算
+  if (props.school.type === 'secondary' && props.school.transferInfo) {
+    const transferInfo = props.school.transferInfo
+    const now = new Date()
+    
+    // 检查S1申请是否开放
+    if (transferInfo.S1 && isCardOpen(transferInfo.S1, false)) {
+      // 检查是否即将截止（7天内）
+      const end = transferInfo.S1.入学申请截至时间 ? parseDate(transferInfo.S1.入学申请截至时间) : null
+      if (end) {
+        const daysUntilDeadline = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        if (daysUntilDeadline <= 7 && daysUntilDeadline > 0) {
+          return 'deadline'
+        }
+      }
+      return 'open'
+    }
+    
+    // 检查插班申请是否开放
+    if (transferInfo.插班 && isCardOpen(transferInfo.插班, true)) {
+      // 检查是否即将截止
+      const end1 = transferInfo.插班.插班申请截止时间1 ? parseDate(transferInfo.插班.插班申请截止时间1) : null
+      const end2 = transferInfo.插班.插班申请截止时间2 ? parseDate(transferInfo.插班.插班申请截止时间2) : null
+      const nearestEnd = end1 && end2 
+        ? (end1 < end2 ? end1 : end2)
+        : (end1 || end2)
+      
+      if (nearestEnd) {
+        const daysUntilDeadline = Math.ceil((nearestEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        if (daysUntilDeadline <= 7 && daysUntilDeadline > 0) {
+          return 'deadline'
+        }
+      }
+      return 'open'
+    }
+  }
+  
+  return null
+})
 
 // 获取学校名称（根据当前语言）
 const getSchoolName = () => {
