@@ -5,9 +5,10 @@ from django.db.models import F, Q
 from backend.models.tb_secondary_schools import TbSecondarySchools
 from backend.utils.text_converter import normalize_keyword
 from backend.utils.cache import CacheManager
+from common.logger import logerror, loginfo
 import json
 import traceback
-from common.logger import logerror
+import time
 
 
 def serialize_secondary_school(school):
@@ -72,6 +73,11 @@ def secondary_schools_list(request):
     获取中学列表（从 tb_secondary_schools 表）
     GET /api/schools/secondary
     """
+    # 性能监控：记录开始时间
+    start_time = time.time()
+    step_times = {}
+    step_start = time.time()
+    
     try:
         # 获取查询参数
         category = request.GET.get('category')
@@ -82,6 +88,9 @@ def secondary_schools_list(request):
         keyword = request.GET.get('keyword')
         page = int(request.GET.get('page', 1))
         page_size = int(request.GET.get('pageSize', 20))
+        
+        step_times['param_parse'] = (time.time() - step_start) * 1000
+        step_start = time.time()
         
         # 构建查询条件 - 从 tb_secondary_schools 表查询
         queryset = TbSecondarySchools.objects.all()
@@ -119,8 +128,15 @@ def secondary_schools_list(request):
             # 没有关键词时，按照 school_group 和 school_name 排序（NULL 值排在最后）
             queryset = queryset.order_by(F('school_group').asc(nulls_last=True), 'school_name')
         
+        step_times['query_build'] = (time.time() - step_start) * 1000
+        step_start = time.time()
+        
         # 优化COUNT查询：使用缓存避免重复执行COUNT(*)
-        total = queryset.count()        
+        total = queryset.count()
+        
+        step_times['count_query'] = (time.time() - step_start) * 1000
+        step_start = time.time()
+        
         # 计算分页信息
         total_pages = (total + page_size - 1) // page_size if total > 0 else 0
         start_index = (page - 1) * page_size
@@ -129,10 +145,17 @@ def secondary_schools_list(request):
         # 使用切片获取当前页数据（避免Paginator的额外查询）
         schools_page = queryset[start_index:end_index]
         
+        step_times['data_query'] = (time.time() - step_start) * 1000
+        step_start = time.time()
+        
         # 序列化数据
         schools_data = [serialize_secondary_school(school) for school in schools_page]
         
-        return JsonResponse({
+        step_times['serialize'] = (time.time() - step_start) * 1000
+        step_start = time.time()
+        
+        # 构建响应
+        response_data = {
             "code": 200,
             "message": "成功",
             "success": True,
@@ -143,9 +166,29 @@ def secondary_schools_list(request):
                 "pageSize": page_size,
                 "totalPages": total_pages
             }
-        })
+        }
+        
+        step_times['response_build'] = (time.time() - step_start) * 1000
+        total_time = (time.time() - start_time) * 1000
+        
+        # 记录性能日志
+        loginfo(
+            f"[PERF] GET /api/schools/secondary/ (non-optimized) | "
+            f"Total: {total_time:.2f}ms | "
+            f"ParamParse: {step_times.get('param_parse', 0):.2f}ms | "
+            f"QueryBuild: {step_times.get('query_build', 0):.2f}ms | "
+            f"CountQuery: {step_times.get('count_query', 0):.2f}ms | "
+            f"DataQuery: {step_times.get('data_query', 0):.2f}ms | "
+            f"Serialize: {step_times.get('serialize', 0):.2f}ms | "
+            f"ResponseBuild: {step_times.get('response_build', 0):.2f}ms | "
+            f"Result: total={total}, page={page}, pageSize={page_size}, items={len(schools_data)}"
+        )
+        
+        return JsonResponse(response_data)
         
     except ValueError as e:
+        total_time = (time.time() - start_time) * 1000
+        loginfo(f"[PERF] GET /api/schools/secondary/ (non-optimized) - ERROR (ValueError) | Total: {total_time:.2f}ms | Error: {str(e)}")
         return JsonResponse({
             "code": 400,
             "message": f"参数错误: {str(e)}",
@@ -153,7 +196,9 @@ def secondary_schools_list(request):
             "data": None
         })
     except Exception as e:
+        total_time = (time.time() - start_time) * 1000
         logerror(f"服务器错误: {traceback.format_exc()}")
+        loginfo(f"[PERF] GET /api/schools/secondary/ (non-optimized) - ERROR | Total: {total_time:.2f}ms | Error: {str(e)}")
         return JsonResponse({
             "code": 500,
             "message": f"服务器错误: {str(e)}",
