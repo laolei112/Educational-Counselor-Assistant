@@ -162,10 +162,15 @@ def primary_schools_list(request):
         has_where = any([category, district, school_net, gender, religion, teaching_language, keyword])
         
         # 执行COUNT查询
+        use_raw_sql = False
         if not has_where:
-            # 无WHERE条件时，使用更高效的COUNT方式
-            # 直接使用主键索引而不是排序索引
-            total = TbPrimarySchools.objects.only('id').count()
+            # 无WHERE条件时，使用原生SQL强制使用主键索引
+            # 这样可以避免使用排序索引 idx_band1_rate
+            actual_sql = "SELECT COUNT(*) FROM tb_primary_schools USE INDEX (PRIMARY)"
+            with connection.cursor() as cursor:
+                cursor.execute(actual_sql)
+                total = cursor.fetchone()[0]
+            use_raw_sql = True
         else:
             # 有WHERE条件时，使用正常的COUNT
             total = queryset.count()
@@ -178,10 +183,11 @@ def primary_schools_list(request):
         queries_after_count = len(connection.queries)
         count_query_time = (query_end_time - step_start) * 1000
         
-        # 获取实际执行的SQL（如果Django记录了）
-        actual_sql = None
-        db_time = 0
-        if queries_after_count > queries_before_count:
+        # 获取实际执行的SQL和数据库耗时
+        if use_raw_sql:
+            # 使用原生SQL时，使用实际测量的时间
+            db_time = db_execution_time
+        elif queries_after_count > queries_before_count:
             # Django记录了查询
             actual_sql = connection.queries[-1].get('sql', 'N/A')
             db_time = float(connection.queries[-1].get('time', 0)) * 1000  # 转换为ms
@@ -222,8 +228,40 @@ def primary_schools_list(request):
             
             # 如果Python层面延迟很大，记录额外诊断信息
             if python_overhead > 500:  # Python层面延迟超过500ms
+                # 添加详细的连接池和网络诊断
+                try:
+                    with connection.cursor() as cursor:
+                        # 检查连接池状态
+                        cursor.execute("SHOW STATUS LIKE 'Threads_connected'")
+                        threads_connected = cursor.fetchone()
+                        cursor.execute("SHOW STATUS LIKE 'Max_used_connections'")
+                        max_used = cursor.fetchone()
+                        cursor.execute("SHOW VARIABLES LIKE 'max_connections'")
+                        max_connections = cursor.fetchone()
+                        
+                        # 检查当前进程列表（是否有阻塞查询）
+                        cursor.execute("""
+                            SELECT COUNT(*) as active_queries, 
+                                   MAX(TIME) as max_query_time
+                            FROM information_schema.processlist 
+                            WHERE COMMAND != 'Sleep'
+                        """)
+                        process_info = cursor.fetchone()
+                        
+                        connection_info = {
+                            'threads_connected': threads_connected[1] if threads_connected else 'N/A',
+                            'max_used_connections': max_used[1] if max_used else 'N/A',
+                            'max_connections': max_connections[1] if max_connections else 'N/A',
+                            'active_queries': process_info[0] if process_info else 'N/A',
+                            'max_query_time': process_info[1] if process_info and len(process_info) > 1 else 'N/A'
+                        }
+                        loginfo(f"[CONNECTION_POOL] {json.dumps(connection_info, ensure_ascii=False)}")
+                except Exception as e:
+                    loginfo(f"[CONNECTION_POOL_ERROR] Failed to get connection info: {str(e)}")
+                
                 loginfo(
                     f"[HIGH_PYTHON_OVERHEAD] Python overhead: {python_overhead:.2f}ms | "
+                    f"DBTime: {db_time:.2f}ms | "
                     f"This may indicate connection pool issues, network latency, or ORM overhead"
                 )
             
@@ -232,7 +270,13 @@ def primary_schools_list(request):
                 # 获取EXPLAIN查询计划
                 if actual_sql and actual_sql != 'N/A' and actual_sql != 'Not logged by Django':
                     # 将SELECT COUNT(*)转换为EXPLAIN格式
-                    explain_sql = actual_sql.replace('SELECT COUNT(*)', 'EXPLAIN SELECT COUNT(*)', 1)
+                    # 处理原生SQL（包含USE INDEX）和Django生成的SQL
+                    if actual_sql.strip().startswith('SELECT COUNT'):
+                        explain_sql = 'EXPLAIN ' + actual_sql
+                    else:
+                        # 处理Django生成的SQL（可能包含AS __count）
+                        explain_sql = actual_sql.replace('SELECT COUNT(*)', 'EXPLAIN SELECT COUNT(*)', 1)
+                        explain_sql = explain_sql.replace('SELECT COUNT(*) AS', 'EXPLAIN SELECT COUNT(*) AS', 1)
                     with connection.cursor() as cursor:
                         cursor.execute(explain_sql)
                         columns = [col[0] for col in cursor.description]
