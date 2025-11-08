@@ -176,7 +176,7 @@
                       </td>
                     </tr>
                   </template>
-                  <tr v-else>
+                  <!-- <tr v-else>
                     <td class="year-cell">{{ year }}</td>
                     <td class="rate-cell">
                       <span v-if="yearData.band1Rate !== undefined" class="rate-value">
@@ -187,7 +187,7 @@
                     <td class="school-cell">-</td>
                     <td class="band-cell">-</td>
                     <td class="count-cell">-</td>
-                  </tr>
+                  </tr> -->
                 </template>
                 <!-- 如果没有按年份的数据，显示汇总数据 -->
                 <template v-if="!hasYearlyData && promotionSummary">
@@ -497,20 +497,20 @@ const promotionDataByYear = computed(() => {
         const rate = yearData.rate || yearData.band1_rate || yearData.band1Rate
         const schools = yearData.schools || {}
         
-        // 转换学校名称，兼容新旧格式
+        // 保持原始学校名称，兼容新旧格式
         // 新格式: {学校名: {count: 人数, band: banding}}
         // 旧格式: {学校名: 人数}
+        // 注意：不在数据处理阶段转换名称，而是在模板显示时转换
         const convertedSchools: Record<string, number | {count: number, band: string}> = {}
         Object.keys(schools).forEach(schoolName => {
-          const convertedName = convertIfNeeded(schoolName)
           const schoolInfo = schools[schoolName]
           // 兼容新旧格式
           if (typeof schoolInfo === 'object' && schoolInfo !== null && 'count' in schoolInfo) {
             // 新格式：包含count和band
-            convertedSchools[convertedName] = schoolInfo
+            convertedSchools[schoolName] = schoolInfo
           } else {
             // 旧格式：直接是数字
-            convertedSchools[convertedName] = schoolInfo as number
+            convertedSchools[schoolName] = schoolInfo as number
           }
         })
         
@@ -537,20 +537,20 @@ const promotionDataByYear = computed(() => {
             calculatedRate = (Number(band1) / Number(total)) * 100
           }
           
-          // 转换学校名称，兼容新旧格式
+          // 保持原始学校名称，兼容新旧格式
           // 新格式: {学校名: {count: 人数, band: banding}}
           // 旧格式: {学校名: 人数}
+          // 注意：不在数据处理阶段转换名称，而是在模板显示时转换
           const convertedSchools: Record<string, number | {count: number, band: string}> = {}
           Object.keys(schools).forEach(schoolName => {
-            const convertedName = convertIfNeeded(schoolName)
             const schoolInfo = schools[schoolName]
             // 兼容新旧格式
             if (typeof schoolInfo === 'object' && schoolInfo !== null && 'count' in schoolInfo) {
               // 新格式：包含count和band
-              convertedSchools[convertedName] = schoolInfo
+              convertedSchools[schoolName] = schoolInfo
             } else {
               // 旧格式：直接是数字
-              convertedSchools[convertedName] = schoolInfo as number
+              convertedSchools[schoolName] = schoolInfo as number
             }
           })
           
@@ -588,18 +588,20 @@ const promotionSummary = computed(() => {
   // 如果没有任何数据，返回 null
   if (!band1Rate && Object.keys(schools).length === 0) return null
   
-  // 转换学校名称，兼容新旧格式
+  // 保持原始学校名称，兼容新旧格式
+  // 新格式: {学校名: {count: 人数, band: banding}}
+  // 旧格式: {学校名: 人数}
+  // 注意：不在数据处理阶段转换名称，而是在模板显示时转换
   const convertedSchools: Record<string, number | {count: number, band: string}> = {}
   Object.keys(schools).forEach(schoolName => {
-    const convertedName = convertIfNeeded(schoolName)
     const schoolInfo = schools[schoolName]
     // 兼容新旧格式
     if (typeof schoolInfo === 'object' && schoolInfo !== null && 'count' in schoolInfo) {
       // 新格式：包含count和band
-      convertedSchools[convertedName] = schoolInfo
+      convertedSchools[schoolName] = schoolInfo
     } else {
       // 旧格式：直接是数字
-      convertedSchools[convertedName] = schoolInfo as number
+      convertedSchools[schoolName] = schoolInfo as number
     }
   })
   
