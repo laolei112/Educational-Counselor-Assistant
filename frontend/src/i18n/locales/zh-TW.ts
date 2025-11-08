@@ -196,6 +196,6 @@ export default {
     allDistrict: '全部片區',
     allSchoolNet: '全部校網',
     allCategory: '全部類別',
-    allBanding: '全部Banding'
+    allBanding: '全部Band'
   }
 }

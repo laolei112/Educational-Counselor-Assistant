@@ -2,9 +2,10 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.core.paginator import Paginator
-from django.db.models import Q, Case, When, Value, IntegerField
+from django.db.models import Q, Case, When, Value, IntegerField, Count
 from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.utils.text_converter import normalize_keyword
+from backend.utils.cache import CacheManager
 import json
 
 
@@ -267,55 +268,75 @@ def primary_school_detail(request, school_id):
 @require_http_methods(["GET"])
 def primary_schools_stats(request):
     """
-    获取小学统计信息
+    获取小学统计信息（优化版本，使用聚合查询和缓存）
     GET /api/schools/primary/stats/
     """
     try:
-        # 计算统计信息
+        # # 生成缓存key
+        # cache_key = CacheManager.generate_cache_key(
+        #     "primary:stats:",
+        #     **dict(request.GET.items())
+        # )
+        
+        # # 尝试从缓存获取
+        # cached_result = CacheManager.get(cache_key)
+        # if cached_result:
+        #     return JsonResponse(cached_result)
+        
+        # 使用聚合查询一次性获取所有统计信息（大幅减少数据库查询次数）
         queryset = TbPrimarySchools.objects.all()
+        
+        # 总数量
         total_schools = queryset.count()
         
-        # 按类型统计
-        category_stats = {}
-        categories = queryset.values_list('school_category', flat=True).distinct()
-        for category in categories:
-            if category:
-                count = queryset.filter(school_category=category).count()
-                category_stats[category] = count
+        # 按类型统计（使用聚合查询，一次查询获取所有分类的统计）
+        category_stats = dict(
+            queryset.values('school_category')
+            .annotate(count=Count('id'))
+            .exclude(school_category__isnull=True)
+            .exclude(school_category='')
+            .values_list('school_category', 'count')
+        )
         
-        # 按地区统计
-        district_stats = {}
-        districts = queryset.values_list('district', flat=True).distinct()
-        for district in districts:
-            if district:
-                count = queryset.filter(district=district).count()
-                district_stats[district] = count
+        # 按地区统计（使用聚合查询）
+        district_stats = dict(
+            queryset.values('district')
+            .annotate(count=Count('id'))
+            .exclude(district__isnull=True)
+            .exclude(district='')
+            .values_list('district', 'count')
+        )
         
-        # 按性别统计
-        gender_stats = {}
-        genders = queryset.values_list('student_gender', flat=True).distinct()
-        for gender in genders:
-            if gender:
-                count = queryset.filter(student_gender=gender).count()
-                gender_stats[gender] = count
+        # 按性别统计（使用聚合查询）
+        gender_stats = dict(
+            queryset.values('student_gender')
+            .annotate(count=Count('id'))
+            .exclude(student_gender__isnull=True)
+            .exclude(student_gender='')
+            .values_list('student_gender', 'count')
+        )
         
-        # 按宗教统计
-        religion_stats = {}
-        religions = queryset.values_list('religion', flat=True).distinct()
-        for religion in religions:
-            if religion:
-                count = queryset.filter(religion=religion).count()
-                religion_stats[religion] = count
+        # 按宗教统计（使用聚合查询）
+        religion_stats = dict(
+            queryset.values('religion')
+            .annotate(count=Count('id'))
+            .exclude(religion__isnull=True)
+            .exclude(religion='')
+            .values_list('religion', 'count')
+        )
         
-        # 按校网统计
-        school_net_stats = {}
-        school_nets = queryset.values_list('school_net', flat=True).distinct()
-        for school_net in school_nets:
-            if school_net and school_net != '/':  # 排除私立学校的 '/'
-                count = queryset.filter(school_net=school_net).count()
-                school_net_stats[school_net] = count
+        # 按校网统计（使用聚合查询，排除私立学校的 '/'）
+        school_net_stats = dict(
+            queryset.values('school_net')
+            .annotate(count=Count('id'))
+            .exclude(school_net__isnull=True)
+            .exclude(school_net='')
+            .exclude(school_net='/')
+            .values_list('school_net', 'count')
+        )
         
-        return JsonResponse({
+        # 构建响应数据
+        response_data = {
             "code": 200,
             "message": "成功",
             "success": True,
@@ -327,7 +348,12 @@ def primary_schools_stats(request):
                 "religionStats": religion_stats,
                 "schoolNetStats": school_net_stats
             }
-        })
+        }
+        
+        # 缓存结果（1小时）
+        # CacheManager.set(cache_key, response_data, CacheManager.TIMEOUT_LONG)
+        
+        return JsonResponse(response_data)
         
     except Exception as e:
         return JsonResponse({

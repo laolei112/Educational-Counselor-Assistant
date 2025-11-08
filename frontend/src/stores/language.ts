@@ -241,14 +241,14 @@ export const useLanguageStore = defineStore('language', () => {
         'zh-TW': '全部類型'
       },
       'filter.allBanding': {
-        'zh-CN': '全部Banding',
-        'zh-TW': '全部Banding'
+        'zh-CN': '全部Band',
+        'zh-TW': '全部Band'
       },
       
       // 应用信息
       'app.title': {
-        'zh-CN': 'BetterSchool · 香港小学升学数据库',
-        'zh-TW': 'BetterSchool · 香港小學升學數據庫'
+        'zh-CN': 'BetterSchool · 香港权威升学数据库',
+        'zh-TW': 'BetterSchool · 香港權威升學數據庫'
       },
       'app.subtitle': {
         'zh-CN': '为您智能匹配最适合孩子的升学路径',
