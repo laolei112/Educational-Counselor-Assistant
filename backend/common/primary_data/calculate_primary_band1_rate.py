@@ -386,7 +386,7 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
     yearly_stats = defaultdict(lambda: {
         'total': 0,
         'band1': 0,
-        'schools': defaultdict(int),
+        'schools': {},  # 改为字典，存储 {学校名: {'count': 人数, 'band': banding}}
         'band_dist': defaultdict(int),
         'unmatched': []
     })
@@ -460,13 +460,20 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
         # 年份统计
         if year:
             # 使用Excel中的总人数作为该年的总人数
-            if school_total_from_excel and to_simplified(school_name) not in SPECIAL_SCHOOL_NAMES:
+            if school_total_from_excel and to_simplified(sheet_name) not in SPECIAL_SCHOOL_NAMES:
                 yearly_stats[year]['total'] = school_total_from_excel
             else:
                 # 如果没有Excel总人数，使用升学数据中的总人数
                 yearly_stats[year]['total'] += count
             
-            yearly_stats[year]['schools'][secondary_school] += count
+            # 存储学校信息，包含banding
+            if secondary_school not in yearly_stats[year]['schools']:
+                yearly_stats[year]['schools'][secondary_school] = {
+                    'count': 0,
+                    'band': band if band else '未知'
+                }
+            yearly_stats[year]['schools'][secondary_school]['count'] += count
+            
             if band:
                 yearly_stats[year]['band_dist'][band] += count
             else:
@@ -484,7 +491,7 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
             'total': stats['total'],
             'band1': stats['band1'],
             'rate': round(rate, 2),
-            'schools': dict(stats['schools']),  # 保存升学中学信息
+            'schools': stats['schools'],  # 保存升学中学信息（包含count和band）
             'band_dist': dict(stats['band_dist']),  # 保存Band分布
             'unmatched': list(stats['unmatched'])  # 保存未匹配学校
         }
@@ -644,8 +651,15 @@ def main():
                     # 获取该年度的主要升学中学信息
                     secondary_info = []
                     if 'schools' in year_data:
-                        for sec_school, count in year_data['schools'].items():
-                            band = match_school_name(sec_school, band_map, band_map_simplified, alias_map, alias_map_simplified)
+                        for sec_school, school_info in year_data['schools'].items():
+                            # 兼容新旧格式：新格式是字典{count, band}，旧格式是数字
+                            if isinstance(school_info, dict):
+                                count = school_info.get('count', 0)
+                                band = school_info.get('band', '未知')
+                            else:
+                                # 旧格式兼容
+                                count = school_info
+                                band = match_school_name(sec_school, band_map, band_map_simplified, alias_map, alias_map_simplified) or '未知'
                             band_str = f"({band})" if band else "(未知)"
                             secondary_info.append(f"{sec_school}{band_str}:{count}人")
                     
@@ -690,8 +704,19 @@ def main():
                     # 该年度的升学中学详情
                     if 'schools' in year_data and year_data['schools']:
                         f.write(f"  升学中学详情:\n")
-                        for sec_school, count in sorted(year_data['schools'].items(), key=lambda x: x[1], reverse=True):
-                            band = match_school_name(sec_school, band_map, band_map_simplified, alias_map, alias_map_simplified)
+                        # 兼容新旧格式：新格式是字典{count, band}，旧格式是数字
+                        def get_count(item):
+                            school_info = item[1]
+                            return school_info.get('count', 0) if isinstance(school_info, dict) else school_info
+                        
+                        for sec_school, school_info in sorted(year_data['schools'].items(), key=get_count, reverse=True):
+                            if isinstance(school_info, dict):
+                                count = school_info.get('count', 0)
+                                band = school_info.get('band', '未知')
+                            else:
+                                # 旧格式兼容
+                                count = school_info
+                                band = match_school_name(sec_school, band_map, band_map_simplified, alias_map, alias_map_simplified) or '未知'
                             band_str = f"({band})" if band else "(未知Band)"
                             f.write(f"    {sec_school} {band_str}: {count} 人\n")
                     

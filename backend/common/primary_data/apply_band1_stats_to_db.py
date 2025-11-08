@@ -189,6 +189,8 @@ def apply_stats_to_database(stats_file):
                         for k, v in list(school_stat['secondary_schools'].items())
                     ],
                     'yearly_stats': school_stat.get('yearly_stats', {}),  # 年度数据
+                    # 注意：yearly_stats下的schools格式为 {学校名: {'count': 人数, 'band': banding}}
+                    # 旧格式 {学校名: 人数} 已废弃，但代码会兼容处理
                     'data_source': 'excel_import',
                     'last_updated': '2025-10-19'
                 }
