@@ -151,6 +151,18 @@ class TbPrimarySchools(models.Model, Base):
         help_text='学校总班数或对应估算数值（来源于数据汇总）'
     )
     
+    # Band 1比例（生成列，从promotion_info JSON中提取，用于排序和筛选优化）
+    # 注意：这是数据库生成列，通过SQL创建，Django只用于查询
+    band1_rate = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        blank=True,
+        null=True,
+        verbose_name='升Band 1比例',
+        help_text='升Band 1比例（从promotion_info JSON中提取的生成列，用于性能优化）',
+        db_column='band1_rate'
+    )
+    
     total_classes_info = models.JSONField(
         blank=True,
         null=True,

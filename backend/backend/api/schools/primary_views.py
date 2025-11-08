@@ -63,6 +63,10 @@ def serialize_primary_school(school):
         "transferInfo": school.transfer_info if school.transfer_info else {},
         # 升学信息
         "promotionInfo": school.promotion_info if school.promotion_info else {},
+        # Band1比例（优先使用生成列band1_rate，性能更好）
+        "band1Rate": float(school.band1_rate) if school.band1_rate is not None else (
+            school.promotion_info.get('band1_rate') if school.promotion_info and isinstance(school.promotion_info, dict) else None
+        ),
         # 其他
         "isFullDay": school.is_full_day(),
         "isCoed": school.is_coed(),
@@ -169,18 +173,11 @@ def primary_schools_list(request):
                     default=Value(8),
                     output_field=IntegerField()
                 )
-            ).extra(
-                select={
-                    'band1_rate': "CAST(JSON_EXTRACT(promotion_info, '$.band1_rate') AS DECIMAL(5,2))"
-                }
             ).order_by('search_priority', '-band1_rate', 'school_name')  # 按优先级、Band 1比例和校名排序
         else:
             # 默认按Band 1比例降序，比例相同时按学校名称排序
-            queryset = queryset.extra(
-                select={
-                    'band1_rate': "CAST(JSON_EXTRACT(promotion_info, '$.band1_rate') AS DECIMAL(5,2))"
-                }
-            ).order_by('-band1_rate', 'school_name')
+            # 使用生成列band1_rate（已通过SQL添加，可直接使用索引，性能大幅提升）
+            queryset = queryset.order_by('-band1_rate', 'school_name')
         
         # 分页
         paginator = Paginator(queryset, page_size)
