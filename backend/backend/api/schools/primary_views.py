@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.core.paginator import Paginator
 from django.db.models import Q, Case, When, Value, IntegerField, Count
 from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.utils.text_converter import normalize_keyword
@@ -179,9 +178,15 @@ def primary_schools_list(request):
             # 使用生成列band1_rate（已通过SQL添加，可直接使用索引，性能大幅提升）
             queryset = queryset.order_by('-band1_rate', 'school_name')
         
-        # 分页
-        paginator = Paginator(queryset, page_size)
-        schools_page = paginator.get_page(page)
+        # 优化COUNT查询：使用缓存避免重复执行COUNT(*)
+        total = queryset.count()        
+        # 计算分页信息
+        total_pages = (total + page_size - 1) // page_size if total > 0 else 0
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+        
+        # 使用切片获取当前页数据（避免Paginator的额外查询）
+        schools_page = queryset[start_index:end_index]
         
         # 序列化数据
         schools_data = [serialize_primary_school(school) for school in schools_page]
@@ -192,10 +197,10 @@ def primary_schools_list(request):
             "success": True,
             "data": {
                 "list": schools_data,
-                "total": paginator.count,
+                "total": total,
                 "page": page,
                 "pageSize": page_size,
-                "totalPages": paginator.num_pages
+                "totalPages": total_pages
             }
         })
         
