@@ -320,7 +320,7 @@ def secondary_schools_stats(request):
 
 @csrf_exempt
 @require_http_methods(["GET"])
-def secondary_schools_filters_optimized(request):
+def secondary_schools_filters(request):
     """
     优化后的中学筛选器接口
     GET /api/schools/secondary/filters/
