@@ -187,7 +187,7 @@ export default {
 
   // 搜索相关
   search: {
-    placeholder: '搜索學校名稱、地區、校網…'
+    placeholder: '搜索學校名稱'
   },
 
   // 筛选相关
