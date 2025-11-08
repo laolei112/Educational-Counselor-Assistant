@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.db.models import Q, Case, When, Value, IntegerField, Count
+from django.db.models import Q, Case, When, Value, IntegerField
 from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.utils.text_converter import normalize_keyword
 from backend.utils.cache import CacheManager
@@ -270,92 +270,22 @@ def primary_school_detail(request, school_id):
 @require_http_methods(["GET"])
 def primary_schools_stats(request):
     """
-    获取小学统计信息（优化版本，使用聚合查询和缓存）
+    获取小学统计信息（简化版本，只返回学校总数）
     GET /api/schools/primary/stats/
     """
     try:
-        # # 生成缓存key
-        # cache_key = CacheManager.generate_cache_key(
-        #     "primary:stats:",
-        #     **dict(request.GET.items())
-        # )
+        # 只返回所有学校的总数
+        total_schools = TbPrimarySchools.objects.count()
         
-        # # 尝试从缓存获取
-        # cached_result = CacheManager.get(cache_key)
-        # if cached_result:
-        #     return JsonResponse(cached_result)
-        
-        # 使用聚合查询一次性获取所有统计信息（大幅减少数据库查询次数）
-        queryset = TbPrimarySchools.objects.all()
-        
-        # 总数量
-        total_schools = queryset.count()
-        
-        # 按类型统计（使用聚合查询，一次查询获取所有分类的统计）
-        category_stats = dict(
-            queryset.values('school_category')
-            .annotate(count=Count('id'))
-            .exclude(school_category__isnull=True)
-            .exclude(school_category='')
-            .values_list('school_category', 'count')
-        )
-        
-        # 按地区统计（使用聚合查询）
-        district_stats = dict(
-            queryset.values('district')
-            .annotate(count=Count('id'))
-            .exclude(district__isnull=True)
-            .exclude(district='')
-            .values_list('district', 'count')
-        )
-        
-        # 按性别统计（使用聚合查询）
-        gender_stats = dict(
-            queryset.values('student_gender')
-            .annotate(count=Count('id'))
-            .exclude(student_gender__isnull=True)
-            .exclude(student_gender='')
-            .values_list('student_gender', 'count')
-        )
-        
-        # 按宗教统计（使用聚合查询）
-        religion_stats = dict(
-            queryset.values('religion')
-            .annotate(count=Count('id'))
-            .exclude(religion__isnull=True)
-            .exclude(religion='')
-            .values_list('religion', 'count')
-        )
-        
-        # 按校网统计（使用聚合查询，排除私立学校的 '/'）
-        school_net_stats = dict(
-            queryset.values('school_net')
-            .annotate(count=Count('id'))
-            .exclude(school_net__isnull=True)
-            .exclude(school_net='')
-            .exclude(school_net='/')
-            .values_list('school_net', 'count')
-        )
-        
-        # 构建响应数据
-        response_data = {
+        return JsonResponse({
             "code": 200,
             "message": "成功",
             "success": True,
             "data": {
                 "totalSchools": total_schools,
-                "categoryStats": category_stats,
-                "districtStats": district_stats,
-                "genderStats": gender_stats,
-                "religionStats": religion_stats,
-                "schoolNetStats": school_net_stats
+                "openApplications": 0  # 为了兼容前端接口，保留此字段
             }
-        }
-        
-        # 缓存结果（1小时）
-        # CacheManager.set(cache_key, response_data, CacheManager.TIMEOUT_LONG)
-        
-        return JsonResponse(response_data)
+        })
         
     except Exception as e:
         return JsonResponse({

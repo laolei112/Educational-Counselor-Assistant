@@ -259,47 +259,12 @@ def secondary_school_detail(request, school_id):
 @require_http_methods(["GET"])
 def secondary_schools_stats(request):
     """
-    获取中学统计信息（从 tb_secondary_schools 表）
+    获取中学统计信息（简化版本，只返回学校总数）
     GET /api/schools/secondary/stats
     """
     try:
-        # 构建查询条件
-        queryset = TbSecondarySchools.objects.all()
-        
-        # 计算统计信息
-        total_schools = queryset.count()
-        
-        # 按地区统计
-        district_stats = {}
-        districts = queryset.values_list('district', flat=True).distinct()
-        for district in districts:
-            if district:
-                count = queryset.filter(district=district).count()
-                district_stats[district] = count
-        
-        # 按学校类别统计
-        category_stats = {}
-        categories = queryset.values_list('school_category', flat=True).distinct()
-        for category in categories:
-            if category:
-                count = queryset.filter(school_category=category).count()
-                category_stats[category] = count
-        
-        # 按学校组别统计
-        group_stats = {}
-        groups = queryset.values_list('school_group', flat=True).distinct()
-        for group in groups:
-            if group:
-                count = queryset.filter(school_group=group).count()
-                group_stats[group] = count
-        
-        # 按性别统计
-        gender_stats = {}
-        genders = queryset.values_list('student_gender', flat=True).distinct()
-        for gender in genders:
-            if gender:
-                count = queryset.filter(student_gender=gender).count()
-                gender_stats[gender] = count
+        # 只返回所有学校的总数
+        total_schools = TbSecondarySchools.objects.count()
         
         return JsonResponse({
             "code": 200,
@@ -307,10 +272,7 @@ def secondary_schools_stats(request):
             "success": True,
             "data": {
                 "totalSchools": total_schools,
-                "districtStats": district_stats,
-                "categoryStats": category_stats,
-                "groupStats": group_stats,
-                "genderStats": gender_stats
+                "openApplications": 0  # 为了兼容前端接口，保留此字段
             }
         })
         
