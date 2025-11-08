@@ -2,7 +2,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q
-from django.db import connection
 from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.utils.text_converter import normalize_keyword
 from backend.utils.cache import CacheManager
@@ -125,8 +124,8 @@ def primary_schools_list(request):
         if religion:
             queryset = queryset.filter(religion=religion)
         
-        # if teaching_language:
-        #     queryset = queryset.filter(teaching_language__icontains=teaching_language)
+        if teaching_language:
+            queryset = queryset.filter(teaching_language__icontains=teaching_language)
             
         if keyword:
             # 标准化关键词（将繁体转为简体，统一用于搜索）
@@ -150,178 +149,9 @@ def primary_schools_list(request):
         step_start = time.time()
         
         # 优化COUNT查询：使用缓存避免重复执行COUNT(*)
-        # 记录查询前的SQL状态和时间
-        queries_before_count = len(connection.queries)
-        query_start_time = time.time()
+        total = queryset.count()
         
-        # 获取查询SQL用于诊断
-        count_sql = str(queryset.query)
-        
-        # 对于无WHERE条件的COUNT，优化为使用主键索引
-        # 检查是否有WHERE条件
-        has_where = any([category, district, school_net, gender, religion, teaching_language, keyword])
-        
-        # 执行COUNT查询
-        use_raw_sql = False
-        if not has_where:
-            # 无WHERE条件时，使用原生SQL强制使用主键索引
-            # 这样可以避免使用排序索引 idx_band1_rate
-            actual_sql = "SELECT COUNT(*) FROM tb_primary_schools USE INDEX (PRIMARY)"
-            with connection.cursor() as cursor:
-                cursor.execute(actual_sql)
-                total = cursor.fetchone()[0]
-            use_raw_sql = True
-        else:
-            # 有WHERE条件时，使用正常的COUNT
-            total = queryset.count()
-        
-        # 记录查询执行完成的时间
-        query_end_time = time.time()
-        db_execution_time = (query_end_time - query_start_time) * 1000
-        
-        # 记录查询后的SQL状态
-        queries_after_count = len(connection.queries)
-        count_query_time = (query_end_time - step_start) * 1000
-        
-        # 获取实际执行的SQL和数据库耗时
-        if use_raw_sql:
-            # 使用原生SQL时，使用实际测量的时间
-            db_time = db_execution_time
-        elif queries_after_count > queries_before_count:
-            # Django记录了查询
-            actual_sql = connection.queries[-1].get('sql', 'N/A')
-            db_time = float(connection.queries[-1].get('time', 0)) * 1000  # 转换为ms
-        else:
-            # 可能使用了缓存或连接池，没有记录
-            actual_sql = 'Not logged by Django'
-            # 使用实际测量的时间
-            db_time = db_execution_time
-        
-        # 计算Python层面的延迟（总耗时 - 数据库耗时）
-        python_overhead = count_query_time - db_time
-        
-        step_times['count_query'] = count_query_time
-        
-        # 如果COUNT查询慢，记录详细诊断信息
-        if count_query_time > 200:  # 超过200ms认为是慢查询
-            # 获取查询参数用于诊断
-            query_params = {
-                'category': category,
-                'district': district,
-                'school_net': school_net,
-                'gender': gender,
-                'religion': religion,
-                'teaching_language': teaching_language,
-                'keyword': keyword,
-                'has_filters': any([category, district, school_net, gender, religion, teaching_language, keyword])
-            }
-            
-            # 记录慢查询诊断信息
-            loginfo(
-                f"[SLOW_COUNT] GET /api/schools/primary/ | "
-                f"CountQuery: {count_query_time:.2f}ms | "
-                f"DBTime: {db_time:.2f}ms | "
-                f"PythonOverhead: {python_overhead:.2f}ms | "
-                f"Params: {json.dumps(query_params, ensure_ascii=False)} | "
-                f"SQL: {actual_sql[:500] if actual_sql else 'N/A'}"
-            )
-            
-            # 如果Python层面延迟很大，记录额外诊断信息
-            if python_overhead > 500:  # Python层面延迟超过500ms
-                # 添加详细的连接池和网络诊断
-                try:
-                    with connection.cursor() as cursor:
-                        # 检查连接池状态
-                        cursor.execute("SHOW STATUS LIKE 'Threads_connected'")
-                        threads_connected = cursor.fetchone()
-                        cursor.execute("SHOW STATUS LIKE 'Max_used_connections'")
-                        max_used = cursor.fetchone()
-                        cursor.execute("SHOW VARIABLES LIKE 'max_connections'")
-                        max_connections = cursor.fetchone()
-                        
-                        # 检查当前进程列表（是否有阻塞查询）
-                        cursor.execute("""
-                            SELECT COUNT(*) as active_queries, 
-                                   MAX(TIME) as max_query_time
-                            FROM information_schema.processlist 
-                            WHERE COMMAND != 'Sleep'
-                        """)
-                        process_info = cursor.fetchone()
-                        
-                        connection_info = {
-                            'threads_connected': threads_connected[1] if threads_connected else 'N/A',
-                            'max_used_connections': max_used[1] if max_used else 'N/A',
-                            'max_connections': max_connections[1] if max_connections else 'N/A',
-                            'active_queries': process_info[0] if process_info else 'N/A',
-                            'max_query_time': process_info[1] if process_info and len(process_info) > 1 else 'N/A'
-                        }
-                        loginfo(f"[CONNECTION_POOL] {json.dumps(connection_info, ensure_ascii=False)}")
-                except Exception as e:
-                    loginfo(f"[CONNECTION_POOL_ERROR] Failed to get connection info: {str(e)}")
-                
-                loginfo(
-                    f"[HIGH_PYTHON_OVERHEAD] Python overhead: {python_overhead:.2f}ms | "
-                    f"DBTime: {db_time:.2f}ms | "
-                    f"This may indicate connection pool issues, network latency, or ORM overhead"
-                )
-            
-            # 尝试获取EXPLAIN信息和数据库状态（如果可能）
-            try:
-                # 获取EXPLAIN查询计划
-                if actual_sql and actual_sql != 'N/A' and actual_sql != 'Not logged by Django':
-                    # 将SELECT COUNT(*)转换为EXPLAIN格式
-                    # 处理原生SQL（包含USE INDEX）和Django生成的SQL
-                    if actual_sql.strip().startswith('SELECT COUNT'):
-                        explain_sql = 'EXPLAIN ' + actual_sql
-                    else:
-                        # 处理Django生成的SQL（可能包含AS __count）
-                        explain_sql = actual_sql.replace('SELECT COUNT(*)', 'EXPLAIN SELECT COUNT(*)', 1)
-                        explain_sql = explain_sql.replace('SELECT COUNT(*) AS', 'EXPLAIN SELECT COUNT(*) AS', 1)
-                    with connection.cursor() as cursor:
-                        cursor.execute(explain_sql)
-                        columns = [col[0] for col in cursor.description]
-                        explain_result = cursor.fetchone()
-                        if explain_result:
-                            explain_dict = dict(zip(columns, explain_result))
-                            # 记录关键信息
-                            explain_info = {
-                                'select_type': explain_dict.get('select_type', 'N/A'),
-                                'type': explain_dict.get('type', 'N/A'),
-                                'possible_keys': explain_dict.get('possible_keys', 'N/A'),
-                                'key': explain_dict.get('key', 'N/A'),
-                                'key_len': explain_dict.get('key_len', 'N/A'),
-                                'rows': explain_dict.get('rows', 'N/A'),
-                                'Extra': explain_dict.get('Extra', 'N/A')
-                            }
-                            loginfo(f"[EXPLAIN] {json.dumps(explain_info, ensure_ascii=False)}")
-                
-                # 检查数据库连接状态和锁等待
-                with connection.cursor() as cursor:
-                    # 检查当前连接数
-                    cursor.execute("SHOW STATUS LIKE 'Threads_connected'")
-                    threads_connected = cursor.fetchone()
-                    
-                    # 检查锁等待
-                    cursor.execute("""
-                        SELECT COUNT(*) as waiting_queries 
-                        FROM information_schema.processlist 
-                        WHERE State LIKE '%lock%' OR State LIKE '%Waiting%'
-                    """)
-                    waiting_queries = cursor.fetchone()
-                    
-                    # 检查慢查询
-                    cursor.execute("SHOW STATUS LIKE 'Slow_queries'")
-                    slow_queries = cursor.fetchone()
-                    
-                    db_status = {
-                        'threads_connected': threads_connected[1] if threads_connected else 'N/A',
-                        'waiting_queries': waiting_queries[0] if waiting_queries else 'N/A',
-                        'slow_queries': slow_queries[1] if slow_queries else 'N/A'
-                    }
-                    loginfo(f"[DB_STATUS] {json.dumps(db_status, ensure_ascii=False)}")
-            except Exception as e:
-                # 诊断失败不影响主流程，但记录错误
-                loginfo(f"[DIAGNOSTIC_ERROR] Failed to get diagnostic info: {str(e)}")
+        step_times['count_query'] = (time.time() - step_start) * 1000
         step_start = time.time()
         
         # 计算分页信息
