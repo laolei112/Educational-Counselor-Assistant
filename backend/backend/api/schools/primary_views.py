@@ -259,44 +259,74 @@ def primary_schools_list(request):
         # COUNT 查询使用最简单的形式,数据库可以直接使用索引
         count_queryset = TbPrimarySchools.objects.filter(base_filters)
         
-        # 网络延迟监控：记录查询前后的时间戳
+        # 🔥 优化: 添加 COUNT 查询缓存，减少跨区域网络延迟影响
+        # 生成缓存键（基于查询参数）
+        count_cache_key = get_cache_key_for_query({
+            'category': category,
+            'district': district,
+            'school_net': school_net,
+            'gender': gender,
+            'religion': religion,
+            'teaching_language': teaching_language,
+            'keyword': keyword
+        })
+        
+        # 尝试从缓存获取 COUNT 结果
         query_start = time.time()
-        try:
-            # 尝试获取数据库实际执行时间（如果支持）
-            from django.db import connection
-            db_start = time.time()
-            total = count_queryset.count()
-            db_end = time.time()
-            
-            # 计算总耗时和可能的网络延迟
-            count_query_time = (db_end - query_start) * 1000
-            
-            # 如果 COUNT 查询耗时超过 200ms，记录详细诊断信息
-            if count_query_time > 200:
-                # 尝试获取数据库状态
-                try:
-                    with connection.cursor() as cursor:
-                        cursor.execute("SHOW STATUS LIKE 'Threads_connected'")
-                        threads_connected = cursor.fetchone()[1] if cursor.fetchone() else "N/A"
-                        
-                        cursor.execute("SHOW VARIABLES LIKE 'max_connections'")
-                        max_connections = cursor.fetchone()[1] if cursor.fetchone() else "N/A"
-                        
-                        loginfo(
-                            f"[SLOW_COUNT] GET /api/schools/primary/ | "
-                            f"CountQuery: {count_query_time:.2f}ms | "
-                            f"ThreadsConnected: {threads_connected}/{max_connections} | "
-                            f"Params: category={category}, district={district}, keyword={keyword[:20] if keyword else None}"
-                        )
-                except:
-                    pass
-        except Exception as e:
-            # 如果监控失败，仍然执行查询
-            total = count_queryset.count()
+        total = cache.get(count_cache_key)
+        cache_hit = total is not None
+        
+        if total is None:
+            # 缓存未命中，执行数据库查询
+            try:
+                # 尝试获取数据库实际执行时间（如果支持）
+                from django.db import connection
+                db_start = time.time()
+                total = count_queryset.count()
+                db_end = time.time()
+                
+                # 计算总耗时和可能的网络延迟
+                count_query_time = (db_end - query_start) * 1000
+                
+                # 缓存结果（5分钟），减少跨区域网络延迟影响
+                cache.set(count_cache_key, total, 300)
+                
+                # 如果 COUNT 查询耗时超过 200ms，记录详细诊断信息
+                if count_query_time > 200:
+                    # 尝试获取数据库状态
+                    try:
+                        with connection.cursor() as cursor:
+                            cursor.execute("SHOW STATUS LIKE 'Threads_connected'")
+                            row = cursor.fetchone()
+                            threads_connected = row[1] if row else "N/A"
+                            
+                            cursor.execute("SHOW VARIABLES LIKE 'max_connections'")
+                            row = cursor.fetchone()
+                            max_connections = row[1] if row else "N/A"
+                            
+                            loginfo(
+                                f"[SLOW_COUNT] GET /api/schools/primary/ | "
+                                f"CountQuery: {count_query_time:.2f}ms | "
+                                f"ThreadsConnected: {threads_connected}/{max_connections} | "
+                                f"Params: category={category}, district={district}, keyword={keyword[:20] if keyword else None} | "
+                                f"Cache: MISS"
+                            )
+                    except:
+                        pass
+            except Exception as e:
+                # 如果监控失败，仍然执行查询
+                total = count_queryset.count()
+                count_query_time = (time.time() - query_start) * 1000
+                cache.set(count_cache_key, total, 300)  # 即使出错也缓存结果
+                loginfo(f"[COUNT_ERROR] COUNT 查询异常: {str(e)} | 耗时: {count_query_time:.2f}ms")
+        else:
+            # 缓存命中，几乎无延迟
             count_query_time = (time.time() - query_start) * 1000
-            loginfo(f"[COUNT_ERROR] COUNT 查询异常: {str(e)} | 耗时: {count_query_time:.2f}ms")
+            if count_query_time > 5:  # 缓存命中应该 < 5ms
+                loginfo(f"[CACHE_SLOW] COUNT 缓存命中但耗时异常: {count_query_time:.2f}ms")
         
         step_times['count_query'] = count_query_time
+        step_times['count_cache_hit'] = cache_hit
         step_start = time.time()
         
         # 提前计算分页信息
@@ -370,12 +400,13 @@ def primary_schools_list(request):
         total_time = (time.time() - start_time) * 1000
         
         # 记录性能日志
+        cache_status = "HIT" if step_times.get('count_cache_hit') else "MISS"
         loginfo(
             f"[PERF] GET /api/schools/primary/ (query-optimized) | "
             f"Total: {total_time:.2f}ms | "
             f"ParamParse: {step_times.get('param_parse', 0):.2f}ms | "
             f"QueryBuild: {step_times.get('query_build', 0):.2f}ms | "
-            f"CountQuery: {step_times.get('count_query', 0):.2f}ms | "
+            f"CountQuery: {step_times.get('count_query', 0):.2f}ms (Cache:{cache_status}) | "
             f"DataQuery: {step_times.get('data_query', 0):.2f}ms | "
             f"Serialize: {step_times.get('serialize', 0):.2f}ms | "
             f"ResponseBuild: {step_times.get('response_build', 0):.2f}ms | "
