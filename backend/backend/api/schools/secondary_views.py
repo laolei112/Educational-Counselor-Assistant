@@ -325,15 +325,7 @@ def secondary_schools_filters(request):
     优化后的中学筛选器接口
     GET /api/schools/secondary/filters/
     """
-    try:
-        # 生成缓存key
-        cache_key = "secondary:filters:all"
-        
-        # 尝试从缓存获取
-        cached_result = CacheManager.get(cache_key)
-        if cached_result:
-            return JsonResponse(cached_result)
-        
+    try:        
         # 获取所有可用的筛选选项（使用聚合查询）
         districts = list(TbSecondarySchools.objects.values_list('district', flat=True).distinct().order_by('district'))
         categories = list(TbSecondarySchools.objects.values_list('school_category', flat=True).distinct().order_by('school_category'))
@@ -361,9 +353,6 @@ def secondary_schools_filters(request):
                 "religions": religions
             }
         }
-        
-        # 缓存结果（筛选器数据变化较少，缓存时间较长）
-        CacheManager.set(cache_key, response_data, CacheManager.TIMEOUT_LONG)
         
         return JsonResponse(response_data)
         
