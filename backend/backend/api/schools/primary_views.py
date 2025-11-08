@@ -259,25 +259,47 @@ def primary_schools_filters(request):
     """
     获取小学筛选选项
     GET /api/schools/primary/filters/
+    
+    性能优化：
+    1. 使用单次查询获取所有字段，减少数据库查询次数（从5次减少到1次）
+    2. 在Python中处理去重和排序，避免多次数据库扫描
     """
     try:
-        queryset = TbPrimarySchools.objects.all()
+        # 优化：使用单次查询获取所有需要的字段，而不是每个字段一个查询
+        # 这样可以减少数据库查询次数从5次减少到1次
+        all_data = TbPrimarySchools.objects.values(
+            'district', 
+            'school_category', 
+            'school_net', 
+            'student_gender', 
+            'religion'
+        ).distinct()
         
-        # 获取所有可用的筛选选项
-        districts = list(queryset.values_list('district', flat=True).distinct().order_by('district'))
-        districts = [d for d in districts if d]  # 过滤空值
+        # 在Python中处理去重和排序，避免多次数据库扫描
+        districts_set = set()
+        categories_set = set()
+        school_nets_set = set()
+        genders_set = set()
+        religions_set = set()
         
-        categories = list(queryset.values_list('school_category', flat=True).distinct().order_by('school_category'))
-        categories = [c for c in categories if c]  # 过滤空值
+        for item in all_data:
+            if item.get('district'):
+                districts_set.add(item['district'])
+            if item.get('school_category'):
+                categories_set.add(item['school_category'])
+            if item.get('school_net') and item['school_net'] != '/':  # 过滤空值和私立学校标记
+                school_nets_set.add(item['school_net'])
+            if item.get('student_gender'):
+                genders_set.add(item['student_gender'])
+            if item.get('religion'):
+                religions_set.add(item['religion'])
         
-        genders = list(queryset.values_list('student_gender', flat=True).distinct().order_by('student_gender'))
-        genders = [g for g in genders if g]  # 过滤空值
-        
-        religions = list(queryset.values_list('religion', flat=True).distinct().order_by('religion'))
-        religions = [r for r in religions if r]  # 过滤空值
-        
-        school_nets = list(queryset.values_list('school_net', flat=True).distinct().order_by('school_net'))
-        school_nets = [s for s in school_nets if s and s != '/']  # 过滤空值和私立学校标记
+        # 转换为排序后的列表
+        districts = sorted(districts_set)
+        categories = sorted(categories_set)
+        school_nets = sorted(school_nets_set)
+        genders = sorted(genders_set)
+        religions = sorted(religions_set)
         
         return JsonResponse({
             "code": 200,

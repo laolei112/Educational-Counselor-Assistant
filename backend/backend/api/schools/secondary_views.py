@@ -245,21 +245,47 @@ def secondary_schools_filters(request):
     """
     优化后的中学筛选器接口
     GET /api/schools/secondary/filters/
+    
+    性能优化：
+    1. 使用单次查询获取所有字段，减少数据库查询次数（从5次减少到1次）
+    2. 在Python中处理去重和排序，避免多次数据库扫描
     """
-    try:        
-        # 获取所有可用的筛选选项（使用聚合查询）
-        districts = list(TbSecondarySchools.objects.values_list('district', flat=True).distinct().order_by('district'))
-        categories = list(TbSecondarySchools.objects.values_list('school_category', flat=True).distinct().order_by('school_category'))
-        school_groups = list(TbSecondarySchools.objects.values_list('school_group', flat=True).distinct().order_by('school_group'))
-        genders = list(TbSecondarySchools.objects.values_list('student_gender', flat=True).distinct().order_by('student_gender'))
-        religions = list(TbSecondarySchools.objects.values_list('religion', flat=True).distinct().order_by('religion'))
+    try:
+        # 优化：使用单次查询获取所有需要的字段，而不是每个字段一个查询
+        # 这样可以减少数据库查询次数从5次减少到1次
+        all_data = TbSecondarySchools.objects.values(
+            'district', 
+            'school_category', 
+            'school_group', 
+            'student_gender', 
+            'religion'
+        ).distinct()
         
-        # 过滤掉None和空字符串
-        districts = [d for d in districts if d]
-        categories = [c for c in categories if c]
-        school_groups = [s for s in school_groups if s]
-        genders = [g for g in genders if g]
-        religions = [r for r in religions if r]
+        # 在Python中处理去重和排序，避免多次数据库扫描
+        districts_set = set()
+        categories_set = set()
+        school_groups_set = set()
+        genders_set = set()
+        religions_set = set()
+        
+        for item in all_data:
+            if item.get('district'):
+                districts_set.add(item['district'])
+            if item.get('school_category'):
+                categories_set.add(item['school_category'])
+            if item.get('school_group'):
+                school_groups_set.add(item['school_group'])
+            if item.get('student_gender'):
+                genders_set.add(item['student_gender'])
+            if item.get('religion'):
+                religions_set.add(item['religion'])
+        
+        # 转换为排序后的列表
+        districts = sorted(districts_set)
+        categories = sorted(categories_set)
+        school_groups = sorted(school_groups_set)
+        genders = sorted(genders_set)
+        religions = sorted(religions_set)
         
         # 构建响应
         response_data = {
