@@ -180,7 +180,7 @@
           <!-- 排序选择器 -->
           <div class="filter-select-wrapper" @click="toggleFilterDropdown('sort', $event)">
             <span class="filter-select-trigger">
-              {{ sortBy === 'none' ? getText('mobileFilter.sort') : sortBy === 'band' ? getText('mobileFilter.sortByBand') : sortBy === 'fee' ? getText('mobileFilter.sortByFee') : getText('mobileFilter.sortByDistrict') }}
+              {{ sortBy === 'none' ? getText('mobileFilter.sort') : sortBy === 'fee' ? getText('mobileFilter.sortByFee') : getText('mobileFilter.sortByDistrict') }}
             </span>
             <span class="filter-arrow" :class="{ 'is-open': activeFilterDropdown === 'sort' }">▼</span>
             
@@ -192,13 +192,6 @@
                    @click.stop="selectSort('none', $event)"
               >
                    {{ getText('mobileFilter.sortDefault') }}
-              </div>
-              <div
-                class="filter-dropdown-item"
-                   :class="{ active: sortBy === 'band' }"
-                   @click.stop="selectSort('band', $event)"
-              >
-                   {{ getText('mobileFilter.sortByBand') }}
               </div>
                  <div
                    class="filter-dropdown-item"
@@ -350,12 +343,6 @@
                 @click="selectSort('none')"
               >
                 {{ getText('mobileFilter.sortDefault') }}
-              </button>
-              <button
-                :class="['mobile-filter-option', { active: sortBy === 'band' }]"
-                @click="selectSort('band')"
-              >
-                {{ getText('mobileFilter.sortByBand') }}
               </button>
               <button
                 :class="['mobile-filter-option', { active: sortBy === 'fee' }]"
@@ -520,7 +507,7 @@ const handleScroll = async () => {
 // 活动中的下拉菜单
 const activeFilterDropdown = ref<string | null>(null)
 const showMobileFilters = ref(false)
-const sortBy = ref<'none' | 'band' | 'fee' | 'district'>('none')
+const sortBy = ref<'none' | 'fee' | 'district'>('none')
 
 // 切换筛选下拉菜单
 const toggleFilterDropdown = (type: string, event?: Event) => {
@@ -579,7 +566,7 @@ const handleFilterChange = async () => {
 }
 
 // 选择排序方式
-const selectSort = (sort: 'none' | 'band' | 'fee' | 'district', event?: Event) => {
+const selectSort = (sort: 'none' | 'fee' | 'district', event?: Event) => {
   // 阻止事件冒泡
   if (event) {
     event.stopPropagation()
@@ -593,13 +580,7 @@ const selectSort = (sort: 'none' | 'band' | 'fee' | 'district', event?: Event) =
 const sortedSchools = computed(() => {
   let schools = [...currentPageData.value]
   
-  if (sortBy.value === 'band') {
-    schools.sort((a, b) => {
-      const aBand = a.promotionInfo?.band1_rate ?? a.band1Rate ?? 0
-      const bBand = b.promotionInfo?.band1_rate ?? b.band1Rate ?? 0
-      return bBand - aBand // 降序
-    })
-  } else if (sortBy.value === 'fee') {
+  if (sortBy.value === 'fee') {
     schools.sort((a, b) => {
       const aFee = a.tuition ?? 0
       const bFee = b.tuition ?? 0

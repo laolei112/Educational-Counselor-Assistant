@@ -437,6 +437,8 @@ export const useSchoolStore = defineStore('school', () => {
           filterOptions.value.districts = response.data.districts || []
           filterOptions.value.schoolNets = response.data.schoolNets || []
           filterOptions.value.categories = response.data.categories || []
+          // 清空中学特有的选项
+          filterOptions.value.bandings = []
         }
       } else {
         // 中学筛选选项
@@ -445,8 +447,16 @@ export const useSchoolStore = defineStore('school', () => {
           if (response.success && response.data) {
             filterOptions.value.districts = response.data.districts || []
             filterOptions.value.bandings = response.data.schoolGroups || []
+            // 清空小学特有的选项
+            filterOptions.value.schoolNets = []
+            filterOptions.value.categories = []
+          } else {
+            console.warn('中学筛选选项API返回失败:', response)
+            filterOptions.value.districts = []
+            filterOptions.value.bandings = []
           }
-        } catch {
+        } catch (err) {
+          console.error('加载中学筛选选项失败:', err)
           // 如果接口不存在，暂时使用空数组
           filterOptions.value.districts = []
           filterOptions.value.bandings = []

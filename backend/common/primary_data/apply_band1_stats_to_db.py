@@ -186,7 +186,7 @@ def apply_stats_to_database(stats_file):
                     'band_distribution': school_stat['band_distribution'],
                     'top_secondary_schools': [
                         {'school': k, 'count': v} 
-                        for k, v in list(school_stat['secondary_schools'].items())[:10]
+                        for k, v in list(school_stat['secondary_schools'].items())
                     ],
                     'yearly_stats': school_stat.get('yearly_stats', {}),  # 年度数据
                     'data_source': 'excel_import',

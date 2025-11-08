@@ -48,7 +48,14 @@ export class SchoolApi {
    * @returns 统计信息
    */
   static async getSchoolStats(type?: 'primary' | 'secondary') {
-    return http.get<SchoolStats>(API_PATHS.SCHOOLS.STATS, { type })
+    if (type === 'primary') {
+      return http.get<SchoolStats>(API_PATHS.SCHOOLS.PRIMARY_STATS)
+    } else if (type === 'secondary') {
+      return http.get<SchoolStats>(API_PATHS.SCHOOLS.SECONDARY_STATS)
+    } else {
+      // 如果没有指定类型，默认使用通用接口（已废弃，但保留兼容性）
+      return http.get<SchoolStats>(API_PATHS.SCHOOLS.STATS, { type })
+    }
   }
 
   /**

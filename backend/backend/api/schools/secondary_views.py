@@ -317,3 +317,61 @@ def secondary_schools_stats(request):
             "data": None
         })
 
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def secondary_schools_filters_optimized(request):
+    """
+    优化后的中学筛选器接口
+    GET /api/schools/secondary/filters/
+    """
+    try:
+        # 生成缓存key
+        cache_key = "secondary:filters:all"
+        
+        # 尝试从缓存获取
+        cached_result = CacheManager.get(cache_key)
+        if cached_result:
+            return JsonResponse(cached_result)
+        
+        # 获取所有可用的筛选选项（使用聚合查询）
+        districts = list(TbSecondarySchools.objects.values_list('district', flat=True).distinct().order_by('district'))
+        categories = list(TbSecondarySchools.objects.values_list('school_category', flat=True).distinct().order_by('school_category'))
+        school_groups = list(TbSecondarySchools.objects.values_list('school_group', flat=True).distinct().order_by('school_group'))
+        genders = list(TbSecondarySchools.objects.values_list('student_gender', flat=True).distinct().order_by('student_gender'))
+        religions = list(TbSecondarySchools.objects.values_list('religion', flat=True).distinct().order_by('religion'))
+        
+        # 过滤掉None和空字符串
+        districts = [d for d in districts if d]
+        categories = [c for c in categories if c]
+        school_groups = [s for s in school_groups if s]
+        genders = [g for g in genders if g]
+        religions = [r for r in religions if r]
+        
+        # 构建响应
+        response_data = {
+            "code": 200,
+            "message": "成功",
+            "success": True,
+            "data": {
+                "districts": districts,
+                "categories": categories,
+                "schoolGroups": school_groups,
+                "genders": genders,
+                "religions": religions
+            }
+        }
+        
+        # 缓存结果（筛选器数据变化较少，缓存时间较长）
+        CacheManager.set(cache_key, response_data, CacheManager.TIMEOUT_LONG)
+        
+        return JsonResponse(response_data)
+        
+    except Exception as e:
+        return JsonResponse({
+            "code": 500,
+            "message": f"服务器错误: {str(e)}",
+            "success": False,
+            "data": None
+        })
+

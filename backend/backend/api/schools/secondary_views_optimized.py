@@ -12,6 +12,7 @@ from django.views.decorators.http import require_http_methods
 from django.db.models import Q, Count
 from backend.models.tb_secondary_schools import TbSecondarySchools
 from backend.utils.cache import CacheManager
+from backend.utils.text_converter import normalize_keyword
 import json
 
 
@@ -30,6 +31,8 @@ def serialize_secondary_school(school):
     return {
         "id": school.id,
         "name": school.school_name,
+        "nameTraditional": school.school_name_traditional,
+        "nameEnglish": school.school_name_english,
         "type": "secondary",
         "district": school.district,
         "schoolNet": school.school_net,
@@ -61,10 +64,7 @@ def serialize_secondary_school(school):
         "website": school.website,
         "officialWebsite": school.website,
         "createdAt": school.created_at.isoformat() if school.created_at else None,
-        "updatedAt": school.updated_at.isoformat() if school.updated_at else None,
-        
-        # 兼容字段
-        "band1Rate": 0,
+        "updatedAt": school.updated_at.isoformat() if school.updated_at else None
     }
 
 
@@ -123,12 +123,33 @@ def secondary_schools_list_optimized(request):
         if religion:
             queryset = queryset.filter(religion=religion)
         
-        # 搜索优化：只搜索高频字段
+        # 搜索优化：支持简繁体搜索
         if keyword:
-            queryset = queryset.filter(
-                Q(school_name__icontains=keyword) | 
-                Q(district__icontains=keyword)
+            # 标准化关键词（将繁体转为简体，统一用于搜索）
+            normalized_keyword = normalize_keyword(keyword)
+            
+            # 构建搜索条件：同时搜索简体字段和繁体字段
+            # 对于学校名称，同时用标准化关键词和原始关键词搜索简体和繁体字段
+            # 这样可以确保无论用户输入简体还是繁体，都能匹配到
+            name_filter = (
+                Q(school_name__icontains=normalized_keyword) | 
+                Q(school_name__icontains=keyword) |
+                Q(school_name_traditional__icontains=normalized_keyword) |
+                Q(school_name_traditional__icontains=keyword)
             )
+            
+            # 其他字段的搜索（同时使用标准化关键词和原始关键词）
+            other_filters = (
+                Q(district__icontains=normalized_keyword) | Q(district__icontains=keyword) |
+                Q(address__icontains=normalized_keyword) | Q(address__icontains=keyword) |
+                Q(school_category__icontains=normalized_keyword) | Q(school_category__icontains=keyword) |
+                Q(religion__icontains=normalized_keyword) | Q(religion__icontains=keyword) |
+                Q(school_net__icontains=normalized_keyword) | Q(school_net__icontains=keyword) |
+                Q(school_group__icontains=normalized_keyword) | Q(school_group__icontains=keyword) |
+                Q(admission_info__icontains=normalized_keyword) | Q(admission_info__icontains=keyword)
+            )
+            
+            queryset = queryset.filter(name_filter | other_filters)
         
         # 排序
         queryset = queryset.order_by('school_name')
@@ -307,6 +328,64 @@ def secondary_schools_stats_optimized(request):
         }
         
         # 缓存结果
+        CacheManager.set(cache_key, response_data, CacheManager.TIMEOUT_LONG)
+        
+        return JsonResponse(response_data)
+        
+    except Exception as e:
+        return JsonResponse({
+            "code": 500,
+            "message": f"服务器错误: {str(e)}",
+            "success": False,
+            "data": None
+        })
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def secondary_schools_filters_optimized(request):
+    """
+    优化后的中学筛选器接口
+    GET /api/schools/secondary/filters/
+    """
+    try:
+        # 生成缓存key
+        cache_key = "secondary:filters:all"
+        
+        # 尝试从缓存获取
+        cached_result = CacheManager.get(cache_key)
+        if cached_result:
+            return JsonResponse(cached_result)
+        
+        # 获取所有可用的筛选选项（使用聚合查询）
+        districts = list(TbSecondarySchools.objects.values_list('district', flat=True).distinct().order_by('district'))
+        categories = list(TbSecondarySchools.objects.values_list('school_category', flat=True).distinct().order_by('school_category'))
+        school_groups = list(TbSecondarySchools.objects.values_list('school_group', flat=True).distinct().order_by('school_group'))
+        genders = list(TbSecondarySchools.objects.values_list('student_gender', flat=True).distinct().order_by('student_gender'))
+        religions = list(TbSecondarySchools.objects.values_list('religion', flat=True).distinct().order_by('religion'))
+        
+        # 过滤掉None和空字符串
+        districts = [d for d in districts if d]
+        categories = [c for c in categories if c]
+        school_groups = [s for s in school_groups if s]
+        genders = [g for g in genders if g]
+        religions = [r for r in religions if r]
+        
+        # 构建响应
+        response_data = {
+            "code": 200,
+            "message": "成功",
+            "success": True,
+            "data": {
+                "districts": districts,
+                "categories": categories,
+                "schoolGroups": school_groups,
+                "genders": genders,
+                "religions": religions
+            }
+        }
+        
+        # 缓存结果（筛选器数据变化较少，缓存时间较长）
         CacheManager.set(cache_key, response_data, CacheManager.TIMEOUT_LONG)
         
         return JsonResponse(response_data)

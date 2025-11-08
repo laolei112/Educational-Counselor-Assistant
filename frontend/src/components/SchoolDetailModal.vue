@@ -139,15 +139,15 @@
 
         <!-- 升学数据部分（小学特有） -->
         <section v-if="school.type === 'primary' && hasPromotionData" class="promotion-data">
-          <h3>📊 升学数据</h3>
+          <h3>📊 {{ convertIfNeeded('升学数据') }}</h3>
           <div class="promotion-table-wrapper">
             <table class="promotion-table">
               <thead>
                 <tr>
-                  <th class="year-header">年份</th>
-                  <th class="rate-header">Band 1 比例</th>
-                  <th class="schools-header">升入学校</th>
-                  <th class="count-header">人数</th>
+                  <th class="year-header">{{ convertIfNeeded('年份') }}</th>
+                  <th class="rate-header">Band 1 {{ convertIfNeeded('比例') }}</th>
+                  <th class="schools-header">{{ convertIfNeeded('升入学校') }}</th>
+                  <th class="count-header">{{ convertIfNeeded('人数') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -184,7 +184,7 @@
                   <template v-if="promotionSummary.schools && Object.keys(promotionSummary.schools).length > 0">
                     <tr v-for="(schoolName, index) in Object.keys(promotionSummary.schools)" :key="`summary-${schoolName}`">
                       <td v-if="index === 0" :rowspan="Object.keys(promotionSummary.schools).length" class="year-cell">
-                        汇总
+                        {{ convertIfNeeded('汇总') }}
                       </td>
                       <td v-if="index === 0" :rowspan="Object.keys(promotionSummary.schools).length" class="rate-cell">
                         <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
@@ -197,7 +197,7 @@
                     </tr>
                   </template>
                   <tr v-else>
-                    <td class="year-cell">汇总</td>
+                    <td class="year-cell">{{ convertIfNeeded('汇总') }}</td>
                     <td class="rate-cell">
                       <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
                         {{ promotionSummary.band1Rate.toFixed(2) }}%
@@ -296,31 +296,31 @@
 
         <!-- 课程设置部分（中学特有） -->
         <section v-if="school.type === 'secondary' && school.schoolCurriculum" class="curriculum">
-          <h3>📚 课程设置（DSE）</h3>
+          <h3>📚 {{ convertIfNeeded('课程设置') }}（DSE）</h3>
           <div class="curriculum-table-wrapper">
             <table class="curriculum-table">
               <thead>
                 <tr>
-                  <th class="lang-header">授课语言</th>
-                  <th class="subjects-header">科目</th>
-                  <th class="count-header">科目数</th>
+                  <th class="lang-header">{{ convertIfNeeded('授课语言') }}</th>
+                  <th class="subjects-header">{{ convertIfNeeded('科目') }}</th>
+                  <th class="count-header">{{ convertIfNeeded('科目数') }}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-if="school.schoolCurriculum['中文授课'] && school.schoolCurriculum['中文授课'].length > 0">
-                  <td class="lang-cell">中文授课</td>
+                  <td class="lang-cell">{{ convertIfNeeded('中文授课') }}</td>
                   <td class="subjects-cell">
                     <div class="subjects-list">
-                      {{ school.schoolCurriculum['中文授课'].join('、') }}
+                      {{ convertedChineseSubjects.join('、') }}
                     </div>
                   </td>
                   <td class="count-cell">{{ school.schoolCurriculum['中文授课'].length }}</td>
                 </tr>
                 <tr v-if="school.schoolCurriculum['英文授课'] && school.schoolCurriculum['英文授课'].length > 0">
-                  <td class="lang-cell">英文授课</td>
+                  <td class="lang-cell">{{ convertIfNeeded('英文授课') }}</td>
                   <td class="subjects-cell">
                     <div class="subjects-list">
-                      {{ school.schoolCurriculum['英文授课'].join('、') }}
+                      {{ convertedEnglishSubjects.join('、') }}
                     </div>
                   </td>
                   <td class="count-cell">{{ school.schoolCurriculum['英文授课'].length }}</td>
@@ -430,12 +430,26 @@ const curriculumTypesText = computed(() => {
   try {
     const data = typeof sc === 'string' ? JSON.parse(sc) : sc
     const types = data && data['课程体系']
-    if (Array.isArray(types) && types.length) return types.join(' + ')
-    if (typeof types === 'string' && types.trim()) return types
+    if (Array.isArray(types) && types.length) return types.map(t => convertIfNeeded(t)).join(' + ')
+    if (typeof types === 'string' && types.trim()) return convertIfNeeded(types)
   } catch (_) {
     // ignore parse error
   }
   return 'DSE'
+})
+
+// 转换后的中文授课科目列表
+const convertedChineseSubjects = computed(() => {
+  const sc = (props.school as any).schoolCurriculum
+  if (!sc || !sc['中文授课'] || !Array.isArray(sc['中文授课'])) return []
+  return sc['中文授课'].map((subject: string) => convertIfNeeded(subject))
+})
+
+// 转换后的英文授课科目列表
+const convertedEnglishSubjects = computed(() => {
+  const sc = (props.school as any).schoolCurriculum
+  if (!sc || !sc['英文授课'] || !Array.isArray(sc['英文授课'])) return []
+  return sc['英文授课'].map((subject: string) => convertIfNeeded(subject))
 })
 
 // 升学数据处理
@@ -465,9 +479,16 @@ const promotionDataByYear = computed(() => {
         const rate = yearData.rate || yearData.band1_rate || yearData.band1Rate
         const schools = yearData.schools || {}
         
+        // 转换学校名称
+        const convertedSchools: Record<string, number> = {}
+        Object.keys(schools).forEach(schoolName => {
+          const convertedName = convertIfNeeded(schoolName)
+          convertedSchools[convertedName] = schools[schoolName]
+        })
+        
         yearlyData[year] = {
           band1Rate: rate !== undefined ? Number(rate) : undefined,
-          schools: schools
+          schools: convertedSchools
         }
       }
     })
@@ -488,9 +509,16 @@ const promotionDataByYear = computed(() => {
             calculatedRate = (Number(band1) / Number(total)) * 100
           }
           
+          // 转换学校名称
+          const convertedSchools: Record<string, number> = {}
+          Object.keys(schools).forEach(schoolName => {
+            const convertedName = convertIfNeeded(schoolName)
+            convertedSchools[convertedName] = schools[schoolName]
+          })
+          
           yearlyData[key] = {
             band1Rate: band1Rate !== undefined ? Number(band1Rate) : calculatedRate,
-            schools: schools
+            schools: convertedSchools
           }
         }
       }
@@ -522,9 +550,16 @@ const promotionSummary = computed(() => {
   // 如果没有任何数据，返回 null
   if (!band1Rate && Object.keys(schools).length === 0) return null
   
+  // 转换学校名称
+  const convertedSchools: Record<string, number> = {}
+  Object.keys(schools).forEach(schoolName => {
+    const convertedName = convertIfNeeded(schoolName)
+    convertedSchools[convertedName] = schools[schoolName]
+  })
+  
   return {
     band1Rate: band1Rate !== undefined ? Number(band1Rate) : undefined,
-    schools: schools
+    schools: convertedSchools
   }
 })
 
@@ -859,9 +894,9 @@ const extractAdmissionCriteria = (): string[] => {
 }
 
 .close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
   width: 32px;
   height: 32px;
   border: none;
@@ -873,7 +908,8 @@ const extractAdmissionCriteria = (): string[] => {
   justify-content: center;
   font-size: 18px;
   color: #666;
-  z-index: 10;
+  z-index: 1001;
+  transition: background 0.2s;
 }
 
 .close-btn:hover {
@@ -1580,6 +1616,14 @@ section h3 {
   .modal-container {
     margin: 10px;
     max-height: 95vh;
+  }
+  
+  .close-btn {
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
   }
   
   .header {

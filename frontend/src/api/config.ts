@@ -20,7 +20,9 @@ export const API_PATHS = {
     PRIMARY: '/schools/primary/',         // GET 获取小学列表
     SECONDARY: '/schools/secondary/',     // GET 获取中学列表
     DETAIL: '/schools/:id/',              // GET 获取学校详情
-    STATS: '/schools/stats/',             // GET 获取学校统计信息
+    STATS: '/schools/stats/',             // GET 获取学校统计信息（已废弃，使用下面的专用接口）
+    PRIMARY_STATS: '/schools/primary/stats/',  // GET 获取小学统计信息
+    SECONDARY_STATS: '/schools/secondary/stats/',  // GET 获取中学统计信息
     PRIMARY_FILTERS: '/schools/primary/filters/',  // GET 获取小学筛选选项
     SECONDARY_FILTERS: '/schools/secondary/filters/',  // GET 获取中学筛选选项
   },
