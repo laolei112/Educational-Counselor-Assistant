@@ -135,8 +135,8 @@ export const useLanguageStore = defineStore('language', () => {
       
       // 升学信息
       'school.band1Rate': {
-        'zh-CN': '升Band 1比例',
-        'zh-TW': '升Band 1比例'
+        'zh-CN': '升Band1',
+        'zh-TW': '升Band1'
       },
       
       // 中学联系

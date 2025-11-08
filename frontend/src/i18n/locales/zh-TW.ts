@@ -181,7 +181,7 @@ export default {
 
   // 应用信息
   app: {
-    title: 'BetterSchool · 香港小學升學數據庫',
+    title: 'BetterSchool · 香港權威升學數據庫',
     subtitle: '為您智能匹配最適合孩子的升學路徑'
   },
 
