@@ -38,15 +38,15 @@
       <div v-if="school.secondaryInfo && hasSecondaryInfo(school.secondaryInfo)" class="secondary-info">
         <div v-if="school.secondaryInfo.through_train" class="secondary-item">
           <span class="secondary-label">{{ getText('school.throughTrain') }}：</span>
-          <span class="secondary-value">{{ convertIfNeeded(school.secondaryInfo.through_train) }}</span>
+          <span class="secondary-value">{{ school.secondaryInfo.through_train }}</span>
         </div>
         <div v-if="school.secondaryInfo.direct" class="secondary-item">
           <span class="secondary-label">{{ getText('school.direct') }}：</span>
-          <span class="secondary-value">{{ convertIfNeeded(school.secondaryInfo.direct) }}</span>
+          <span class="secondary-value">{{ school.secondaryInfo.direct }}</span>
         </div>
         <div v-if="school.secondaryInfo.associated" class="secondary-item">
           <span class="secondary-label">{{ getText('school.associated') }}：</span>
-          <span class="secondary-value">{{ convertIfNeeded(school.secondaryInfo.associated) }}</span>
+          <span class="secondary-value">{{ school.secondaryInfo.associated }}</span>
         </div>
       </div>
 
@@ -267,13 +267,6 @@ const getSchoolName = () => {
 // 获取多语言文本
 const getText = (key: string) => {
   return languageStore.getText(key)
-}
-
-// 简繁体转换
-const convertIfNeeded = (text?: string | null): string => {
-  const val = text || ''
-  if (!val) return ''
-  return languageStore.convertText(val)
 }
 
 const getSchoolTypeLabel = (type: string) => {
