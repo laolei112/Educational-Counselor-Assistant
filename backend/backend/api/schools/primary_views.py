@@ -177,7 +177,7 @@ def serialize_primary_school_optimized(school):
 
 @csrf_exempt
 @require_http_methods(["GET"])
-def primary_schools_list_optimized(request):
+def primary_schools_list(request):
     """
     获取小学列表 - 优化版(无缓存)
     
