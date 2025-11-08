@@ -14,14 +14,14 @@
 
     <div class="card-content">
       <div class="location-info">
-        <span>{{ school.district }}</span>
+        <span>{{ convertIfNeeded(school.district) }}</span>
         <template v-if="school.schoolNet">
           <span class="divider">｜</span>
-          <span class="school-net">对应校网：{{ school.schoolNet }}</span>
+          <span class="school-net">{{ convertIfNeeded('对应校网') }}：{{ school.schoolNet }}</span>
         </template>
         <template v-if="school.religion">
           <span class="divider">｜</span>
-          <span>{{ school.religion }}</span>
+          <span>{{ convertIfNeeded(school.religion) }}</span>
         </template>
       </div>
 
@@ -38,20 +38,24 @@
       <div v-if="school.secondaryInfo && hasSecondaryInfo(school.secondaryInfo)" class="secondary-info">
         <div v-if="school.secondaryInfo.through_train" class="secondary-item">
           <span class="secondary-label">{{ getText('school.throughTrain') }}：</span>
-          <span class="secondary-value">{{ school.secondaryInfo.through_train }}</span>
+          <span class="secondary-value">{{ convertIfNeeded(school.secondaryInfo.through_train) }}</span>
         </div>
         <div v-if="school.secondaryInfo.direct" class="secondary-item">
           <span class="secondary-label">{{ getText('school.direct') }}：</span>
-          <span class="secondary-value">{{ school.secondaryInfo.direct }}</span>
+          <span class="secondary-value">{{ convertIfNeeded(school.secondaryInfo.direct) }}</span>
         </div>
         <div v-if="school.secondaryInfo.associated" class="secondary-item">
           <span class="secondary-label">{{ getText('school.associated') }}：</span>
-          <span class="secondary-value">{{ school.secondaryInfo.associated }}</span>
+          <span class="secondary-value">{{ convertIfNeeded(school.secondaryInfo.associated) }}</span>
         </div>
       </div>
 
       <div class="bottom-row">
         <div class="status-info">
+          <!-- 小学显示升学比例（靠左） -->
+          <template v-if="school.type === 'primary' && school.promotionInfo?.band1_rate !== undefined">
+            <span class="rate-circle">{{ getText('school.band1Rate') }}：{{ school.promotionInfo.band1_rate }}%</span>
+          </template>
           <span 
             v-if="applicationStatus"
             :class="['status-badge', `status-${applicationStatus}`]"
@@ -60,18 +64,12 @@
           </span>
           <template v-if="school.transferInfo?.application_deadline">
             <span class="divider">｜</span>
-            <span class="deadline">{{ getText('school.deadline') }}：{{ school.transferInfo.application_deadline }}</span>
+            <span class="deadline">{{ getText('school.deadline') }}：{{ convertIfNeeded(school.transferInfo.application_deadline) }}</span>
           </template>
         </div>
         
-        <!-- 小学显示升学比例和详情 -->
-        <div v-if="school.type === 'primary'" class="band-rate-wrapper">
-          <template v-if="school.promotionInfo?.band1_rate !== undefined">
-            <span class="rate-circle">{{ getText('school.band1Rate') }}：{{ school.promotionInfo.band1_rate }}%</span>
-          </template>
-          <span class="arrow">{{ getText('school.details') }}→</span>
-        </div>
-        <div v-if="school.type === 'secondary'" class="band-rate-wrapper">
+        <!-- 详情箭头（靠右） -->
+        <div class="band-rate-wrapper">
           <span class="arrow">{{ getText('school.details') }}→</span>
         </div>
       </div>
@@ -264,9 +262,17 @@ const getSchoolName = () => {
   return languageStore.getSchoolName(props.school)
 }
 
-// 获取多语言文本
+// 获取多语言文本（用于预定义的UI文本）
 const getText = (key: string) => {
   return languageStore.getText(key)
+}
+
+// 文本转换（用于后端返回的动态文本，进行简繁体转换）
+const convertIfNeeded = (text?: string | null): string => {
+  const val = text || ''
+  if (!val) return ''
+  // 总是调用 convertText，它会根据当前语言进行正确的转换
+  return languageStore.convertText(val)
 }
 
 const getSchoolTypeLabel = (type: string) => {
