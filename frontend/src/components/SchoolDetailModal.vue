@@ -163,7 +163,7 @@
                         </span>
                         <span v-else>-</span>
                       </td>
-                      <td class="school-cell">{{ schoolName }}</td>
+                      <td class="school-cell">{{ convertIfNeeded(schoolName) }}</td>
                       <td class="count-cell">{{ yearData.schools[schoolName] }}</td>
                     </tr>
                   </template>
@@ -192,11 +192,11 @@
                         </span>
                         <span v-else>-</span>
                       </td>
-                      <td class="school-cell">{{ schoolName }}</td>
+                      <td class="school-cell">{{ convertIfNeeded(schoolName) }}</td>
                       <td class="count-cell">{{ promotionSummary.schools[schoolName] }}</td>
                     </tr>
                   </template>
-                  <tr v-else>
+                  <!-- <tr v-else>
                     <td class="year-cell">{{ convertIfNeeded('汇总') }}</td>
                     <td class="rate-cell">
                       <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
@@ -206,7 +206,7 @@
                     </td>
                     <td class="school-cell">-</td>
                     <td class="count-cell">-</td>
-                  </tr>
+                  </tr> -->
                 </template>
               </tbody>
             </table>
@@ -897,23 +897,33 @@ const extractAdmissionCriteria = (): string[] => {
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: rgba(0, 0, 0, 0.1);
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background: white;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
-  color: #666;
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
   z-index: 1001;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .close-btn:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: #f3f4f6;
+  border-color: rgba(0, 0, 0, 0.3);
+  color: #1f2937;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
 }
 
 .header {
@@ -1621,9 +1631,10 @@ section h3 {
   .close-btn {
     top: 10px;
     right: 10px;
-    width: 36px;
-    height: 36px;
-    font-size: 20px;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    border-width: 2px;
   }
   
   .header {

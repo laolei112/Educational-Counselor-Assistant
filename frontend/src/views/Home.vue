@@ -176,40 +176,6 @@
               </div>
             </div>
           </template>
-          
-          <!-- 排序选择器 -->
-          <div class="filter-select-wrapper" @click="toggleFilterDropdown('sort', $event)">
-            <span class="filter-select-trigger">
-              {{ sortBy === 'none' ? getText('mobileFilter.sort') : sortBy === 'fee' ? getText('mobileFilter.sortByFee') : getText('mobileFilter.sortByDistrict') }}
-            </span>
-            <span class="filter-arrow" :class="{ 'is-open': activeFilterDropdown === 'sort' }">▼</span>
-            
-            <div v-if="activeFilterDropdown === 'sort'" class="filter-dropdown-menu" @click.stop>
-              <div class="filter-dropdown-content">
-              <div
-                class="filter-dropdown-item"
-                   :class="{ active: sortBy === 'none' }"
-                   @click.stop="selectSort('none', $event)"
-              >
-                   {{ getText('mobileFilter.sortDefault') }}
-              </div>
-                 <div
-                   class="filter-dropdown-item"
-                   :class="{ active: sortBy === 'fee' }"
-                   @click.stop="selectSort('fee', $event)"
-                 >
-                   {{ getText('mobileFilter.sortByFee') }}
-            </div>
-              <div
-                class="filter-dropdown-item"
-                   :class="{ active: sortBy === 'district' }"
-                   @click.stop="selectSort('district', $event)"
-                 >
-                   {{ getText('mobileFilter.sortByDistrict') }}
-                 </div>
-              </div>
-            </div>
-          </div>
           </div>
 
           <!-- 移动端语言切换器和筛选按钮 -->
@@ -333,32 +299,6 @@
               </div>
             </div>
           </template>
-          
-          <!-- 排序 -->
-          <div class="mobile-filter-group">
-            <label class="mobile-filter-label">{{ getText('mobileFilter.sort') }}</label>
-            <div class="mobile-filter-options">
-              <button
-                :class="['mobile-filter-option', { active: sortBy === 'none' }]"
-                @click="selectSort('none')"
-              >
-                {{ getText('mobileFilter.sortDefault') }}
-              </button>
-              <button
-                :class="['mobile-filter-option', { active: sortBy === 'fee' }]"
-                @click="selectSort('fee')"
-              >
-                {{ getText('mobileFilter.sortByFee') }}
-              </button>
-              <button
-                :class="['mobile-filter-option', { active: sortBy === 'district' }]"
-                @click="selectSort('district')"
-              >
-                {{ getText('mobileFilter.sortByDistrict') }}
-              </button>
-          </div>
-            </div>
-          </div>
         
         <div class="mobile-filter-footer">
           <button class="mobile-filter-apply-btn" @click="showMobileFilters = false">
