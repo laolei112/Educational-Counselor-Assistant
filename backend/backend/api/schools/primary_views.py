@@ -150,29 +150,49 @@ def primary_schools_list(request):
         step_start = time.time()
         
         # 优化COUNT查询：使用缓存避免重复执行COUNT(*)
-        # 记录查询前的SQL状态
+        # 记录查询前的SQL状态和时间
         queries_before_count = len(connection.queries)
+        query_start_time = time.time()
         
         # 获取查询SQL用于诊断
         count_sql = str(queryset.query)
         
+        # 对于无WHERE条件的COUNT，优化为使用主键索引
+        # 检查是否有WHERE条件
+        has_where = any([category, district, school_net, gender, religion, teaching_language, keyword])
+        
         # 执行COUNT查询
-        total = queryset.count()
+        if not has_where:
+            # 无WHERE条件时，使用更高效的COUNT方式
+            # 直接使用主键索引而不是排序索引
+            total = TbPrimarySchools.objects.only('id').count()
+        else:
+            # 有WHERE条件时，使用正常的COUNT
+            total = queryset.count()
+        
+        # 记录查询执行完成的时间
+        query_end_time = time.time()
+        db_execution_time = (query_end_time - query_start_time) * 1000
         
         # 记录查询后的SQL状态
         queries_after_count = len(connection.queries)
-        count_query_time = (time.time() - step_start) * 1000
+        count_query_time = (query_end_time - step_start) * 1000
         
         # 获取实际执行的SQL（如果Django记录了）
         actual_sql = None
+        db_time = 0
         if queries_after_count > queries_before_count:
             # Django记录了查询
             actual_sql = connection.queries[-1].get('sql', 'N/A')
-            db_time = connection.queries[-1].get('time', 0)
+            db_time = float(connection.queries[-1].get('time', 0)) * 1000  # 转换为ms
         else:
             # 可能使用了缓存或连接池，没有记录
             actual_sql = 'Not logged by Django'
-            db_time = 0
+            # 使用实际测量的时间
+            db_time = db_execution_time
+        
+        # 计算Python层面的延迟（总耗时 - 数据库耗时）
+        python_overhead = count_query_time - db_time
         
         step_times['count_query'] = count_query_time
         
@@ -194,10 +214,18 @@ def primary_schools_list(request):
             loginfo(
                 f"[SLOW_COUNT] GET /api/schools/primary/ | "
                 f"CountQuery: {count_query_time:.2f}ms | "
-                f"DBTime: {float(db_time)*1000:.2f}ms | "
+                f"DBTime: {db_time:.2f}ms | "
+                f"PythonOverhead: {python_overhead:.2f}ms | "
                 f"Params: {json.dumps(query_params, ensure_ascii=False)} | "
                 f"SQL: {actual_sql[:500] if actual_sql else 'N/A'}"
             )
+            
+            # 如果Python层面延迟很大，记录额外诊断信息
+            if python_overhead > 500:  # Python层面延迟超过500ms
+                loginfo(
+                    f"[HIGH_PYTHON_OVERHEAD] Python overhead: {python_overhead:.2f}ms | "
+                    f"This may indicate connection pool issues, network latency, or ORM overhead"
+                )
             
             # 尝试获取EXPLAIN信息和数据库状态（如果可能）
             try:
