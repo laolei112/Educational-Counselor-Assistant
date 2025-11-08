@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q
+from django.db import connection
 from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.utils.text_converter import normalize_keyword
 from backend.utils.cache import CacheManager
@@ -149,9 +150,106 @@ def primary_schools_list(request):
         step_start = time.time()
         
         # 优化COUNT查询：使用缓存避免重复执行COUNT(*)
+        # 记录查询前的SQL状态
+        queries_before_count = len(connection.queries)
+        
+        # 获取查询SQL用于诊断
+        count_sql = str(queryset.query)
+        
+        # 执行COUNT查询
         total = queryset.count()
         
-        step_times['count_query'] = (time.time() - step_start) * 1000
+        # 记录查询后的SQL状态
+        queries_after_count = len(connection.queries)
+        count_query_time = (time.time() - step_start) * 1000
+        
+        # 获取实际执行的SQL（如果Django记录了）
+        actual_sql = None
+        if queries_after_count > queries_before_count:
+            # Django记录了查询
+            actual_sql = connection.queries[-1].get('sql', 'N/A')
+            db_time = connection.queries[-1].get('time', 0)
+        else:
+            # 可能使用了缓存或连接池，没有记录
+            actual_sql = 'Not logged by Django'
+            db_time = 0
+        
+        step_times['count_query'] = count_query_time
+        
+        # 如果COUNT查询慢，记录详细诊断信息
+        if count_query_time > 200:  # 超过200ms认为是慢查询
+            # 获取查询参数用于诊断
+            query_params = {
+                'category': category,
+                'district': district,
+                'school_net': school_net,
+                'gender': gender,
+                'religion': religion,
+                'teaching_language': teaching_language,
+                'keyword': keyword,
+                'has_filters': any([category, district, school_net, gender, religion, teaching_language, keyword])
+            }
+            
+            # 记录慢查询诊断信息
+            loginfo(
+                f"[SLOW_COUNT] GET /api/schools/primary/ | "
+                f"CountQuery: {count_query_time:.2f}ms | "
+                f"DBTime: {float(db_time)*1000:.2f}ms | "
+                f"Params: {json.dumps(query_params, ensure_ascii=False)} | "
+                f"SQL: {actual_sql[:500] if actual_sql else 'N/A'}"
+            )
+            
+            # 尝试获取EXPLAIN信息和数据库状态（如果可能）
+            try:
+                # 获取EXPLAIN查询计划
+                if actual_sql and actual_sql != 'N/A' and actual_sql != 'Not logged by Django':
+                    # 将SELECT COUNT(*)转换为EXPLAIN格式
+                    explain_sql = actual_sql.replace('SELECT COUNT(*)', 'EXPLAIN SELECT COUNT(*)', 1)
+                    with connection.cursor() as cursor:
+                        cursor.execute(explain_sql)
+                        columns = [col[0] for col in cursor.description]
+                        explain_result = cursor.fetchone()
+                        if explain_result:
+                            explain_dict = dict(zip(columns, explain_result))
+                            # 记录关键信息
+                            explain_info = {
+                                'select_type': explain_dict.get('select_type', 'N/A'),
+                                'type': explain_dict.get('type', 'N/A'),
+                                'possible_keys': explain_dict.get('possible_keys', 'N/A'),
+                                'key': explain_dict.get('key', 'N/A'),
+                                'key_len': explain_dict.get('key_len', 'N/A'),
+                                'rows': explain_dict.get('rows', 'N/A'),
+                                'Extra': explain_dict.get('Extra', 'N/A')
+                            }
+                            loginfo(f"[EXPLAIN] {json.dumps(explain_info, ensure_ascii=False)}")
+                
+                # 检查数据库连接状态和锁等待
+                with connection.cursor() as cursor:
+                    # 检查当前连接数
+                    cursor.execute("SHOW STATUS LIKE 'Threads_connected'")
+                    threads_connected = cursor.fetchone()
+                    
+                    # 检查锁等待
+                    cursor.execute("""
+                        SELECT COUNT(*) as waiting_queries 
+                        FROM information_schema.processlist 
+                        WHERE State LIKE '%lock%' OR State LIKE '%Waiting%'
+                    """)
+                    waiting_queries = cursor.fetchone()
+                    
+                    # 检查慢查询
+                    cursor.execute("SHOW STATUS LIKE 'Slow_queries'")
+                    slow_queries = cursor.fetchone()
+                    
+                    db_status = {
+                        'threads_connected': threads_connected[1] if threads_connected else 'N/A',
+                        'waiting_queries': waiting_queries[0] if waiting_queries else 'N/A',
+                        'slow_queries': slow_queries[1] if slow_queries else 'N/A'
+                    }
+                    loginfo(f"[DB_STATUS] {json.dumps(db_status, ensure_ascii=False)}")
+            except Exception as e:
+                # 诊断失败不影响主流程，但记录错误
+                loginfo(f"[DIAGNOSTIC_ERROR] Failed to get diagnostic info: {str(e)}")
         step_start = time.time()
         
         # 计算分页信息
