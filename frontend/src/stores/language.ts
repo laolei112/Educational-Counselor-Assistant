@@ -83,8 +83,8 @@ export const useLanguageStore = defineStore('language', () => {
     const textMap: Record<string, Record<Language, string>> = {
       // 搜索相关
       'search.placeholder': {
-        'zh-CN': '搜索学校名称、地区、校网等...',
-        'zh-TW': '搜索學校名稱、地區、校網等...'
+        'zh-CN': '搜索学校名称',
+        'zh-TW': '搜索學校名稱'
       },
       
       // 学校类型

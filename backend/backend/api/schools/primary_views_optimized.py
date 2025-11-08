@@ -70,8 +70,10 @@ def serialize_primary_school(school):
         "transferInfo": school.transfer_info if school.transfer_info else {},
         # 升学信息
         "promotionInfo": school.promotion_info if school.promotion_info else {},
-        # Band1比例（从promotion_info中提取）
-        "band1Rate": school.promotion_info.get('band1_rate') if school.promotion_info and isinstance(school.promotion_info, dict) else None,
+        # Band1比例（优先使用生成列band1_rate，性能更好）
+        "band1Rate": float(school.band1_rate) if school.band1_rate is not None else (
+            school.promotion_info.get('band1_rate') if school.promotion_info and isinstance(school.promotion_info, dict) else None
+        ),
         
         # 其他
         "isFullDay": school.is_full_day(),
@@ -158,17 +160,14 @@ def primary_schools_list_optimized(request):
             )
         
         # 筛选：是否有升Band1比例
+        # 使用生成列band1_rate（已通过SQL添加，性能更好）
         if has_band1_rate is not None:
             if has_band1_rate.lower() in ('true', '1'):
-                # 筛选有Band1比例的学校（promotion_info JSON中包含band1_rate字段且不为null）
-                queryset = queryset.extra(
-                    where=["JSON_EXTRACT(promotion_info, '$.band1_rate') IS NOT NULL AND JSON_EXTRACT(promotion_info, '$.band1_rate') != 'null'"]
-                )
+                # 筛选有Band1比例的学校（使用生成列，可直接使用索引）
+                queryset = queryset.filter(band1_rate__isnull=False)
             elif has_band1_rate.lower() in ('false', '0'):
                 # 筛选没有Band1比例的学校
-                queryset = queryset.extra(
-                    where=["JSON_EXTRACT(promotion_info, '$.band1_rate') IS NULL OR JSON_EXTRACT(promotion_info, '$.band1_rate') = 'null'"]
-                )
+                queryset = queryset.filter(band1_rate__isnull=True)
         
         # 筛选：是否有中学信息
         if has_secondary_info is not None:
@@ -192,12 +191,8 @@ def primary_schools_list_optimized(request):
                 )
         
         # 排序：按Band 1比例降序，比例相同时按学校名称排序
-        # 使用JSON字段查询Band 1比例
-        queryset = queryset.extra(
-            select={
-                'band1_rate': "CAST(JSON_EXTRACT(promotion_info, '$.band1_rate') AS DECIMAL(5,2))"
-            }
-        ).order_by('-band1_rate', 'school_name')
+        # 使用生成列band1_rate（已通过SQL添加，可直接使用索引，性能大幅提升）
+        queryset = queryset.order_by('-band1_rate', 'school_name')
         
         # 获取总数（缓存）
         count_cache_key = cache_key + ":count"

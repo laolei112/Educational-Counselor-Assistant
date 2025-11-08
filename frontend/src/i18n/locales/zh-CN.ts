@@ -144,7 +144,7 @@ export default {
     retry: '重试',
     noData: '暂无数据',
     noMoreData: '已加载全部',
-    searchPlaceholder: '搜索学校名称、地区、校网等...'
+    searchPlaceholder: '搜索学校名称'
   },
 
   // 语言切换
@@ -187,7 +187,7 @@ export default {
 
   // 搜索相关
   search: {
-    placeholder: '搜索学校名称、地区、校网…'
+    placeholder: '搜索学校名称'
   },
 
   // 筛选相关
