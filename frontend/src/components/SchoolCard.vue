@@ -37,16 +37,16 @@
     <!-- KV信息区: 使用CSS Grid，固定标签列 + 自适应值列 -->
     <div class="kv-info-grid">
       <!-- 办学性质 -->
-      <div class="kv-row">
+      <!-- <div class="kv-row">
         <span class="kv-label">{{ getText('school.schoolType') }}</span>
         <span class="kv-value">{{ getSchoolTypeLabel(school.schoolType || school.category) || '—' }}</span>
-      </div>
+      </div> -->
       
       <!-- 性别 -->
-      <div class="kv-row">
+      <!-- <div class="kv-row">
         <span class="kv-label">{{ getText('school.gender') }}</span>
         <span class="kv-value">{{ getGenderLabel(school.gender) || '—' }}</span>
-      </div>
+      </div> -->
       
       <!-- 学费 -->
       <div class="kv-row">
