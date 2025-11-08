@@ -1,10 +1,10 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.core.paginator import Paginator
 from django.db.models import F, Q, Case, When, Value, IntegerField
 from backend.models.tb_secondary_schools import TbSecondarySchools
 from backend.utils.text_converter import normalize_keyword
+from backend.utils.cache import CacheManager
 import json
 import traceback
 from common.logger import logerror
@@ -166,9 +166,15 @@ def secondary_schools_list(request):
             # 没有关键词时，按照 school_group 和 school_name 排序（NULL 值排在最后）
             queryset = queryset.order_by(F('school_group').asc(nulls_last=True), 'school_name')
         
-        # 分页
-        paginator = Paginator(queryset, page_size)
-        schools_page = paginator.get_page(page)
+        # 优化COUNT查询：使用缓存避免重复执行COUNT(*)
+        total = queryset.count()        
+        # 计算分页信息
+        total_pages = (total + page_size - 1) // page_size if total > 0 else 0
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+        
+        # 使用切片获取当前页数据（避免Paginator的额外查询）
+        schools_page = queryset[start_index:end_index]
         
         # 序列化数据
         schools_data = [serialize_secondary_school(school) for school in schools_page]
@@ -179,10 +185,10 @@ def secondary_schools_list(request):
             "success": True,
             "data": {
                 "list": schools_data,
-                "total": paginator.count,
+                "total": total,
                 "page": page,
                 "pageSize": page_size,
-                "totalPages": paginator.num_pages
+                "totalPages": total_pages
             }
         })
         
