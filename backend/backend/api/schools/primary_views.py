@@ -124,8 +124,8 @@ def primary_schools_list(request):
         if religion:
             queryset = queryset.filter(religion=religion)
         
-        if teaching_language:
-            queryset = queryset.filter(teaching_language__icontains=teaching_language)
+        # if teaching_language:
+        #     queryset = queryset.filter(teaching_language__icontains=teaching_language)
             
         if keyword:
             # 标准化关键词（将繁体转为简体，统一用于搜索）
