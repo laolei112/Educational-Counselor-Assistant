@@ -403,10 +403,12 @@ const languageStore = useLanguageStore()
 const currentLanguage = computed(() => languageStore.currentLanguage)
 
 // 同步转换（使用本地转换器）
+// 根据当前语言自动转换：简体语言时转繁体为简体，繁体语言时转简体为繁体
 const convertIfNeeded = (text?: string | null): string => {
   const val = text || ''
   if (!val) return ''
-  return currentLanguage.value === 'zh-TW' ? languageStore.convertText(val) : val
+  // 总是调用 convertText，它会根据当前语言进行正确的转换
+  return languageStore.convertText(val)
 }
 
 const displayName = computed(() => {
