@@ -238,18 +238,6 @@
           <div v-if="school.admissionInfo" class="application-details">
             <div class="details-text" v-html="extractAdmissionDetails()"></div>
           </div>
-          <!-- 入学准则 -->
-          <div v-if="hasAdmissionCriteria()" class="admission-criteria">
-            <div class="criteria-list">
-              <div 
-                v-for="(criterion, idx) in extractAdmissionCriteria()" 
-                :key="idx"
-                class="criterion-item"
-              >
-                {{ criterion }}
-              </div>
-            </div>
-          </div>
         </section>
 
         <!-- 插班信息部分（中学特有） -->
@@ -862,12 +850,6 @@ const extractAdmissionDetails = (): string => {
   if (!props.school.admissionInfo) return ''
   // 提取申请详情部分（排除入学准则）
   const text = props.school.admissionInfo
-  // 尝试提取入学准则之前的内容
-  const criteriaMatch = text.match(/入学准则|收生准则|录取标准/)
-  if (criteriaMatch) {
-    return text.substring(0, criteriaMatch.index)
-  }
-  // 如果没有找到入学准则，返回全部内容
   return text
 }
 
