@@ -258,9 +258,45 @@ def primary_schools_list(request):
         # 🔥 优化3: 分离 COUNT 查询 (不带 ORDER BY)
         # COUNT 查询使用最简单的形式,数据库可以直接使用索引
         count_queryset = TbPrimarySchools.objects.filter(base_filters)
-        total = count_queryset.count()
         
-        step_times['count_query'] = (time.time() - step_start) * 1000
+        # 网络延迟监控：记录查询前后的时间戳
+        query_start = time.time()
+        try:
+            # 尝试获取数据库实际执行时间（如果支持）
+            from django.db import connection
+            db_start = time.time()
+            total = count_queryset.count()
+            db_end = time.time()
+            
+            # 计算总耗时和可能的网络延迟
+            count_query_time = (db_end - query_start) * 1000
+            
+            # 如果 COUNT 查询耗时超过 200ms，记录详细诊断信息
+            if count_query_time > 200:
+                # 尝试获取数据库状态
+                try:
+                    with connection.cursor() as cursor:
+                        cursor.execute("SHOW STATUS LIKE 'Threads_connected'")
+                        threads_connected = cursor.fetchone()[1] if cursor.fetchone() else "N/A"
+                        
+                        cursor.execute("SHOW VARIABLES LIKE 'max_connections'")
+                        max_connections = cursor.fetchone()[1] if cursor.fetchone() else "N/A"
+                        
+                        loginfo(
+                            f"[SLOW_COUNT] GET /api/schools/primary/ | "
+                            f"CountQuery: {count_query_time:.2f}ms | "
+                            f"ThreadsConnected: {threads_connected}/{max_connections} | "
+                            f"Params: category={category}, district={district}, keyword={keyword[:20] if keyword else None}"
+                        )
+                except:
+                    pass
+        except Exception as e:
+            # 如果监控失败，仍然执行查询
+            total = count_queryset.count()
+            count_query_time = (time.time() - query_start) * 1000
+            loginfo(f"[COUNT_ERROR] COUNT 查询异常: {str(e)} | 耗时: {count_query_time:.2f}ms")
+        
+        step_times['count_query'] = count_query_time
         step_start = time.time()
         
         # 提前计算分页信息
