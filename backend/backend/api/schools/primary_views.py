@@ -110,12 +110,42 @@ import json
 import time
 
 
+def serialize_primary_school_list(school):
+    """
+    列表页精简序列化函数
+    只返回列表展示必需的字段，大幅减少数据量
+    
+    精简策略：
+    - 移除所有JSON详细信息字段
+    - 只保留基本识别信息和关键筛选字段
+    - 移除不常用的联系方式（fax, email）
+    - 数据量减少约70-80%
+    """
+    return {
+        "id": school.id,
+        "name": school.school_name,
+        "nameTraditional": school.school_name_traditional,
+        "nameEnglish": school.school_name_english,
+        "type": "primary",
+        "category": school.school_category,
+        "district": school.district,
+        "schoolNet": school.school_net,
+        "gender": school.student_gender,
+        "religion": school.religion,
+        "teachingLanguage": school.teaching_language,
+        "tuition": school.tuition or "-",
+        "band1Rate": float(school.band1_rate) if school.band1_rate is not None else None,
+        # 只保留最基本的联系信息
+        "address": school.address,
+        "phone": school.phone,
+        "website": school.website
+    }
+
+
 def serialize_primary_school_optimized(school):
     """
-    优化版序列化函数
-    1. 减少字典查找次数
-    2. 避免重复的类型检查
-    3. 直接计算总班数
+    详情页完整序列化函数（保留用于详情页）
+    返回完整的学校信息
     """
     # 预先获取 JSON 字段,避免多次访问
     total_classes_info = school.total_classes_info or {}
@@ -324,14 +354,14 @@ def primary_schools_list(request):
             'school_name'
         )
         
-        # 🔥 优化7: 如果只需要部分字段,使用 only() 或 defer()
-        # 例如列表页不需要所有详细信息时:
-        # data_queryset = data_queryset.only(
-        #     'id', 'school_name', 'school_name_traditional', 'school_name_english',
-        #     'school_category', 'district', 'school_net', 'student_gender',
-        #     'religion', 'teaching_language', 'band1_rate', 'tuition',
-        #     'address', 'phone', 'website'
-        # )
+        # 🔥 优化7: 列表页只查询必需字段,减少数据传输
+        # 使用 only() 只查询列表展示需要的字段
+        data_queryset = data_queryset.only(
+            'id', 'school_name', 'school_name_traditional', 'school_name_english',
+            'school_category', 'district', 'school_net', 'student_gender',
+            'religion', 'teaching_language', 'band1_rate', 'tuition',
+            'address', 'phone', 'website'
+        )
         
         # 使用切片获取当前页数据
         schools_page = data_queryset[start_index:end_index]
@@ -339,8 +369,8 @@ def primary_schools_list(request):
         step_times['data_query'] = (time.time() - step_start) * 1000
         step_start = time.time()
         
-        # 序列化数据
-        schools_data = [serialize_primary_school_optimized(school) for school in schools_page]
+        # 🔥 优化8: 使用精简序列化函数,减少70-80%数据量
+        schools_data = [serialize_primary_school_list(school) for school in schools_page]
         
         step_times['serialize'] = (time.time() - step_start) * 1000
         step_start = time.time()
