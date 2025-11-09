@@ -53,6 +53,12 @@ DATABASES = {
         "PASSWORD": MYSQL_PASSWORD,
         "HOST": MYSQL_HOST,
         "PORT": MYSQL_PORT,
+        # ========================================
+        # 🔥 关键配置：数据库连接池
+        # ========================================
+        # 不设置会导致每次HTTP请求都建立新连接，浪费100ms-2000ms！
+        "CONN_MAX_AGE": 600,  # 连接在600秒（10分钟）内复用
+        "CONN_HEALTH_CHECKS": True,  # Django 4.1+ 自动检查连接健康
         "OPTIONS": {
             "charset": "utf8mb4",
             "init_command": (
@@ -61,6 +67,10 @@ DATABASES = {
                 " collation_connection='utf8mb4_unicode_ci'"
             ),
             "isolation_level": "repeatable read",
+            # 连接超时设置（防止长时间等待）
+            "connect_timeout": 10,  # 建立连接最多等10秒
+            "read_timeout": 30,
+            "write_timeout": 30,
         },
     }
 }
