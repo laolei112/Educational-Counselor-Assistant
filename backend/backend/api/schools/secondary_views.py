@@ -24,14 +24,13 @@ def get_cache_key_for_secondary_query(params):
 
 def serialize_secondary_school_list(school):
     """
-    列表页精简序列化函数
-    只返回列表展示必需的字段，大幅减少数据量
+    列表页精简序列化函数 - 平衡版本
+    保留卡片展示必需的字段，同时减少大型JSON字段
     
     精简策略：
-    - 移除所有JSON详细信息字段（transferInfo, admissionInfo, promotionInfo, schoolCurriculum）
-    - 只保留基本识别信息和关键筛选字段
-    - 移除不常用的联系方式（email）
-    - 数据量减少约70-80%
+    - 保留卡片展示需要的基本字段（schoolScale, contact等）
+    - 移除大型JSON详细信息字段（transferInfo, admissionInfo, promotionInfo, schoolCurriculum）
+    - 数据量减少约60-70%，同时保证卡片正常显示
     """
     return {
         "id": school.id,
@@ -49,11 +48,34 @@ def serialize_secondary_school_list(school):
         "schoolType": school.school_category,
         "schoolGroup": school.school_group,
         "totalClasses": school.total_classes,
-        # 只保留最基本的联系信息
+        
+        # 保留卡片展示需要的字段
+        "schoolScale": {
+            "classes": school.total_classes if school.total_classes else 0,
+            "students": 0
+        },
+        "contact": {
+            "address": school.address,
+            "phone": school.phone,
+            "email": school.email,
+            "website": school.website
+        },
+        
+        # 为了兼容性，同时保留扁平化的联系方式
         "address": school.address,
         "phone": school.phone,
+        "email": school.email,
         "website": school.website,
+        "officialWebsite": school.website,
+        
         "band1Rate": 0,  # 中学暂无band1Rate数据
+        
+        # 移除的大型字段（只在详情页才需要）:
+        # - transferInfo (大JSON对象)
+        # - admissionInfo (JSON)
+        # - promotionInfo (JSON)
+        # - schoolCurriculum (大JSON对象)
+        # - createdAt / updatedAt (时间戳)
     }
 
 
@@ -216,12 +238,13 @@ def secondary_schools_list(request):
         start_index = (page - 1) * page_size
         end_index = start_index + page_size
         
-        # 优化：列表页只查询必需字段,减少数据传输
+        # 优化：列表页查询卡片展示必需字段
+        # 保留基本字段+contact+schoolScale，移除大型JSON详细信息
         queryset = queryset.only(
             'id', 'school_name', 'school_name_traditional', 'school_name_english',
             'district', 'school_net', 'religion', 'student_gender',
             'teaching_language', 'tuition', 'school_category', 'school_group',
-            'total_classes', 'address', 'phone', 'website'
+            'total_classes', 'address', 'phone', 'email', 'website'
         )
         
         # 使用切片获取当前页数据（避免Paginator的额外查询）

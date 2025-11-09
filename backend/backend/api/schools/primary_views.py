@@ -112,15 +112,23 @@ import time
 
 def serialize_primary_school_list(school):
     """
-    列表页精简序列化函数
-    只返回列表展示必需的字段，大幅减少数据量
+    列表页精简序列化函数 - 平衡版本
+    保留卡片展示必需的字段，同时减少大型JSON字段
     
     精简策略：
-    - 移除所有JSON详细信息字段
-    - 只保留基本识别信息和关键筛选字段
-    - 移除不常用的联系方式（fax, email）
-    - 数据量减少约70-80%
+    - 保留卡片展示需要的基本字段（schoolScale, contact等）
+    - 移除大型JSON详细信息字段（basicInfo, classTeachingInfo, assessmentInfo等）
+    - 数据量减少约60-70%，同时保证卡片正常显示
     """
+    # 快速计算总班数
+    total_classes = 0
+    total_classes_info = school.total_classes_info or {}
+    if isinstance(total_classes_info, dict):
+        for grade in ('primary_1', 'primary_2', 'primary_3', 'primary_4', 'primary_5', 'primary_6'):
+            val = total_classes_info.get(grade, 0)
+            if isinstance(val, (int, float)):
+                total_classes += val
+    
     return {
         "id": school.id,
         "name": school.school_name,
@@ -135,10 +143,35 @@ def serialize_primary_school_list(school):
         "teachingLanguage": school.teaching_language,
         "tuition": school.tuition or "-",
         "band1Rate": float(school.band1_rate) if school.band1_rate is not None else None,
-        # 只保留最基本的联系信息
+        
+        # 保留卡片展示需要的字段
+        "schoolScale": {
+            "classes": total_classes,
+            "students": 0
+        },
+        "contact": {
+            "address": school.address,
+            "phone": school.phone,
+            "fax": school.fax,
+            "email": school.email,
+            "website": school.website
+        },
+        
+        # 为了兼容性，同时保留扁平化的联系方式
         "address": school.address,
         "phone": school.phone,
-        "website": school.website
+        "website": school.website,
+        
+        # 移除的大型字段（只在详情页才需要）:
+        # - basicInfo (大JSON对象)
+        # - secondaryInfo (JSON)
+        # - classesInfo (JSON)
+        # - classTeachingInfo (JSON)
+        # - assessmentInfo (JSON)
+        # - transferInfo (JSON)
+        # - promotionInfo (JSON)
+        # - isFullDay / isCoed (方法调用)
+        # - createdAt / updatedAt (时间戳)
     }
 
 
@@ -354,13 +387,14 @@ def primary_schools_list(request):
             'school_name'
         )
         
-        # 🔥 优化7: 列表页只查询必需字段,减少数据传输
-        # 使用 only() 只查询列表展示需要的字段
+        # 🔥 优化7: 列表页查询卡片展示必需字段
+        # 保留基本字段+contact+schoolScale，移除大型JSON详细信息
         data_queryset = data_queryset.only(
             'id', 'school_name', 'school_name_traditional', 'school_name_english',
             'school_category', 'district', 'school_net', 'student_gender',
             'religion', 'teaching_language', 'band1_rate', 'tuition',
-            'address', 'phone', 'website'
+            'address', 'phone', 'fax', 'email', 'website',
+            'total_classes_info'  # 需要用于计算总班数
         )
         
         # 使用切片获取当前页数据
