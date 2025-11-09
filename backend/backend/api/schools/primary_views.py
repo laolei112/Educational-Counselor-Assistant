@@ -110,26 +110,34 @@ import json
 import time
 
 
-def serialize_primary_school_list(school):
+def serialize_primary_school_for_list(school):
     """
-    列表页精简序列化函数 - 平衡版本
-    保留卡片展示必需的字段，同时减少大型JSON字段
+    列表页精简序列化 - 只返回卡片展示必需的字段
     
-    精简策略：
-    - 保留卡片展示需要的基本字段（schoolScale, contact等）
-    - 移除大型JSON详细信息字段（basicInfo, classTeachingInfo, assessmentInfo等）
-    - 数据量减少约60-70%，同时保证卡片正常显示
+    卡片显示内容：
+    - 基本信息：名称、类型、地区、校网、宗教、性别、学费
+    - 联系中学：secondaryInfo (结龙、直属、联系中学)
+    - 升学信息：promotionInfo (Band1比例)
+    
+    不包含详情页专用字段：
+    - basicInfo (学校介绍)
+    - classesInfo (班级详情)
+    - classTeachingInfo (教学模式)
+    - assessmentInfo (评估政策)
+    - transferInfo (插班信息)
     """
-    # 快速计算总班数
-    total_classes = 0
-    total_classes_info = school.total_classes_info or {}
-    if isinstance(total_classes_info, dict):
-        for grade in ('primary_1', 'primary_2', 'primary_3', 'primary_4', 'primary_5', 'primary_6'):
-            val = total_classes_info.get(grade, 0)
-            if isinstance(val, (int, float)):
-                total_classes += val
+    # 获取 promotionInfo
+    promotion_info = school.promotion_info or {}
+    
+    # 获取 band1_rate
+    band1_rate = None
+    if school.band1_rate is not None:
+        band1_rate = float(school.band1_rate)
+    elif isinstance(promotion_info, dict):
+        band1_rate = promotion_info.get('band1_rate')
     
     return {
+        # 基本信息
         "id": school.id,
         "name": school.school_name,
         "nameTraditional": school.school_name_traditional,
@@ -140,45 +148,21 @@ def serialize_primary_school_list(school):
         "schoolNet": school.school_net,
         "gender": school.student_gender,
         "religion": school.religion,
-        "teachingLanguage": school.teaching_language,
         "tuition": school.tuition or "-",
-        "band1Rate": float(school.band1_rate) if school.band1_rate is not None else None,
+        "band1Rate": band1_rate,
         
-        # 保留卡片展示需要的字段
-        "schoolScale": {
-            "classes": total_classes,
-            "students": 0
-        },
-        "contact": {
-            "address": school.address,
-            "phone": school.phone,
-            "fax": school.fax,
-            "email": school.email,
-            "website": school.website
-        },
+        # 卡片需要：联系中学信息
+        "secondaryInfo": school.secondary_info or {},
         
-        # 为了兼容性，同时保留扁平化的联系方式
-        "address": school.address,
-        "phone": school.phone,
-        "website": school.website,
-        
-        # 移除的大型字段（只在详情页才需要）:
-        # - basicInfo (大JSON对象)
-        # - secondaryInfo (JSON)
-        # - classesInfo (JSON)
-        # - classTeachingInfo (JSON)
-        # - assessmentInfo (JSON)
-        # - transferInfo (JSON)
-        # - promotionInfo (JSON)
-        # - isFullDay / isCoed (方法调用)
-        # - createdAt / updatedAt (时间戳)
+        # 卡片需要：Band1比例 (前端使用 promotionInfo.band1_rate)
+        "promotionInfo": promotion_info,
     }
 
 
 def serialize_primary_school_optimized(school):
     """
-    详情页完整序列化函数（保留用于详情页）
-    返回完整的学校信息
+    详情页完整序列化 - 返回所有字段
+    用于详情接口 /api/schools/primary/{id}/
     """
     # 预先获取 JSON 字段,避免多次访问
     total_classes_info = school.total_classes_info or {}
@@ -387,14 +371,15 @@ def primary_schools_list(request):
             'school_name'
         )
         
-        # 🔥 优化7: 列表页查询卡片展示必需字段
-        # 保留基本字段+contact+schoolScale，移除大型JSON详细信息
+        # 列表页只查询卡片必需字段（减少数据库I/O和网络传输）
         data_queryset = data_queryset.only(
+            # 基本字段
             'id', 'school_name', 'school_name_traditional', 'school_name_english',
             'school_category', 'district', 'school_net', 'student_gender',
-            'religion', 'teaching_language', 'band1_rate', 'tuition',
-            'address', 'phone', 'fax', 'email', 'website',
-            'total_classes_info'  # 需要用于计算总班数
+            'religion', 'tuition', 'band1_rate',
+            # 卡片需要的JSON字段
+            'secondary_info',   # 联系中学
+            'promotion_info'    # Band1比例
         )
         
         # 使用切片获取当前页数据
@@ -403,8 +388,8 @@ def primary_schools_list(request):
         step_times['data_query'] = (time.time() - step_start) * 1000
         step_start = time.time()
         
-        # 🔥 优化8: 使用精简序列化函数,减少70-80%数据量
-        schools_data = [serialize_primary_school_list(school) for school in schools_page]
+        # 使用精简序列化（只返回卡片必需字段）
+        schools_data = [serialize_primary_school_for_list(school) for school in schools_page]
         
         step_times['serialize'] = (time.time() - step_start) * 1000
         step_start = time.time()

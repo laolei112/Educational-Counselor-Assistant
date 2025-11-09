@@ -616,6 +616,33 @@ export const useSchoolStore = defineStore('school', () => {
     await fetchSchools()
   }
 
+  /**
+   * 获取学校详情
+   */
+  const fetchSchoolDetail = async (schoolId: number, type: 'primary' | 'secondary'): Promise<School> => {
+    try {
+      console.log(`🔍 获取学校详情: ID=${schoolId}, Type=${type}`)
+      
+      let response: { success: boolean; data: School; message?: string }
+      
+      if (type === 'primary') {
+        response = await schoolApi.getPrimaryDetail(schoolId)
+      } else {
+        response = await schoolApi.getSecondaryDetail(schoolId)
+      }
+      
+      if (response.success) {
+        console.log(`✅ 学校详情获取成功`)
+        return response.data
+      } else {
+        throw new Error(response.message || '获取学校详情失败')
+      }
+    } catch (err) {
+      console.error('获取学校详情失败:', err)
+      throw err
+    }
+  }
+
     return {
     // 状态
     schools,
@@ -653,6 +680,7 @@ export const useSchoolStore = defineStore('school', () => {
     setFilters,
     clearFilters,
     loadFilterOptions,
-    initFilters
+    initFilters,
+    fetchSchoolDetail
   }
 })

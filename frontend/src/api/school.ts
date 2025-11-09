@@ -124,6 +124,24 @@ export class SchoolApi {
       schoolGroups: string[]  // Banding列表
     }>(API_PATHS.SCHOOLS.SECONDARY_FILTERS)
   }
+
+  /**
+   * 获取小学详情
+   * @param id 学校ID
+   * @returns 小学详细信息
+   */
+  static async getPrimaryDetail(id: number) {
+    return http.get<School>(`${API_PATHS.SCHOOLS.PRIMARY}${id}/`)
+  }
+
+  /**
+   * 获取中学详情
+   * @param id 学校ID
+   * @returns 中学详细信息
+   */
+  static async getSecondaryDetail(id: number) {
+    return http.get<School>(`${API_PATHS.SCHOOLS.SECONDARY}${id}/`)
+  }
 }
 
 // 导出便捷的函数接口
@@ -166,5 +184,9 @@ export const schoolApi = {
   
   // 获取筛选选项
   getPrimaryFilters: SchoolApi.getPrimaryFilters,
-  getSecondaryFilters: SchoolApi.getSecondaryFilters
+  getSecondaryFilters: SchoolApi.getSecondaryFilters,
+  
+  // 获取详情
+  getPrimaryDetail: SchoolApi.getPrimaryDetail,
+  getSecondaryDetail: SchoolApi.getSecondaryDetail
 } 

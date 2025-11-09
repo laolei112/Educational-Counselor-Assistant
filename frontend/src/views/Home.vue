@@ -634,10 +634,23 @@ const handleTypeChange = async (type: 'primary' | 'secondary') => {
   await setSchoolType(type)
 }
 
-// 处理学校卡片点击
-const handleSchoolClick = (school: School) => {
-  selectedSchool.value = school
-  showDetailModal.value = true
+// 处理学校卡片点击 - 调用详情接口获取完整数据
+const handleSchoolClick = async (school: School) => {
+  try {
+    // 显示加载状态
+    showDetailModal.value = true
+    selectedSchool.value = null
+    
+    // 调用详情接口获取完整数据
+    const detailData = await schoolStore.fetchSchoolDetail(school.id, school.type)
+    
+    // 设置详情数据
+    selectedSchool.value = detailData
+  } catch (error) {
+    console.error('获取学校详情失败:', error)
+    // 如果详情接口失败，使用列表数据作为后备
+    selectedSchool.value = school
+  }
 }
 
 // 处理关闭弹窗

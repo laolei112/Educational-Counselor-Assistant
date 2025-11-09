@@ -22,17 +22,21 @@ def get_cache_key_for_secondary_query(params):
     return f"secondary_schools_list:{hash_value}"
 
 
-def serialize_secondary_school_list(school):
+def serialize_secondary_school_for_list(school):
     """
-    列表页精简序列化函数 - 平衡版本
-    保留卡片展示必需的字段，同时减少大型JSON字段
+    列表页精简序列化 - 只返回卡片展示必需的字段
     
-    精简策略：
-    - 保留卡片展示需要的基本字段（schoolScale, contact等）
-    - 移除大型JSON详细信息字段（transferInfo, admissionInfo, promotionInfo, schoolCurriculum）
-    - 数据量减少约60-70%，同时保证卡片正常显示
+    卡片显示内容：
+    - 基本信息：名称、类型、地区、校网、宗教、性别、学费、分组
+    - 申请状态：transferInfo (用于显示申请状态徽章)
+    
+    不包含详情页专用字段：
+    - admissionInfo (招生详情)
+    - promotionInfo (升学详情)
+    - schoolCurriculum (课程体系)
     """
     return {
+        # 基本信息
         "id": school.id,
         "name": school.school_name,
         "nameTraditional": school.school_name_traditional,
@@ -42,47 +46,20 @@ def serialize_secondary_school_list(school):
         "schoolNet": school.school_net,
         "religion": school.religion,
         "gender": school.student_gender,
-        "teachingLanguage": school.teaching_language if school.teaching_language else None,
         "tuition": school.tuition if school.tuition else 0,
         "category": school.school_category,
         "schoolType": school.school_category,
         "schoolGroup": school.school_group,
-        "totalClasses": school.total_classes,
         
-        # 保留卡片展示需要的字段
-        "schoolScale": {
-            "classes": school.total_classes if school.total_classes else 0,
-            "students": 0
-        },
-        "contact": {
-            "address": school.address,
-            "phone": school.phone,
-            "email": school.email,
-            "website": school.website
-        },
-        
-        # 为了兼容性，同时保留扁平化的联系方式
-        "address": school.address,
-        "phone": school.phone,
-        "email": school.email,
-        "website": school.website,
-        "officialWebsite": school.website,
-        
-        "band1Rate": 0,  # 中学暂无band1Rate数据
-        
-        # 移除的大型字段（只在详情页才需要）:
-        # - transferInfo (大JSON对象)
-        # - admissionInfo (JSON)
-        # - promotionInfo (JSON)
-        # - schoolCurriculum (大JSON对象)
-        # - createdAt / updatedAt (时间戳)
+        # 卡片需要：申请状态信息
+        "transferInfo": school.transfer_info if school.transfer_info else {},
     }
 
 
 def serialize_secondary_school(school):
     """
-    详情页完整序列化函数（保留用于详情页）
-    返回完整的学校信息
+    详情页完整序列化 - 返回所有字段
+    用于详情接口 /api/schools/secondary/{id}/
     """
     # 解析课程数据
     curriculum_data = None
@@ -238,13 +215,14 @@ def secondary_schools_list(request):
         start_index = (page - 1) * page_size
         end_index = start_index + page_size
         
-        # 优化：列表页查询卡片展示必需字段
-        # 保留基本字段+contact+schoolScale，移除大型JSON详细信息
+        # 列表页只查询卡片必需字段（减少数据库I/O和网络传输）
         queryset = queryset.only(
+            # 基本字段
             'id', 'school_name', 'school_name_traditional', 'school_name_english',
             'district', 'school_net', 'religion', 'student_gender',
-            'teaching_language', 'tuition', 'school_category', 'school_group',
-            'total_classes', 'address', 'phone', 'email', 'website'
+            'tuition', 'school_category', 'school_group',
+            # 卡片需要的JSON字段
+            'transfer_info'  # 申请状态
         )
         
         # 使用切片获取当前页数据（避免Paginator的额外查询）
@@ -253,8 +231,8 @@ def secondary_schools_list(request):
         step_times['data_query'] = (time.time() - step_start) * 1000
         step_start = time.time()
         
-        # 优化：使用精简序列化函数,减少70-80%数据量
-        schools_data = [serialize_secondary_school_list(school) for school in schools_page]
+        # 使用精简序列化（只返回卡片必需字段）
+        schools_data = [serialize_secondary_school_for_list(school) for school in schools_page]
         
         step_times['serialize'] = (time.time() - step_start) * 1000
         step_start = time.time()
