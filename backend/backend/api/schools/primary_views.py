@@ -260,57 +260,74 @@ def primary_schools_list(request):
         # 注意：下面这一行只是创建QuerySet对象，不会执行SQL查询（惰性查询）
         count_queryset = TbPrimarySchools.objects.filter(base_filters)
         
-        # 打印将要执行的SQL语句（仅用于调试）
-        try:
-            # 注意：这里只是获取SQL的字符串表示，仍然不会执行查询
-            sql_statement = str(count_queryset.query)
-            loginfo(f"[SQL_DEBUG] COUNT Query SQL: {sql_statement}")
-        except Exception as e:
-            loginfo(f"[SQL_DEBUG] 无法获取SQL语句: {str(e)}")
-        
-        # 网络延迟监控：记录查询前后的时间戳
+        # 网络延迟监控：详细记录每个阶段的时间
         query_start = time.time()
+        
+        from django.db import connection
+        
+        # 📊 阶段1: 获取数据库连接
+        conn_start = time.time()
+        connection.ensure_connection()  # 确保连接已建立
+        conn_time = (time.time() - conn_start) * 1000
+        
+        # 📊 阶段2: 执行COUNT查询
+        count_start = time.time()
+        queries_before = len(connection.queries)
+        
         try:
-            # 尝试获取数据库实际执行时间（如果支持）
-            from django.db import connection
-            db_start = time.time()
-            
-            # 清空之前的查询记录（用于精确捕获这次查询）
-            connection.queries_log.clear() if hasattr(connection, 'queries_log') else None
-            
             # ⚠️ 注意：只有这一行才会真正执行SQL查询！
             total = count_queryset.count()
             
-            # 打印实际执行的SQL（从connection.queries获取）
-            if len(connection.queries) > 0:
-                actual_sql = connection.queries[-1]['sql']
-                actual_time = connection.queries[-1]['time']
-                loginfo(f"[SQL_DEBUG] 实际执行的SQL: {actual_sql}")
-                loginfo(f"[SQL_DEBUG] 数据库报告的执行时间: {actual_time}秒")
-            db_end = time.time()
+            count_exec_time = (time.time() - count_start) * 1000
             
-            # 计算总耗时和可能的网络延迟
-            count_query_time = (db_end - query_start) * 1000
-            loginfo(f"count_query_time: {count_query_time}")
-            # 如果 COUNT 查询耗时超过 200ms，记录详细诊断信息
-            if count_query_time > 200:
-                # 尝试获取数据库状态
-                try:
-                    with connection.cursor() as cursor:
-                        cursor.execute("SHOW STATUS LIKE 'Threads_connected'")
-                        threads_connected = cursor.fetchone()[1] if cursor.fetchone() else "N/A"
-                        
-                        cursor.execute("SHOW VARIABLES LIKE 'max_connections'")
-                        max_connections = cursor.fetchone()[1] if cursor.fetchone() else "N/A"
-                        
-                        loginfo(
-                            f"[SLOW_COUNT] GET /api/schools/primary/ | "
-                            f"CountQuery: {count_query_time:.2f}ms | "
-                            f"ThreadsConnected: {threads_connected}/{max_connections} | "
-                            f"Params: category={category}, district={district}, keyword={keyword[:20] if keyword else None}"
-                        )
-                except:
-                    pass
+            # 获取实际执行的SQL
+            if len(connection.queries) > queries_before:
+                last_query = connection.queries[-1]
+                actual_sql = last_query['sql']
+                db_time = float(last_query['time']) * 1000  # 转换为毫秒
+                
+                # 📊 计算各阶段耗时
+                total_time = (time.time() - query_start) * 1000
+                network_delay = count_exec_time - db_time
+                
+                loginfo(f"[SQL_DEBUG] ===== COUNT查询性能分析 =====")
+                loginfo(f"[SQL_DEBUG] 实际执行的SQL: {actual_sql}")
+                loginfo(f"[SQL_DEBUG] 📊 连接获取耗时: {conn_time:.2f}ms")
+                loginfo(f"[SQL_DEBUG] 📊 数据库执行耗时: {db_time:.2f}ms")
+                loginfo(f"[SQL_DEBUG] 📊 Python处理耗时: {count_exec_time:.2f}ms")
+                loginfo(f"[SQL_DEBUG] 📊 网络+开销耗时: {network_delay:.2f}ms")
+                loginfo(f"[SQL_DEBUG] 📊 总耗时: {total_time:.2f}ms")
+                
+                # ⚠️ 如果网络延迟超过100ms，记录警告
+                if network_delay > 100:
+                    loginfo(f"[SQL_WARN] ⚠️ 检测到高网络延迟: {network_delay:.2f}ms")
+                    
+                    # 检查数据库连接池状态
+                    try:
+                        with connection.cursor() as cursor:
+                            # 检查数据库线程数
+                            cursor.execute("SHOW STATUS LIKE 'Threads_connected'")
+                            result = cursor.fetchone()
+                            threads_connected = result[1] if result else "N/A"
+                            
+                            cursor.execute("SHOW VARIABLES LIKE 'max_connections'")
+                            result = cursor.fetchone()
+                            max_connections = result[1] if result else "N/A"
+                            
+                            # 检查慢查询
+                            cursor.execute("SHOW STATUS LIKE 'Slow_queries'")
+                            result = cursor.fetchone()
+                            slow_queries = result[1] if result else "N/A"
+                            
+                            loginfo(f"[SQL_WARN] 数据库连接数: {threads_connected}/{max_connections}")
+                            loginfo(f"[SQL_WARN] 慢查询数: {slow_queries}")
+                    except Exception as diag_e:
+                        loginfo(f"[SQL_WARN] 无法获取数据库诊断信息: {str(diag_e)}")
+                
+                count_query_time = total_time
+            else:
+                count_query_time = (time.time() - query_start) * 1000
+                loginfo(f"[SQL_DEBUG] COUNT查询耗时: {count_query_time:.2f}ms (未找到SQL记录)")
         except Exception as e:
             # 如果监控失败，仍然执行查询
             total = count_queryset.count()
@@ -362,17 +379,12 @@ def primary_schools_list(request):
         #     'address', 'phone', 'website'
         # )
         
-        # 打印将要执行的数据查询SQL（仅用于调试）
-        try:
-            # 获取带分页的SQL语句
-            sliced_queryset = data_queryset[start_index:end_index]
-            sql_statement = str(sliced_queryset.query)
-            loginfo(f"[SQL_DEBUG] DATA Query SQL: {sql_statement}")
-        except Exception as e:
-            loginfo(f"[SQL_DEBUG] 无法获取数据查询SQL: {str(e)}")
-        
         # ⚠️ 注意：只有这一行才会真正执行SQL查询！（当迭代schools_page时）
         schools_page = data_queryset[start_index:end_index]
+        
+        # 📊 数据查询性能监控
+        data_query_start = time.time()
+        queries_before_data = len(connection.queries)
         
         # 序列化数据
         # ⚠️ 注意：当迭代schools_page时，才会真正执行SQL查询！
@@ -380,17 +392,25 @@ def primary_schools_list(request):
         schools_data = [serialize_primary_school_optimized(school) for school in schools_page]
         serialize_time = (time.time() - serialize_start) * 1000
         
-        # 打印实际执行的数据查询SQL
+        # 打印数据查询的详细性能分析
         try:
-            if len(connection.queries) > 0:
-                # 获取最后执行的SQL（应该是数据查询）
+            if len(connection.queries) > queries_before_data:
                 last_query = connection.queries[-1]
                 actual_sql = last_query['sql']
-                actual_time = last_query['time']
-                loginfo(f"[SQL_DEBUG] 数据查询实际执行的SQL: {actual_sql}")
-                loginfo(f"[SQL_DEBUG] 数据查询数据库报告的执行时间: {actual_time}秒")
+                db_time = float(last_query['time']) * 1000  # 转换为毫秒
+                
+                # 计算实际的查询时间（不包括序列化）
+                # 因为查询是在迭代时才执行的，所以需要从序列化时间中分离
+                total_data_time = (time.time() - data_query_start) * 1000
+                query_only_time = serialize_time  # 近似值，因为查询在第一次迭代时执行
+                
+                loginfo(f"[SQL_DEBUG] ===== 数据查询性能分析 =====")
+                loginfo(f"[SQL_DEBUG] 实际执行的SQL: {actual_sql[:200]}...")  # 截断长SQL
+                loginfo(f"[SQL_DEBUG] 📊 数据库执行耗时: {db_time:.2f}ms")
+                loginfo(f"[SQL_DEBUG] 📊 查询+序列化总耗时: {serialize_time:.2f}ms")
+                loginfo(f"[SQL_DEBUG] 📊 纯序列化估算: {serialize_time - db_time:.2f}ms")
         except Exception as e:
-            loginfo(f"[SQL_DEBUG] 无法获取实际执行的SQL: {str(e)}")
+            loginfo(f"[SQL_DEBUG] 无法获取数据查询性能信息: {str(e)}")
         
         step_times['data_query'] = (time.time() - step_start) * 1000
         step_times['serialize'] = serialize_time
