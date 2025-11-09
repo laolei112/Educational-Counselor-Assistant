@@ -84,10 +84,10 @@
       <div class="footer-left">
         <!-- 小学显示升学比例 -->
         <span 
-          v-if="school.type === 'primary' && school.promotionInfo?.band1_rate !== undefined"
+          v-if="school.type === 'primary' && school.band1Rate !== undefined && school.band1Rate !== null"
           class="kpi-badge"
         >
-          {{ getText('school.band1Rate') }}：{{ school.promotionInfo.band1_rate }}%
+          {{ getText('school.band1Rate') }}：{{ school.band1Rate }}%
         </span>
         <!-- 申请状态徽章 -->
         <span 

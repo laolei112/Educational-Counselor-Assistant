@@ -116,8 +116,8 @@ def serialize_primary_school_for_list(school):
     
     卡片显示内容：
     - 基本信息：名称、类型、地区、校网、宗教、性别、学费
+    - Band1比例：band1Rate (生成列)
     - 联系中学：secondaryInfo (结龙、直属、联系中学)
-    - 升学信息：promotionInfo (Band1比例)
     
     不包含详情页专用字段：
     - basicInfo (学校介绍)
@@ -125,16 +125,10 @@ def serialize_primary_school_for_list(school):
     - classTeachingInfo (教学模式)
     - assessmentInfo (评估政策)
     - transferInfo (插班信息)
+    - promotionInfo (升学详情JSON，band1_rate已提取为生成列)
     """
-    # 获取 promotionInfo
-    promotion_info = school.promotion_info or {}
-    
-    # 获取 band1_rate
-    band1_rate = None
-    if school.band1_rate is not None:
-        band1_rate = float(school.band1_rate)
-    elif isinstance(promotion_info, dict):
-        band1_rate = promotion_info.get('band1_rate')
+    # 直接使用 band1_rate 生成列（不需要从 promotion_info 中获取）
+    band1_rate = float(school.band1_rate) if school.band1_rate is not None else None
     
     return {
         # 基本信息
@@ -149,13 +143,12 @@ def serialize_primary_school_for_list(school):
         "gender": school.student_gender,
         "religion": school.religion,
         "tuition": school.tuition or "-",
+        
+        # 卡片显示：Band1比例（生成列，前端使用 school.band1Rate）
         "band1Rate": band1_rate,
         
-        # 卡片需要：联系中学信息
+        # 卡片显示：联系中学信息（结龙、直属、联系中学）
         "secondaryInfo": school.secondary_info or {},
-        
-        # 卡片需要：Band1比例 (前端使用 promotionInfo.band1_rate)
-        "promotionInfo": promotion_info,
     }
 
 
@@ -373,13 +366,12 @@ def primary_schools_list(request):
         
         # 列表页只查询卡片必需字段（减少数据库I/O和网络传输）
         data_queryset = data_queryset.only(
-            # 基本字段
+            # 基本字段（11个）
             'id', 'school_name', 'school_name_traditional', 'school_name_english',
             'school_category', 'district', 'school_net', 'student_gender',
             'religion', 'tuition', 'band1_rate',
-            # 卡片需要的JSON字段
-            'secondary_info',   # 联系中学
-            'promotion_info'    # Band1比例
+            # 卡片需要的JSON字段（1个）
+            'secondary_info'   # 联系中学信息
         )
         
         # 使用切片获取当前页数据
