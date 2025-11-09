@@ -179,13 +179,14 @@ def serialize_primary_school_optimized(school):
 @require_http_methods(["GET"])
 def primary_schools_list(request):
     """
-    获取小学列表 - 优化版(无缓存)
+    获取小学列表 - 优化版(带缓存)
     
     核心优化:
-    1. 🔥 分离 COUNT 和数据查询,COUNT 时不带 ORDER BY
-    2. 🔥 使用 only() 减少查询字段(如果不需要所有字段)
-    3. 🔥 优化关键字搜索逻辑
-    4. 提前验证分页参数,避免无效查询
+    1. 🔥 使用缓存提升响应速度
+    2. 🔥 分离 COUNT 和数据查询,COUNT 时不带 ORDER BY
+    3. 🔥 使用 only() 减少查询字段(如果不需要所有字段)
+    4. 🔥 优化关键字搜索逻辑
+    5. 提前验证分页参数,避免无效查询
     """
     start_time = time.time()
     step_times = {}
@@ -212,6 +213,34 @@ def primary_schools_list(request):
             page_size = 20
         
         step_times['param_parse'] = (time.time() - step_start) * 1000
+        step_start = time.time()
+        
+        # 🔥 缓存优化: 基于查询参数生成缓存键
+        cache_params = {
+            'category': category,
+            'district': district,
+            'school_net': school_net,
+            'gender': gender,
+            'religion': religion,
+            'teaching_language': teaching_language,
+            'keyword': keyword,
+            'page': page,
+            'page_size': page_size
+        }
+        cache_key = get_cache_key_for_query(cache_params)
+        
+        # 尝试从缓存获取数据
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            total_time = (time.time() - start_time) * 1000
+            loginfo(
+                f"[PERF] GET /api/schools/primary/ (from-cache) | "
+                f"Total: {total_time:.2f}ms | "
+                f"Result: total={cached_data['data']['total']}, page={page}, pageSize={page_size}, items={len(cached_data['data']['list'])}"
+            )
+            return JsonResponse(cached_data)
+        
+        step_times['cache_check'] = (time.time() - step_start) * 1000
         step_start = time.time()
         
         # 🔥 优化1: 构建基础过滤条件 (不包含 ORDER BY)
@@ -333,11 +362,15 @@ def primary_schools_list(request):
         step_times['response_build'] = (time.time() - step_start) * 1000
         total_time = (time.time() - start_time) * 1000
         
+        # 🔥 缓存结果数据（10分钟）
+        cache.set(cache_key, response_data, 600)
+        
         # 记录性能日志
         loginfo(
             f"[PERF] GET /api/schools/primary/ (query-optimized) | "
             f"Total: {total_time:.2f}ms | "
             f"ParamParse: {step_times.get('param_parse', 0):.2f}ms | "
+            f"CacheCheck: {step_times.get('cache_check', 0):.2f}ms | "
             f"QueryBuild: {step_times.get('query_build', 0):.2f}ms | "
             f"CountQuery: {step_times.get('count_query', 0):.2f}ms | "
             f"DataQuery: {step_times.get('data_query', 0):.2f}ms | "
@@ -379,16 +412,16 @@ def primary_school_detail(request, school_id):
         school_id = int(school_id)
         
         # 🔥 优化: 添加缓存
-        # cache_key = f"primary_school_detail:{school_id}"
-        # cached_data = cache.get(cache_key)
+        cache_key = f"primary_school_detail:{school_id}"
+        cached_data = cache.get(cache_key)
         
-        # if cached_data:
-        #     return JsonResponse({
-        #         "code": 200,
-        #         "message": "成功",
-        #         "success": True,
-        #         "data": cached_data
-        #     })
+        if cached_data:
+            return JsonResponse({
+                "code": 200,
+                "message": "成功",
+                "success": True,
+                "data": cached_data
+            })
         
         try:
             school = TbPrimarySchools.objects.get(id=school_id)
@@ -403,8 +436,8 @@ def primary_school_detail(request, school_id):
         # 序列化学校数据
         school_data = serialize_primary_school(school)
         
-        # # 缓存30分钟
-        # cache.set(cache_key, school_data, 1800)
+        # 缓存30分钟
+        cache.set(cache_key, school_data, 1800)
         
         return JsonResponse({
             "code": 200,
@@ -438,13 +471,13 @@ def primary_schools_stats(request):
     """
     try:
         # 🔥 优化: 使用缓存
-        # cache_key = "primary_schools_total_count"
-        # total_schools = cache.get(cache_key)
+        cache_key = "primary_schools_total_count"
+        total_schools = cache.get(cache_key)
         
-        # if total_schools is None:
-        total_schools = TbPrimarySchools.objects.count()
-        #     # 缓存10分钟 (总数变化不频繁)
-        #     cache.set(cache_key, total_schools, 600)
+        if total_schools is None:
+            total_schools = TbPrimarySchools.objects.count()
+            # 缓存1天 (总数变化不频繁)
+            cache.set(cache_key, total_schools, 60 * 60 * 24)
         
         return JsonResponse({
             "code": 200,
@@ -479,16 +512,16 @@ def primary_schools_filters(request):
     """
     try:
         # 🔥 优化: 添加缓存
-        # cache_key = "primary_schools_filters"
-        # cached_filters = cache.get(cache_key)
+        cache_key = "primary_schools_filters"
+        cached_filters = cache.get(cache_key)
         
-        # if cached_filters:
-        #     return JsonResponse({
-        #         "code": 200,
-        #         "message": "成功",
-        #         "success": True,
-        #         "data": cached_filters
-        #     })
+        if cached_filters:
+            return JsonResponse({
+                "code": 200,
+                "message": "成功",
+                "success": True,
+                "data": cached_filters
+            })
         
         # 使用单次查询获取所有需要的字段
         all_data = TbPrimarySchools.objects.values(
@@ -527,8 +560,8 @@ def primary_schools_filters(request):
             "schoolNets": sorted(school_nets_set)
         }
         
-        # 缓存15分钟 (筛选选项变化不频繁)
-        # cache.set(cache_key, filters_data, 900)
+        # 缓存1天 (筛选选项变化不频繁)
+        cache.set(cache_key, filters_data, 60 * 60 * 24)
         
         return JsonResponse({
             "code": 200,

@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db.models import F, Q
+from django.core.cache import cache
 from backend.models.tb_secondary_schools import TbSecondarySchools
 from backend.utils.text_converter import normalize_keyword
 from backend.utils.cache import CacheManager
@@ -9,6 +10,16 @@ from common.logger import logerror, loginfo
 import json
 import traceback
 import time
+import hashlib
+
+
+def get_cache_key_for_secondary_query(params):
+    """
+    根据查询参数生成缓存键
+    """
+    param_str = json.dumps(params, sort_keys=True)
+    hash_value = hashlib.md5(param_str.encode()).hexdigest()
+    return f"secondary_schools_list:{hash_value}"
 
 
 def serialize_secondary_school(school):
@@ -70,7 +81,7 @@ def serialize_secondary_school(school):
 @require_http_methods(["GET"])
 def secondary_schools_list(request):
     """
-    获取中学列表（从 tb_secondary_schools 表）
+    获取中学列表（从 tb_secondary_schools 表）- 带缓存优化
     GET /api/schools/secondary
     """
     # 性能监控：记录开始时间
@@ -90,6 +101,33 @@ def secondary_schools_list(request):
         page_size = int(request.GET.get('pageSize', 20))
         
         step_times['param_parse'] = (time.time() - step_start) * 1000
+        step_start = time.time()
+        
+        # 🔥 缓存优化: 基于查询参数生成缓存键
+        cache_params = {
+            'category': category,
+            'district': district,
+            'school_group': school_group,
+            'gender': gender,
+            'religion': religion,
+            'keyword': keyword,
+            'page': page,
+            'page_size': page_size
+        }
+        cache_key = get_cache_key_for_secondary_query(cache_params)
+        
+        # 尝试从缓存获取数据
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            total_time = (time.time() - start_time) * 1000
+            loginfo(
+                f"[PERF] GET /api/schools/secondary/ (from-cache) | "
+                f"Total: {total_time:.2f}ms | "
+                f"Result: total={cached_data['data']['total']}, page={page}, pageSize={page_size}, items={len(cached_data['data']['list'])}"
+            )
+            return JsonResponse(cached_data)
+        
+        step_times['cache_check'] = (time.time() - step_start) * 1000
         step_start = time.time()
         
         # 构建查询条件 - 从 tb_secondary_schools 表查询
@@ -171,11 +209,15 @@ def secondary_schools_list(request):
         step_times['response_build'] = (time.time() - step_start) * 1000
         total_time = (time.time() - start_time) * 1000
         
+        # 🔥 缓存结果数据（10分钟）
+        cache.set(cache_key, response_data, 600)
+        
         # 记录性能日志
         loginfo(
-            f"[PERF] GET /api/schools/secondary/ (non-optimized) | "
+            f"[PERF] GET /api/schools/secondary/ (query-optimized) | "
             f"Total: {total_time:.2f}ms | "
             f"ParamParse: {step_times.get('param_parse', 0):.2f}ms | "
+            f"CacheCheck: {step_times.get('cache_check', 0):.2f}ms | "
             f"QueryBuild: {step_times.get('query_build', 0):.2f}ms | "
             f"CountQuery: {step_times.get('count_query', 0):.2f}ms | "
             f"DataQuery: {step_times.get('data_query', 0):.2f}ms | "
@@ -211,11 +253,23 @@ def secondary_schools_list(request):
 @require_http_methods(["GET"])
 def secondary_school_detail(request, school_id):
     """
-    获取中学详情（从 tb_secondary_schools 表）
+    获取中学详情（从 tb_secondary_schools 表）- 带缓存优化
     GET /api/schools/secondary/{id}
     """
     try:
         school_id = int(school_id)
+        
+        # 🔥 缓存优化: 尝试从缓存获取数据
+        cache_key = f"secondary_school_detail:{school_id}"
+        cached_data = cache.get(cache_key)
+        
+        if cached_data:
+            return JsonResponse({
+                "code": 200,
+                "message": "成功",
+                "success": True,
+                "data": cached_data
+            })
         
         try:
             school = TbSecondarySchools.objects.get(id=school_id)
@@ -229,6 +283,9 @@ def secondary_school_detail(request, school_id):
         
         # 序列化学校数据
         school_data = serialize_secondary_school(school)
+        
+        # 🔥 缓存数据（30分钟）
+        cache.set(cache_key, school_data, 1800)
         
         return JsonResponse({
             "code": 200,
@@ -257,12 +314,19 @@ def secondary_school_detail(request, school_id):
 @require_http_methods(["GET"])
 def secondary_schools_stats(request):
     """
-    获取中学统计信息（简化版本，只返回学校总数）
+    获取中学统计信息（简化版本，只返回学校总数）- 带缓存优化
     GET /api/schools/secondary/stats
     """
     try:
-        # 只返回所有学校的总数
-        total_schools = TbSecondarySchools.objects.count()
+        # 🔥 缓存优化: 尝试从缓存获取数据
+        cache_key = "secondary_schools_total_count"
+        total_schools = cache.get(cache_key)
+        
+        if total_schools is None:
+            # 只返回所有学校的总数
+            total_schools = TbSecondarySchools.objects.count()
+            # 🔥 缓存1天（总数变化不频繁）
+            cache.set(cache_key, total_schools, 60 * 60 * 24)
         
         return JsonResponse({
             "code": 200,
@@ -288,14 +352,27 @@ def secondary_schools_stats(request):
 @require_http_methods(["GET"])
 def secondary_schools_filters(request):
     """
-    优化后的中学筛选器接口
+    优化后的中学筛选器接口 - 带缓存优化
     GET /api/schools/secondary/filters/
     
     性能优化：
-    1. 使用单次查询获取所有字段，减少数据库查询次数（从5次减少到1次）
-    2. 在Python中处理去重和排序，避免多次数据库扫描
+    1. 🔥 使用缓存提升响应速度
+    2. 使用单次查询获取所有字段，减少数据库查询次数（从5次减少到1次）
+    3. 在Python中处理去重和排序，避免多次数据库扫描
     """
     try:
+        # 🔥 缓存优化: 尝试从缓存获取数据
+        cache_key = "secondary_schools_filters"
+        cached_filters = cache.get(cache_key)
+        
+        if cached_filters:
+            return JsonResponse({
+                "code": 200,
+                "message": "成功",
+                "success": True,
+                "data": cached_filters
+            })
+        
         # 优化：使用单次查询获取所有需要的字段，而不是每个字段一个查询
         # 这样可以减少数据库查询次数从5次减少到1次
         all_data = TbSecondarySchools.objects.values(
@@ -326,24 +403,23 @@ def secondary_schools_filters(request):
                 religions_set.add(item['religion'])
         
         # 转换为排序后的列表
-        districts = sorted(districts_set)
-        categories = sorted(categories_set)
-        school_groups = sorted(school_groups_set)
-        genders = sorted(genders_set)
-        religions = sorted(religions_set)
+        filters_data = {
+            "districts": sorted(districts_set),
+            "categories": sorted(categories_set),
+            "schoolGroups": sorted(school_groups_set),
+            "genders": sorted(genders_set),
+            "religions": sorted(religions_set)
+        }
+        
+        # 🔥 缓存1天（筛选选项变化不频繁）
+        cache.set(cache_key, filters_data, 60 * 60 * 24)
         
         # 构建响应
         response_data = {
             "code": 200,
             "message": "成功",
             "success": True,
-            "data": {
-                "districts": districts,
-                "categories": categories,
-                "schoolGroups": school_groups,
-                "genders": genders,
-                "religions": religions
-            }
+            "data": filters_data
         }
         
         return JsonResponse(response_data)

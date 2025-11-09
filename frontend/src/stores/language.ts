@@ -307,6 +307,68 @@ export const useLanguageStore = defineStore('language', () => {
       'mobileFilter.language': {
         'zh-CN': '语言',
         'zh-TW': '語言'
+      },
+      
+      // Footer 相关
+      'footer.about.title': {
+        'zh-CN': '关于我们',
+        'zh-TW': '關於我們'
+      },
+      'footer.about.description': {
+        'zh-CN': 'BetterSchool致力于为香港家庭提供全面的升学信息服务，帮助家长为孩子选择最合适的学校。',
+        'zh-TW': 'BetterSchool致力於為香港家庭提供全面的升學資訊服務，幫助家長為孩子選擇最合適的學校。'
+      },
+      'footer.links.title': {
+        'zh-CN': '快速链接',
+        'zh-TW': '快速連結'
+      },
+      'footer.links.home': {
+        'zh-CN': '首页',
+        'zh-TW': '首頁'
+      },
+      'footer.links.about': {
+        'zh-CN': '关于我们',
+        'zh-TW': '關於我們'
+      },
+      'footer.links.contact': {
+        'zh-CN': '联系我们',
+        'zh-TW': '聯絡我們'
+      },
+      'footer.links.privacy': {
+        'zh-CN': '隐私政策',
+        'zh-TW': '隱私政策'
+      },
+      'footer.contact.title': {
+        'zh-CN': '联系方式',
+        'zh-TW': '聯絡方式'
+      },
+      'footer.contact.email': {
+        'zh-CN': '邮箱',
+        'zh-TW': '郵箱'
+      },
+      'footer.contact.phone': {
+        'zh-CN': '电话',
+        'zh-TW': '電話'
+      },
+      'footer.copyright.company': {
+        'zh-CN': 'BetterSchool 香港升学助手',
+        'zh-TW': 'BetterSchool 香港升學助手'
+      },
+      'footer.copyright.rights': {
+        'zh-CN': '版权所有',
+        'zh-TW': '版權所有'
+      },
+      'footer.copyright.icp': {
+        'zh-CN': '网站备案号：待备案',
+        'zh-TW': '網站備案號：待備案'
+      },
+      'footer.meta.version': {
+        'zh-CN': '版本',
+        'zh-TW': '版本'
+      },
+      'footer.meta.updated': {
+        'zh-CN': '更新日期',
+        'zh-TW': '更新日期'
       }
     }
     

@@ -197,5 +197,34 @@ export default {
     allSchoolNet: '全部校網',
     allCategory: '全部類別',
     allBanding: '全部Band'
+  },
+
+  // 頁腳相關
+  footer: {
+    about: {
+      title: '關於我們',
+      description: 'BetterSchool致力於為香港家庭提供全面的升學資訊服務，幫助家長為孩子選擇最合適的學校。'
+    },
+    links: {
+      title: '快速連結',
+      home: '首頁',
+      about: '關於我們',
+      contact: '聯絡我們',
+      privacy: '隱私政策'
+    },
+    contact: {
+      title: '聯絡方式',
+      email: '郵箱',
+      phone: '電話'
+    },
+    copyright: {
+      company: 'BetterSchool 香港升學助手',
+      rights: '版權所有',
+      icp: '網站備案號：待備案'
+    },
+    meta: {
+      version: '版本',
+      updated: '更新日期'
+    }
   }
 }

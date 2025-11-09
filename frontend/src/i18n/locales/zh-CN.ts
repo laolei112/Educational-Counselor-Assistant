@@ -197,5 +197,34 @@ export default {
     allSchoolNet: '全部校网',
     allCategory: '全部类别',
     allBanding: '全部Band'
+  },
+
+  // 页脚相关
+  footer: {
+    about: {
+      title: '关于我们',
+      description: 'BetterSchool致力于为香港家庭提供全面的升学信息服务，帮助家长为孩子选择最合适的学校。'
+    },
+    links: {
+      title: '快速链接',
+      home: '首页',
+      about: '关于我们',
+      contact: '联系我们',
+      privacy: '隐私政策'
+    },
+    contact: {
+      title: '联系方式',
+      email: '邮箱',
+      phone: '电话'
+    },
+    copyright: {
+      company: 'BetterSchool 香港升学助手',
+      rights: '版权所有',
+      icp: '网站备案号：待备案'
+    },
+    meta: {
+      version: '版本',
+      updated: '更新日期'
+    }
   }
 }
