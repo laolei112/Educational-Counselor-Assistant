@@ -257,7 +257,16 @@ def primary_schools_list(request):
         
         # 🔥 优化3: 分离 COUNT 查询 (不带 ORDER BY)
         # COUNT 查询使用最简单的形式,数据库可以直接使用索引
+        # 注意：下面这一行只是创建QuerySet对象，不会执行SQL查询（惰性查询）
         count_queryset = TbPrimarySchools.objects.filter(base_filters)
+        
+        # 打印将要执行的SQL语句（仅用于调试）
+        try:
+            # 注意：这里只是获取SQL的字符串表示，仍然不会执行查询
+            sql_statement = str(count_queryset.query)
+            loginfo(f"[SQL_DEBUG] COUNT Query SQL: {sql_statement}")
+        except Exception as e:
+            loginfo(f"[SQL_DEBUG] 无法获取SQL语句: {str(e)}")
         
         # 网络延迟监控：记录查询前后的时间戳
         query_start = time.time()
@@ -265,7 +274,19 @@ def primary_schools_list(request):
             # 尝试获取数据库实际执行时间（如果支持）
             from django.db import connection
             db_start = time.time()
+            
+            # 清空之前的查询记录（用于精确捕获这次查询）
+            connection.queries_log.clear() if hasattr(connection, 'queries_log') else None
+            
+            # ⚠️ 注意：只有这一行才会真正执行SQL查询！
             total = count_queryset.count()
+            
+            # 打印实际执行的SQL（从connection.queries获取）
+            if len(connection.queries) > 0:
+                actual_sql = connection.queries[-1]['sql']
+                actual_time = connection.queries[-1]['time']
+                loginfo(f"[SQL_DEBUG] 实际执行的SQL: {actual_sql}")
+                loginfo(f"[SQL_DEBUG] 数据库报告的执行时间: {actual_time}秒")
             db_end = time.time()
             
             # 计算总耗时和可能的网络延迟
@@ -326,6 +347,7 @@ def primary_schools_list(request):
         
         # 🔥 优化6: 数据查询时才添加 ORDER BY
         # 分离排序逻辑,确保 COUNT 时不受影响
+        # 注意：这一行也只是创建QuerySet对象，不会执行SQL查询（惰性查询）
         data_queryset = TbPrimarySchools.objects.filter(base_filters).order_by(
             '-band1_rate',  # 使用生成列,有索引
             'school_name'
@@ -340,16 +362,38 @@ def primary_schools_list(request):
         #     'address', 'phone', 'website'
         # )
         
-        # 使用切片获取当前页数据
+        # 打印将要执行的数据查询SQL（仅用于调试）
+        try:
+            # 获取带分页的SQL语句
+            sliced_queryset = data_queryset[start_index:end_index]
+            sql_statement = str(sliced_queryset.query)
+            loginfo(f"[SQL_DEBUG] DATA Query SQL: {sql_statement}")
+        except Exception as e:
+            loginfo(f"[SQL_DEBUG] 无法获取数据查询SQL: {str(e)}")
+        
+        # ⚠️ 注意：只有这一行才会真正执行SQL查询！（当迭代schools_page时）
         schools_page = data_queryset[start_index:end_index]
         
-        step_times['data_query'] = (time.time() - step_start) * 1000
-        step_start = time.time()
-        
         # 序列化数据
+        # ⚠️ 注意：当迭代schools_page时，才会真正执行SQL查询！
+        serialize_start = time.time()
         schools_data = [serialize_primary_school_optimized(school) for school in schools_page]
+        serialize_time = (time.time() - serialize_start) * 1000
         
-        step_times['serialize'] = (time.time() - step_start) * 1000
+        # 打印实际执行的数据查询SQL
+        try:
+            if len(connection.queries) > 0:
+                # 获取最后执行的SQL（应该是数据查询）
+                last_query = connection.queries[-1]
+                actual_sql = last_query['sql']
+                actual_time = last_query['time']
+                loginfo(f"[SQL_DEBUG] 数据查询实际执行的SQL: {actual_sql}")
+                loginfo(f"[SQL_DEBUG] 数据查询数据库报告的执行时间: {actual_time}秒")
+        except Exception as e:
+            loginfo(f"[SQL_DEBUG] 无法获取实际执行的SQL: {str(e)}")
+        
+        step_times['data_query'] = (time.time() - step_start) * 1000
+        step_times['serialize'] = serialize_time
         step_start = time.time()
         
         # 构建响应
