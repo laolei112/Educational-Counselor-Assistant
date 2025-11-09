@@ -53,6 +53,9 @@ DATABASES = {
         "PASSWORD": MYSQL_PASSWORD,
         "HOST": MYSQL_HOST,
         "PORT": MYSQL_PORT,
+        # 🔥 连接池配置：持久化连接，避免每次请求都建立新连接
+        "CONN_MAX_AGE": 600,  # 连接在600秒（10分钟）内复用
+        "CONN_HEALTH_CHECKS": True,  # Django 4.1+ 支持，自动检查连接健康
         "OPTIONS": {
             "charset": "utf8mb4",
             "init_command": (
@@ -61,6 +64,10 @@ DATABASES = {
                 " collation_connection='utf8mb4_unicode_ci'"
             ),
             "isolation_level": "repeatable read",
+            # 连接超时设置
+            "connect_timeout": 10,
+            "read_timeout": 30,
+            "write_timeout": 30,
         },
     }
 }
