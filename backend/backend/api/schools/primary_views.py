@@ -118,13 +118,13 @@ def serialize_primary_school_for_list(school):
     - 基本信息：名称、类型、地区、校网、宗教、性别、学费
     - Band1比例：band1Rate (生成列)
     - 联系中学：secondaryInfo (结龙、直属、联系中学)
+    - 申请状态：transferInfo (用于显示申请状态徽章)
     
     不包含详情页专用字段：
     - basicInfo (学校介绍)
     - classesInfo (班级详情)
     - classTeachingInfo (教学模式)
     - assessmentInfo (评估政策)
-    - transferInfo (插班信息)
     - promotionInfo (升学详情JSON，band1_rate已提取为生成列)
     """
     # 直接使用 band1_rate 生成列（不需要从 promotion_info 中获取）
@@ -149,6 +149,9 @@ def serialize_primary_school_for_list(school):
         
         # 卡片显示：联系中学信息（结龙、直属、联系中学）
         "secondaryInfo": school.secondary_info or {},
+        
+        # 卡片需要：申请状态信息
+        "transferInfo": school.transfer_info if school.transfer_info else {},
     }
 
 
@@ -370,8 +373,9 @@ def primary_schools_list(request):
             'id', 'school_name', 'school_name_traditional', 'school_name_english',
             'school_category', 'district', 'school_net', 'student_gender',
             'religion', 'tuition', 'band1_rate',
-            # 卡片需要的JSON字段（1个）
-            'secondary_info'   # 联系中学信息
+            # 卡片需要的JSON字段（2个）
+            'secondary_info',   # 联系中学信息
+            'transfer_info'     # 申请状态
         )
         
         # 使用切片获取当前页数据

@@ -245,12 +245,12 @@ const applicationStatus = computed(() => {
   }
   
   // 如果没有后端状态，则根据实际数据计算
-  if (props.school.type === 'secondary' && props.school.transferInfo) {
+  if (props.school.transferInfo) {
     const transferInfo = props.school.transferInfo
     const now = new Date()
     
-    // 检查S1申请是否开放
-    if (transferInfo.S1 && isCardOpen(transferInfo.S1, false)) {
+    // 中学：检查S1申请
+    if (props.school.type === 'secondary' && transferInfo.S1 && isCardOpen(transferInfo.S1, false)) {
       // 检查是否即将截止（7天内）
       const end = transferInfo.S1.入学申请截至时间 ? parseDate(transferInfo.S1.入学申请截至时间) : null
       if (end) {
@@ -262,7 +262,26 @@ const applicationStatus = computed(() => {
       return 'open'
     }
     
-    // 检查插班申请是否开放
+    // 小学：检查小一申请
+    if (props.school.type === 'primary' && transferInfo.小一) {
+      // 小一申请结构与S1类似，使用相同逻辑
+      const p1Info = {
+        入学申请开始时间: transferInfo.小一.小一入学申请开始时间,
+        入学申请截至时间: transferInfo.小一.小一入学申请截至时间
+      }
+      if (isCardOpen(p1Info, false)) {
+        const end = p1Info.入学申请截至时间 ? parseDate(p1Info.入学申请截至时间) : null
+        if (end) {
+          const daysUntilDeadline = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+          if (daysUntilDeadline <= 7 && daysUntilDeadline > 0) {
+            return 'deadline'
+          }
+        }
+        return 'open'
+      }
+    }
+    
+    // 检查插班申请是否开放（中学和小学共用）
     if (transferInfo.插班 && isCardOpen(transferInfo.插班, true)) {
       // 检查是否即将截止
       const end1 = transferInfo.插班.插班申请截止时间1 ? parseDate(transferInfo.插班.插班申请截止时间1) : null

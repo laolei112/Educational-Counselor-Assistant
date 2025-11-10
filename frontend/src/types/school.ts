@@ -64,11 +64,19 @@ export interface School {
 
 // 插班信息类型定义
 export interface TransferInfo {
+  // 中学入学信息
   S1?: {
     入学申请开始时间?: string
     入学申请截至时间?: string
     申请详情地址?: string
   }
+  // 小学入学信息
+  小一?: {
+    小一入学申请开始时间?: string
+    小一入学申请截至时间?: string
+    小一申请详情地址?: string
+  }
+  // 插班信息（小学和中学共用）
   插班?: {
     插班申请开始时间1?: string
     插班申请截止时间1?: string

@@ -134,7 +134,8 @@ def import_from_excel(excel_path):
                 else:
                     school.transfer_info = transfer_info_obj
 
-            school.save()
+            # 只更新 transfer_info 字段，避免触碰生成列 band1_rate
+            school.save(update_fields=['transfer_info'])
             update_count += 1
         except Exception as e:
             error_count += 1

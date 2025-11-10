@@ -156,8 +156,16 @@ def import_from_excel(excel_path):
                 else:
                     school.transfer_info = transfer_info_obj
 
-            school.save()
-            update_count += 1
+            # 只更新被修改的字段，提高性能并避免潜在的字段冲突
+            update_fields = []
+            if curriculum_obj is not None:
+                update_fields.append('school_curriculum')
+            if transfer_info_obj is not None:
+                update_fields.append('transfer_info')
+            
+            if update_fields:
+                school.save(update_fields=update_fields)
+                update_count += 1
         except Exception as e:
             error_count += 1
             print(f"❌ 更新失败: {school_name} - {str(e)}")

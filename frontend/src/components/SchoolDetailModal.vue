@@ -296,8 +296,64 @@
               </div>
             </div>
           </div>
+        </section>
 
+        <!-- 插班信息部分（小学特有） -->
+        <section v-if="school.type === 'primary' && school.transferInfo && (hasValidP1Info(school.transferInfo.小一) || hasValidTransferInfo(school.transferInfo.插班))" class="transfer-info">          
+          <!-- 申请卡片 -->
+          <div class="application-cards">
+            <!-- 小一申请卡片 -->
+            <div 
+              v-if="hasValidP1Info(school.transferInfo.小一)"
+              :class="['application-card', getCardStatusForP1(school.transferInfo.小一)]"
+            >
+              <div class="card-status-badge">
+                {{ isCardOpenForP1(school.transferInfo.小一) ? 'OPEN' : 'CLOSED' }}
+              </div>
+              <div class="card-content">
+                <div class="card-grade">小一申请</div>
+                <div class="card-period">
+                  {{ formatDateRangeForP1(school.transferInfo.小一.小一入学申请开始时间, school.transferInfo.小一.小一入学申请截至时间) }}
+                </div>
+                <a 
+                  v-if="school.transferInfo.小一.小一申请详情地址"
+                  :href="school.transferInfo.小一.小一申请详情地址"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="card-link"
+                  @click.stop
+                >
+                  🔗 查看详情 ↗
+                </a>
+              </div>
+            </div>
 
+            <!-- 插班申请卡片 -->
+            <div 
+              v-if="school.transferInfo.插班 && hasValidTransferInfo(school.transferInfo.插班)"
+              :class="['application-card', getCardStatus(school.transferInfo.插班, true)]"
+            >
+              <div class="card-status-badge">
+                {{ isCardOpen(school.transferInfo.插班, true) ? 'OPEN' : 'CLOSED' }}
+              </div>
+              <div class="card-content">
+                <div class="card-grade">插班申请</div>
+                <div class="card-period">
+                  {{ formatTransferDateRange() }}
+                </div>
+                <a 
+                  v-if="school.transferInfo.插班.插班详情链接"
+                  :href="school.transferInfo.插班.插班详情链接"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="card-link"
+                  @click.stop
+                >
+                  🔗 查看详情 ↗
+                </a>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- 课程设置部分（中学特有） -->
@@ -859,12 +915,43 @@ const hasValidS1Info = (s1: any): boolean => {
   return !!(s1.入学申请开始时间 && s1.入学申请截至时间)
 }
 
+const hasValidP1Info = (p1: any): boolean => {
+  if (!p1) return false
+  // 检查是否有有效的开始时间和结束时间
+  return !!(p1.小一入学申请开始时间 && p1.小一入学申请截至时间)
+}
+
 const hasValidTransferInfo = (transfer: any): boolean => {
   if (!transfer) return false
   // 检查是否有至少一个有效的时间段
   const hasTime1 = transfer.插班申请开始时间1 && transfer.插班申请截止时间1
   const hasTime2 = transfer.插班申请开始时间2 && transfer.插班申请截止时间2
   return hasTime1 || hasTime2
+}
+
+const isCardOpenForP1 = (p1Info: any): boolean => {
+  if (!p1Info) return false
+  
+  const now = new Date()
+  const start = p1Info.小一入学申请开始时间 ? parseDate(p1Info.小一入学申请开始时间) : null
+  const end = p1Info.小一入学申请截至时间 ? parseDate(p1Info.小一入学申请截至时间) : null
+  
+  if (start && end && now >= start && now <= end) return true
+  return false
+}
+
+const getCardStatusForP1 = (p1Info: any): string => {
+  return isCardOpenForP1(p1Info) ? 'card-open' : 'card-closed'
+}
+
+const formatDateRangeForP1 = (start?: string, end?: string): string => {
+  if (!start || !end) return '-'
+  const formatDate = (dateStr: string): string => {
+    const date = parseDate(dateStr)
+    if (!date) return dateStr
+    return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
+  }
+  return `${formatDate(start)}-${formatDate(end)}`
 }
 
 const hasAdmissionCriteria = (): boolean => {
