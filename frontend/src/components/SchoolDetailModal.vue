@@ -137,102 +137,10 @@
           </div>
         </section>
 
-        <!-- 升学数据部分（小学特有） -->
-        <section v-if="school.type === 'primary' && hasPromotionData" class="promotion-data">
-          <h3>📊 {{ convertIfNeeded('升学数据') }}</h3>
-          <div class="promotion-table-wrapper">
-            <table class="promotion-table">
-              <thead>
-                <tr>
-                  <th class="year-header">{{ convertIfNeeded('年份') }}</th>
-                  <th class="rate-header">Band 1 {{ convertIfNeeded('比例') }}</th>
-                  <th class="schools-header">{{ convertIfNeeded('升入学校') }}</th>
-                  <th class="band-header">{{ convertIfNeeded('Band') }}</th>
-                  <th class="count-header">{{ convertIfNeeded('人数') }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <template v-for="(yearData, year) in promotionDataByYear" :key="year">
-                  <template v-if="yearData.schools && Object.keys(yearData.schools).length > 0">
-                    <tr v-for="(schoolName, index) in Object.keys(yearData.schools)" :key="`${year}-${schoolName}`">
-                      <td v-if="index === 0" :rowspan="Object.keys(yearData.schools).length" class="year-cell">
-                        {{ year }}
-                      </td>
-                      <td v-if="index === 0" :rowspan="Object.keys(yearData.schools).length" class="rate-cell">
-                        <span v-if="yearData.band1Rate !== undefined" class="rate-value">
-                          {{ yearData.band1Rate.toFixed(2) }}%
-                        </span>
-                        <span v-else>-</span>
-                      </td>
-                      <td class="school-cell">{{ convertIfNeeded(schoolName) }}</td>
-                      <td class="band-cell">
-                        <span v-if="typeof yearData.schools[schoolName] === 'object' && yearData.schools[schoolName]?.band">
-                          {{ yearData.schools[schoolName].band }}
-                        </span>
-                        <span v-else>-</span>
-                      </td>
-                      <td class="count-cell">
-                        {{ typeof yearData.schools[schoolName] === 'object' ? yearData.schools[schoolName]?.count : yearData.schools[schoolName] }}
-                      </td>
-                    </tr>
-                  </template>
-                  <!-- <tr v-else>
-                    <td class="year-cell">{{ year }}</td>
-                    <td class="rate-cell">
-                      <span v-if="yearData.band1Rate !== undefined" class="rate-value">
-                        {{ yearData.band1Rate.toFixed(2) }}%
-                      </span>
-                      <span v-else>-</span>
-                    </td>
-                    <td class="school-cell">-</td>
-                    <td class="band-cell">-</td>
-                    <td class="count-cell">-</td>
-                  </tr> -->
-                </template>
-                <!-- 如果没有按年份的数据，显示汇总数据 -->
-                <template v-if="!hasYearlyData && promotionSummary">
-                  <template v-if="promotionSummary.schools && Object.keys(promotionSummary.schools).length > 0">
-                    <tr v-for="(schoolName, index) in Object.keys(promotionSummary.schools)" :key="`summary-${schoolName}`">
-                      <td v-if="index === 0" :rowspan="Object.keys(promotionSummary.schools).length" class="year-cell">
-                        {{ convertIfNeeded('汇总') }}
-                      </td>
-                      <td v-if="index === 0" :rowspan="Object.keys(promotionSummary.schools).length" class="rate-cell">
-                        <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
-                          {{ promotionSummary.band1Rate.toFixed(2) }}%
-                        </span>
-                        <span v-else>-</span>
-                      </td>
-                      <td class="school-cell">{{ convertIfNeeded(schoolName) }}</td>
-                      <td class="band-cell">
-                        <span v-if="typeof promotionSummary.schools[schoolName] === 'object' && promotionSummary.schools[schoolName]?.band">
-                          {{ promotionSummary.schools[schoolName].band }}
-                        </span>
-                        <span v-else>-</span>
-                      </td>
-                      <td class="count-cell">
-                        {{ typeof promotionSummary.schools[schoolName] === 'object' ? promotionSummary.schools[schoolName]?.count : promotionSummary.schools[schoolName] }}
-                      </td>
-                    </tr>
-                  </template>
-                  <!-- <tr v-else>
-                    <td class="year-cell">{{ convertIfNeeded('汇总') }}</td>
-                    <td class="rate-cell">
-                      <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
-                        {{ promotionSummary.band1Rate.toFixed(2) }}%
-                      </span>
-                      <span v-else>-</span>
-                    </td>
-                    <td class="school-cell">-</td>
-                    <td class="count-cell">-</td>
-                  </tr> -->
-                </template>
-              </tbody>
-            </table>
-          </div>
-        </section>
+
 
         <!-- 入学信息部分（中学特有） -->
-        <section v-if="school.type === 'secondary' && school.admissionInfo" class="admission-info">
+        <section class="admission-info">
           <h3>📝 入学信息</h3>
           <!-- 申请详情说明 -->
           <div v-if="school.admissionInfo" class="application-details">
@@ -391,6 +299,100 @@
             </table>
           </div>
         </section>
+
+        <!-- 升学数据部分（小学特有） -->
+        <section v-if="school.type === 'primary' && hasPromotionData" class="promotion-data">
+          <h3>📊 {{ convertIfNeeded('升学数据') }}</h3>
+          <div class="promotion-table-wrapper">
+            <table class="promotion-table">
+              <thead>
+                <tr>
+                  <th class="year-header">{{ convertIfNeeded('年份') }}</th>
+                  <th class="rate-header">Band 1 {{ convertIfNeeded('比例') }}</th>
+                  <th class="schools-header">{{ convertIfNeeded('升入学校') }}</th>
+                  <th class="band-header">{{ convertIfNeeded('Band') }}</th>
+                  <th class="count-header">{{ convertIfNeeded('人数') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template v-for="(yearData, year) in promotionDataByYear" :key="year">
+                  <template v-if="yearData.schools && Object.keys(yearData.schools).length > 0">
+                    <tr v-for="(schoolName, index) in Object.keys(yearData.schools)" :key="`${year}-${schoolName}`">
+                      <td v-if="index === 0" :rowspan="Object.keys(yearData.schools).length" class="year-cell">
+                        {{ year }}
+                      </td>
+                      <td v-if="index === 0" :rowspan="Object.keys(yearData.schools).length" class="rate-cell">
+                        <span v-if="yearData.band1Rate !== undefined" class="rate-value">
+                          {{ yearData.band1Rate.toFixed(2) }}%
+                        </span>
+                        <span v-else>-</span>
+                      </td>
+                      <td class="school-cell">{{ convertIfNeeded(schoolName) }}</td>
+                      <td class="band-cell">
+                        <span v-if="typeof yearData.schools[schoolName] === 'object' && yearData.schools[schoolName]?.band">
+                          {{ yearData.schools[schoolName].band }}
+                        </span>
+                        <span v-else>-</span>
+                      </td>
+                      <td class="count-cell">
+                        {{ typeof yearData.schools[schoolName] === 'object' ? yearData.schools[schoolName]?.count : yearData.schools[schoolName] }}
+                      </td>
+                    </tr>
+                  </template>
+                  <!-- <tr v-else>
+                    <td class="year-cell">{{ year }}</td>
+                    <td class="rate-cell">
+                      <span v-if="yearData.band1Rate !== undefined" class="rate-value">
+                        {{ yearData.band1Rate.toFixed(2) }}%
+                      </span>
+                      <span v-else>-</span>
+                    </td>
+                    <td class="school-cell">-</td>
+                    <td class="band-cell">-</td>
+                    <td class="count-cell">-</td>
+                  </tr> -->
+                </template>
+                <!-- 如果没有按年份的数据，显示汇总数据 -->
+                <template v-if="!hasYearlyData && promotionSummary">
+                  <template v-if="promotionSummary.schools && Object.keys(promotionSummary.schools).length > 0">
+                    <tr v-for="(schoolName, index) in Object.keys(promotionSummary.schools)" :key="`summary-${schoolName}`">
+                      <td v-if="index === 0" :rowspan="Object.keys(promotionSummary.schools).length" class="year-cell">
+                        {{ convertIfNeeded('汇总') }}
+                      </td>
+                      <td v-if="index === 0" :rowspan="Object.keys(promotionSummary.schools).length" class="rate-cell">
+                        <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
+                          {{ promotionSummary.band1Rate.toFixed(2) }}%
+                        </span>
+                        <span v-else>-</span>
+                      </td>
+                      <td class="school-cell">{{ convertIfNeeded(schoolName) }}</td>
+                      <td class="band-cell">
+                        <span v-if="typeof promotionSummary.schools[schoolName] === 'object' && promotionSummary.schools[schoolName]?.band">
+                          {{ promotionSummary.schools[schoolName].band }}
+                        </span>
+                        <span v-else>-</span>
+                      </td>
+                      <td class="count-cell">
+                        {{ typeof promotionSummary.schools[schoolName] === 'object' ? promotionSummary.schools[schoolName]?.count : promotionSummary.schools[schoolName] }}
+                      </td>
+                    </tr>
+                  </template>
+                  <!-- <tr v-else>
+                    <td class="year-cell">{{ convertIfNeeded('汇总') }}</td>
+                    <td class="rate-cell">
+                      <span v-if="promotionSummary.band1Rate !== undefined" class="rate-value">
+                        {{ promotionSummary.band1Rate.toFixed(2) }}%
+                      </span>
+                      <span v-else>-</span>
+                    </td>
+                    <td class="school-cell">-</td>
+                    <td class="count-cell">-</td>
+                  </tr> -->
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </section>        
 
         <!-- 联络信息部分 -->
         <section v-if="school.contact" class="contact">
