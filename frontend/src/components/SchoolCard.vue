@@ -440,28 +440,28 @@ const getGenderLabel = (gender: string) => {
 }
 
 .type-private {
-  background: #f0f9ff;
-  color: #0369a1;
+  background: #3b82f6;
+  color: #f0f9ff;
 }
 
 .type-direct {
-  background: #fef3e2;
-  color: #ea580c;
+  background: #3b82f6;
+  color: #f0f9ff;
 }
 
 .type-government {
-  background: #f3f4f6;
-  color: #374151;
+  background: #3b82f6;
+  color: #f0f9ff;
 }
 
 .type-aided {
-  background: #f0fdf4;
-  color: #166534;
+  background: #3b82f6;
+  color: #f0f9ff;
 }
 
 .type-default {
-  background: #f3f4f6;
-  color: #374151;
+  background: #3b82f6;
+  color: #f0f9ff;
 }
 
 .gender-tag {
