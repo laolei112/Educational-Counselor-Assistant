@@ -9,7 +9,7 @@
  */
 export const formatTuition = (tuition: number | string | undefined): string => {
   // 处理空值情况
-  if (tuition === undefined || tuition === null || tuition === '') {
+  if (tuition === undefined || tuition === null || tuition === '' || tuition === "-") {
     return 'HKD 0'
   }
 
@@ -54,9 +54,9 @@ export const formatTuition = (tuition: number | string | undefined): string => {
 
   // 如果是数字，直接格式化
   if (typeof tuition === 'number') {
-    return `$${tuition.toLocaleString('en-US')}`
+    return `HKD ${tuition.toLocaleString('en-US')}`
   }
 
-  return `${tuition}`
+  return `HKD ${tuition}`
 }
 
