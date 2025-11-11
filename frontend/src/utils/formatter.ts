@@ -10,7 +10,7 @@
 export const formatTuition = (tuition: number | string | undefined): string => {
   // 处理空值情况
   if (tuition === undefined || tuition === null || tuition === '') {
-    return '—'
+    return 'HKD 0'
   }
 
   // 如果是字符串，尝试提取数字和期数
@@ -25,9 +25,9 @@ export const formatTuition = (tuition: number | string | undefined): string => {
       const formattedAmount = parseInt(amount).toLocaleString('en-US')
       
       if (periods) {
-        return `$${formattedAmount} / ${periods} 期`
+        return `HKD ${formattedAmount} / ${periods} 期`
       }
-      return `$${formattedAmount}`
+      return `HKD ${formattedAmount}`
     }
     
     // 如果包含"分十期"等字样，提取期数
@@ -37,7 +37,7 @@ export const formatTuition = (tuition: number | string | undefined): string => {
       if (numMatch) {
         const amount = numMatch[1].replace(/,/g, '')
         const formattedAmount = parseInt(amount).toLocaleString('en-US')
-        return `$${formattedAmount} / ${periodMatch[1]} 期`
+        return `HKD ${formattedAmount} / ${periodMatch[1]} 期`
       }
     }
     
@@ -46,7 +46,7 @@ export const formatTuition = (tuition: number | string | undefined): string => {
     if (numOnly) {
       const amount = numOnly.replace(/,/g, '')
       const formattedAmount = parseInt(amount).toLocaleString('en-US')
-      return `$${formattedAmount}`
+      return `HKD ${formattedAmount}`
     }
     
     return tuition
