@@ -868,7 +868,7 @@ const handleRetry = async () => {
 
 .type-btn.active {
   background-color: #e0e7ff;
-  color: #4f46e5;
+  color: #3b82f6;
 }
 
 .type-btn:hover {

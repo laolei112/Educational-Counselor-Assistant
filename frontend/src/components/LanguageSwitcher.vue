@@ -141,7 +141,7 @@ const toggleLanguage = () => {
 
 .language-switcher.filter-mode .toggle-slider {
   background: #e0e7ff;
-  border: 1px solid #4f46e5;
+  border: 1px solid #3b82f6;
 }
 
 .language-switcher.filter-mode .toggle-option {
@@ -159,7 +159,7 @@ const toggleLanguage = () => {
 
 .language-switcher.mobile-mode .toggle-slider {
   background: #e0e7ff;
-  border: 1px solid #4f46e5;
+  border: 1px solid #3b82f6;
 }
 
 .language-switcher.mobile-mode .toggle-option {

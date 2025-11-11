@@ -465,8 +465,8 @@ const getGenderLabel = (gender: string) => {
 }
 
 .gender-tag {
-  background: #fce7f3;
-  color: #9f1239;
+  background: #3b82f6;
+  color: #f0f9ff;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 12px;
