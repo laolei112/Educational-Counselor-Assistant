@@ -27,11 +27,11 @@
 
     <!-- Meta行: 地区 | 对应校网 | 宗教 -->
     <div class="meta-row">
-      <span class="meta-item">{{ convertIfNeeded(school.district) || '—' }}</span>
+      <span class="meta-item">{{ convertIfNeeded('片区') }}：{{ convertIfNeeded(school.district) || '—' }}</span>
       <span class="meta-divider">｜</span>
       <span class="meta-item">{{ convertIfNeeded('对应校网') }}：{{ school.schoolNet || '—' }}</span>
       <span class="meta-divider">｜</span>
-      <span class="meta-item">{{ convertIfNeeded(school.religion) || '—' }}</span>
+      <span class="meta-item">{{ convertIfNeeded('宗教') }}：{{ convertIfNeeded(school.religion) || '—' }}</span>
     </div>
 
     <!-- KV信息区: 使用CSS Grid，固定标签列 + 自适应值列 -->

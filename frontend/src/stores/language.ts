@@ -247,8 +247,8 @@ export const useLanguageStore = defineStore('language', () => {
       
       // 应用信息
       'app.title': {
-        'zh-CN': 'BetterSchool · 香港权威升学数据库',
-        'zh-TW': 'BetterSchool · 香港權威升學數據庫'
+        'zh-CN': 'BetterSchool · 香港升学数据库',
+        'zh-TW': 'BetterSchool · 香港升學數據庫'
       },
       'app.subtitle': {
         'zh-CN': '为您智能匹配最适合孩子的升学路径',

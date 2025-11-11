@@ -15,31 +15,31 @@ export const formatTuition = (tuition: number | string | undefined): string => {
 
   // 如果是字符串，尝试提取数字和期数
   if (typeof tuition === 'string') {
-    // 匹配格式：数字（可能包含逗号）和期数信息
-    const match = tuition.match(/([\d,]+)(?:\s*[\/／]\s*(\d+)\s*期)?/)
-    if (match) {
-      const amount = match[1].replace(/,/g, '')
-      const periods = match[2]
+    // // 匹配格式：数字（可能包含逗号）和期数信息
+    // const match = tuition.match(/([\d,]+)(?:\s*[\/／]\s*(\d+)\s*期)?/)
+    // if (match) {
+    //   const amount = match[1].replace(/,/g, '')
+    //   const periods = match[2]
       
-      // 格式化金额：添加千位分隔符
-      const formattedAmount = parseInt(amount).toLocaleString('en-US')
+    //   // 格式化金额：添加千位分隔符
+    //   const formattedAmount = parseInt(amount).toLocaleString('en-US')
       
-      if (periods) {
-        return `HKD ${formattedAmount} / ${periods} 期`
-      }
-      return `HKD ${formattedAmount}`
-    }
+    //   if (periods) {
+    //     return `HKD ${formattedAmount} / ${periods} 期`
+    //   }
+    //   return `HKD ${formattedAmount}`
+    // }
     
-    // 如果包含"分十期"等字样，提取期数
-    const periodMatch = tuition.match(/(\d+)\s*期/)
-    if (periodMatch) {
-      const numMatch = tuition.match(/([\d,]+)/)
-      if (numMatch) {
-        const amount = numMatch[1].replace(/,/g, '')
-        const formattedAmount = parseInt(amount).toLocaleString('en-US')
-        return `HKD ${formattedAmount} / ${periodMatch[1]} 期`
-      }
-    }
+    // // 如果包含"分十期"等字样，提取期数
+    // const periodMatch = tuition.match(/(\d+)\s*期/)
+    // if (periodMatch) {
+    //   const numMatch = tuition.match(/([\d,]+)/)
+    //   if (numMatch) {
+    //     const amount = numMatch[1].replace(/,/g, '')
+    //     const formattedAmount = parseInt(amount).toLocaleString('en-US')
+    //     return `HKD ${formattedAmount} / ${periodMatch[1]} 期`
+    //   }
+    // }
     
     // 如果只是数字字符串
     const numOnly = tuition.replace(/[^\d,]/g, '')
