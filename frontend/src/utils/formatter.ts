@@ -12,7 +12,10 @@ export const formatTuition = (tuition: number | string | undefined): string => {
   if (tuition === undefined || tuition === null || tuition === '' || tuition === "-") {
     return 'HKD 0'
   }
-
+  // 如果是数字，直接格式化
+  if (typeof tuition === 'number') {
+    return `HKD ${tuition.toLocaleString('en-US')}`
+  }
   // 如果是字符串，尝试提取数字和期数
   if (typeof tuition === 'string') {
     // // 匹配格式：数字（可能包含逗号）和期数信息
@@ -42,19 +45,14 @@ export const formatTuition = (tuition: number | string | undefined): string => {
     // }
     
     // 如果只是数字字符串
-    const numOnly = tuition.replace(/[^\d,]/g, '')
-    if (numOnly) {
-      const amount = numOnly.replace(/,/g, '')
-      const formattedAmount = parseInt(amount).toLocaleString('en-US')
-      return `HKD ${formattedAmount}`
-    }
+    // const numOnly = tuition.replace(/[^\d,]/g, '')
+    // if (numOnly) {
+    //   const amount = numOnly.replace(/,/g, '')
+    //   const formattedAmount = parseInt(amount).toLocaleString('en-US')
+    //   return `HKD ${formattedAmount}`
+    // }
     
     return tuition
-  }
-
-  // 如果是数字，直接格式化
-  if (typeof tuition === 'number') {
-    return `HKD ${tuition.toLocaleString('en-US')}`
   }
 
   return `HKD ${tuition}`
