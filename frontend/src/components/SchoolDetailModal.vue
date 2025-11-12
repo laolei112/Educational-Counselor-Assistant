@@ -221,11 +221,11 @@
               <div class="card-content">
                 <div class="card-grade">小一申请</div>
                 <div class="card-period">
-                  {{ formatDateRangeForP1(school.transferInfo.小一.小一入学申请开始时间, school.transferInfo.小一.小一入学申请截至时间) }}
+                  {{ formatDateRangeForP1(school.transferInfo.小一.小一入学申请开始时间, school.transferInfo.小一.小一入学申请截止时间) }}
                 </div>
                 <a 
-                  v-if="school.transferInfo.小一.小一申请详情地址"
-                  :href="school.transferInfo.小一.小一申请详情地址"
+                  v-if="school.transferInfo.小一.小一申请详情"
+                  :href="school.transferInfo.小一.小一申请详情"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="card-link"
@@ -250,8 +250,8 @@
                   {{ formatTransferDateRange() }}
                 </div>
                 <a 
-                  v-if="school.transferInfo.插班.插班详情链接"
-                  :href="school.transferInfo.插班.插班详情链接"
+                  v-if="school.transferInfo.插班.插班申请详情链接"
+                  :href="school.transferInfo.插班.插班申请详情链接"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="card-link"

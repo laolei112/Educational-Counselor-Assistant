@@ -121,9 +121,16 @@ export const isCardOpen = (info: any, isTransfer = false): boolean => {
     const start2 = startTime2 ? parseDate(startTime2) : null
     const end2 = info.插班申请截止时间2 ? parseDate(info.插班申请截止时间2) : null
     
-    // 只有开始时间，没有截止时间，且已过开始时间 -> 认为开放
-    if (start1 && !end1 && now >= start1) return true
-    if (start2 && !end2 && now >= start2) return true
+    // 只有开始时间，没有截止时间的情况
+    // 只在开始时间后的合理范围内（90天）认为是开放
+    if (start1 && !end1) {
+      const daysSinceStart = (now.getTime() - start1.getTime()) / (1000 * 60 * 60 * 24)
+      if (daysSinceStart >= 0 && daysSinceStart <= 90) return true
+    }
+    if (start2 && !end2) {
+      const daysSinceStart = (now.getTime() - start2.getTime()) / (1000 * 60 * 60 * 24)
+      if (daysSinceStart >= 0 && daysSinceStart <= 90) return true
+    }
     
     // 有开始和截止时间，检查是否在范围内
     if (start1 && end1 && now >= start1 && now <= end1) return true
@@ -143,8 +150,16 @@ export const isCardOpen = (info: any, isTransfer = false): boolean => {
     const start = startTime ? parseDate(startTime) : null
     const end = info.入学申请截至时间 || info.小一入学申请截至时间 ? parseDate(info.入学申请截至时间 || info.小一入学申请截至时间) : null
     
+    // 有开始和截止时间，检查是否在范围内
     if (start && end && now >= start && now <= end) return true
-    if (start && !end && now >= start) return true
+    
+    // 只有开始时间，没有截止时间的情况
+    // 只在开始时间后的合理范围内（90天）认为是开放
+    if (start && !end) {
+      const daysSinceStart = (now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+      if (daysSinceStart >= 0 && daysSinceStart <= 90) return true
+    }
+    
     return false
   }
 }
