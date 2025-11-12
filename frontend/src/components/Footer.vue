@@ -8,7 +8,7 @@
           <p class="footer-description">{{ getText('footer.about.description') }}</p>
         </div>
         
-        <div class="footer-section">
+        <!-- <div class="footer-section">
           <h3 class="footer-title">{{ getText('footer.links.title') }}</h3>
           <ul class="footer-links">
             <li><a href="#" class="footer-link">{{ getText('footer.links.home') }}</a></li>
@@ -21,10 +21,10 @@
         <div class="footer-section">
           <h3 class="footer-title">{{ getText('footer.contact.title') }}</h3>
           <ul class="footer-contact">
-            <li>📧 {{ getText('footer.contact.email') }}: info@example.com</li>
-            <li>📱 {{ getText('footer.contact.phone') }}: +852 84829907</li>
+            <li>📧 {{ getText('footer.contact.email') }}: dandan987@163.com</li>
+            <li>📱 {{ getText('footer.contact.phone') }}: +852 12345678</li>
           </ul>
-        </div>
+        </div> -->
       </div>
       
       <!-- 分隔线 -->
