@@ -1,6 +1,6 @@
 from django.urls import include, re_path, path
 from backend.api.schools import urls as schools_urls
-from backend.api import signature_views, auth_views
+from backend.api import signature_views, auth_views, scheduler_views
 
 
 urls = [
@@ -15,4 +15,9 @@ urls = [
     # 签名生成API（旧方案，保留兼容性）
     path('generate-signature', signature_views.generate_signature, name='generate_signature'),
     path('signature/health', signature_views.signature_health, name='signature_health'),
+    
+    # 调度器管理API
+    path('scheduler/status', scheduler_views.scheduler_status, name='scheduler_status'),
+    path('scheduler/warmup', scheduler_views.trigger_warmup, name='trigger_warmup'),
+    path('scheduler/clear-and-warmup', scheduler_views.clear_and_warmup, name='clear_and_warmup'),
 ]

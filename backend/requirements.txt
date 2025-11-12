@@ -12,7 +12,6 @@ sqlalchemy
 mysqlclient
 drf_yasg
 supervisor
-gevent
-zope.event
-PyJWT==2.8.0
-opencc-python-reimplemented
+gevent  # 保留以备将来使用，当前使用 gthread worker
+zope
+APScheduler  # 定时任务调度器，用于缓存预热
