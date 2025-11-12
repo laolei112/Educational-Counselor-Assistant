@@ -58,8 +58,8 @@ def build_transfer_info(row):
     """从行构建 transfer_info 字典。空值字段将省略。"""
     s1 = {
         "小一入学申请开始时间": clean_value(row.get("小一入学申请开始时间")),
-        "小一入学申请截至时间": clean_value(row.get("小一入学申请截至时间")),
-        "小一申请详情地址": clean_value(row.get("小一申请详情地址")),
+        "小一入学申请截止时间": clean_value(row.get("小一入学申请截止时间")),
+        "小一申请详情": clean_value(row.get("小一申请详情")),
     }
     transfer = {
         "插班申请开始时间1": clean_value(row.get("插班开始时间1")),
@@ -68,7 +68,7 @@ def build_transfer_info(row):
         "插班申请开始时间2": clean_value(row.get("插班开始时间2")),
         "插班申请截止时间2": clean_value(row.get("插班截止时间2")),
         "可插班年级2": clean_value(row.get("可插班年级2")),
-        "插班详情链接": clean_value(row.get("插班详情链接")),
+        "插班申请详情链接": clean_value(row.get("插班申请详情链接")),
     }
 
     # 去除空字段
@@ -92,14 +92,14 @@ def import_from_excel(excel_path):
         "学校名称",
         "小一入学申请开始时间",
         "小一入学申请截止时间",
-        "小一申请详情地址",
+        "小一申请详情",
         "插班开始时间1",
         "插班截止时间1",
         "可插班年级1",
         "插班开始时间2",
         "插班截止时间2",
         "可插班年级2",
-        "插班详情链接",
+        "插班申请详情链接",
     ]
     for col in ["学校名称"]:
         if col not in df.columns:
