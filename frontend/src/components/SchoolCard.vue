@@ -567,7 +567,9 @@ const getGenderLabel = (gender: string) => {
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   height: 28px;
+  line-height: 1;
 }
 
 .status-badge {
@@ -578,7 +580,9 @@ const getGenderLabel = (gender: string) => {
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   height: 28px;
+  line-height: 1;
 }
 
 .status-open {
@@ -648,6 +652,7 @@ const getGenderLabel = (gender: string) => {
     font-size: 11px;
     padding: 4px 10px;
     height: 24px;
+    line-height: 1;
   }
   
   .details-link {
