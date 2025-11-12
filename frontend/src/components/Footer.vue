@@ -62,13 +62,8 @@ const currentYear = computed(() => new Date().getFullYear())
 .app-footer {
   background: #3b82f6;
   color: white;
-  padding: 1.5rem 0 1rem;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  padding: 3rem 0 1.5rem;
+  margin-top: 4rem;
 }
 
 .footer-content {
@@ -80,8 +75,8 @@ const currentYear = computed(() => new Date().getFullYear())
 .footer-top {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1rem;
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .footer-section {
@@ -89,16 +84,16 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .footer-title {
-  font-size: 1rem;
+  font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   color: white;
 }
 
 .footer-description {
   color: rgba(255, 255, 255, 0.9);
-  line-height: 1.4;
-  font-size: 0.85rem;
+  line-height: 1.6;
+  font-size: 0.9rem;
 }
 
 .footer-links {
@@ -108,13 +103,13 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .footer-links li {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .footer-link {
   color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   transition: color 0.2s;
 }
 
@@ -131,14 +126,14 @@ const currentYear = computed(() => new Date().getFullYear())
 
 .footer-contact li {
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.25rem;
-  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 
 .footer-divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.2);
-  margin: 1rem 0;
+  margin: 2rem 0;
 }
 
 .footer-bottom {
@@ -184,6 +179,21 @@ const currentYear = computed(() => new Date().getFullYear())
 @media (max-width: 768px) {
   .app-footer {
     display: none; /* 移动端隐藏页脚 */
+  }
+  
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+  
+  .footer-meta {
+    flex-wrap: wrap;
   }
 }
 </style>
