@@ -125,8 +125,8 @@ export const useLanguageStore = defineStore('language', () => {
         'zh-TW': '開放申請'
       },
       'school.applicationStatus.closed': {
-        'zh-CN': '申请截止',
-        'zh-TW': '申請截止'
+        'zh-CN': '未开放',
+        'zh-TW': '未開放'
       },
       'school.applicationStatus.deadline': {
         'zh-CN': '即将截止',
