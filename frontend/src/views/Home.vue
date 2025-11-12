@@ -231,7 +231,7 @@
               <LanguageSwitcher variant="filter" />
             </div>
             <div class="stats-info">
-              <span class="stats-text">共 {{ filteredSchools.length }} 所学校</span>
+              <span class="stats-text">共 {{ displaySchoolCount }} 所学校</span>
             </div>
           </div>
         </div>
@@ -391,7 +391,7 @@
       <!-- 学校列表 -->
       <div v-else class="schools-list">
       <div class="schools-container">
-        <div v-if="filteredSchools.length === 0" class="empty-state">
+        <div v-if="currentPageData.length === 0" class="empty-state">
           <div class="empty-icon">📚</div>
           <h3>暂无学校信息</h3>
           <p>{{ hasSearchResults ? '没有找到匹配的学校' : '当前类型下没找到学校数据' }}</p>
@@ -481,6 +481,12 @@ const {
 // 学校详情弹窗相关
 const selectedSchool = ref<School | null>(null)
 const showDetailModal = ref(false)
+
+// 计算显示的学校总数
+// 使用 pagination.total（服务器返回的总数），这代表符合当前筛选和搜索条件的所有学校数量
+const displaySchoolCount = computed(() => {
+  return pagination.value.total || 0
+})
 
 // 滚动加载相关
 let isLoadingMoreData = false
@@ -582,8 +588,8 @@ const sortedSchools = computed(() => {
   
   if (sortBy.value === 'fee') {
     schools.sort((a, b) => {
-      const aFee = a.tuition ?? 0
-      const bFee = b.tuition ?? 0
+      const aFee = typeof a.tuition === 'number' ? a.tuition : (typeof a.tuition === 'string' ? parseFloat(a.tuition) || 0 : 0)
+      const bFee = typeof b.tuition === 'number' ? b.tuition : (typeof b.tuition === 'string' ? parseFloat(b.tuition) || 0 : 0)
       return bFee - aFee // 降序
     })
   } else if (sortBy.value === 'district') {
