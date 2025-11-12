@@ -22,7 +22,7 @@
           <h3 class="footer-title">{{ getText('footer.contact.title') }}</h3>
           <ul class="footer-contact">
             <li>📧 {{ getText('footer.contact.email') }}: info@example.com</li>
-            <li>📱 {{ getText('footer.contact.phone') }}: +852 1234 5678</li>
+            <li>📱 {{ getText('footer.contact.phone') }}: +852 84829907</li>
           </ul>
         </div>
       </div>
@@ -60,10 +60,15 @@ const currentYear = computed(() => new Date().getFullYear())
 
 <style scoped>
 .app-footer {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3b82f6;
   color: white;
-  padding: 3rem 0 1.5rem;
-  margin-top: 4rem;
+  padding: 1.5rem 0 1rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .footer-content {
@@ -75,8 +80,8 @@ const currentYear = computed(() => new Date().getFullYear())
 .footer-top {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .footer-section {
@@ -84,16 +89,16 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .footer-title {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   color: white;
 }
 
 .footer-description {
   color: rgba(255, 255, 255, 0.9);
-  line-height: 1.6;
-  font-size: 0.9rem;
+  line-height: 1.4;
+  font-size: 0.85rem;
 }
 
 .footer-links {
@@ -103,13 +108,13 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .footer-links li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .footer-link {
   color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: color 0.2s;
 }
 
@@ -126,14 +131,14 @@ const currentYear = computed(() => new Date().getFullYear())
 
 .footer-contact li {
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
 }
 
 .footer-divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.2);
-  margin: 2rem 0;
+  margin: 1rem 0;
 }
 
 .footer-bottom {
@@ -178,23 +183,7 @@ const currentYear = computed(() => new Date().getFullYear())
 /* 响应式设计 */
 @media (max-width: 768px) {
   .app-footer {
-    padding: 2rem 0 1rem;
-    margin-top: 2rem;
-  }
-  
-  .footer-top {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .footer-bottom {
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-  }
-  
-  .footer-meta {
-    flex-wrap: wrap;
+    display: none; /* 移动端隐藏页脚 */
   }
 }
 </style>

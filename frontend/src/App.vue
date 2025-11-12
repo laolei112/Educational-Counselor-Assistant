@@ -22,5 +22,13 @@ import Footer from './components/Footer.vue'
 
 .app-content {
   flex: 1;
+  padding-bottom: 240px; /* 为固定页脚预留空间 */
+}
+
+/* 移动端不需要底部padding，因为页脚隐藏 */
+@media (max-width: 768px) {
+  .app-content {
+    padding-bottom: 0;
+  }
 }
 </style> 

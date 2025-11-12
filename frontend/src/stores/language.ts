@@ -315,8 +315,8 @@ export const useLanguageStore = defineStore('language', () => {
         'zh-TW': '關於我們'
       },
       'footer.about.description': {
-        'zh-CN': 'BetterSchool致力于为香港家庭提供全面的升学信息服务，帮助家长为孩子选择最合适的学校。',
-        'zh-TW': 'BetterSchool致力於為香港家庭提供全面的升學資訊服務，幫助家長為孩子選擇最合適的學校。'
+        'zh-CN': 'BetterSchool致力于提供全面的升学信息服务，帮助家长为孩子选择最合适的学校。',
+        'zh-TW': 'BetterSchool致力於提供全面的升學資訊服務，幫助家長為孩子選擇最合適的學校。'
       },
       'footer.links.title': {
         'zh-CN': '快速链接',
