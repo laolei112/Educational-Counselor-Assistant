@@ -85,6 +85,7 @@ export interface TransferInfo {
     插班申请截止时间2?: string
     可插班年级2?: string
     插班详情链接?: string
+    插班申请详情链接?: string  // 兼容新格式
   }
   application_status?: 'open' | 'closed' | 'deadline'
   application_deadline?: string

@@ -192,8 +192,8 @@
                   {{ formatTransferDateRange() }}
                 </div>
                 <a 
-                  v-if="school.transferInfo.插班.插班详情链接"
-                  :href="school.transferInfo.插班.插班详情链接"
+                  v-if="getTransferDetailLink()"
+                  :href="getTransferDetailLink()"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="card-link"
@@ -250,8 +250,8 @@
                   {{ formatTransferDateRange() }}
                 </div>
                 <a 
-                  v-if="school.transferInfo.插班.插班申请详情链接"
-                  :href="school.transferInfo.插班.插班申请详情链接"
+                  v-if="getTransferDetailLink()"
+                  :href="getTransferDetailLink()"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="card-link"
@@ -748,8 +748,20 @@ const formatTransferDateRange = (): string => {
     
     let timeDisplay = ''
     if (end1) {
-      // 有截止时间，格式化日期范围
-      timeDisplay = formatDateRange(start1, end1)
+      // 检查开始时间是否为文本状态（如"开放申请"）
+      const start1Date = parseDate(start1)
+      if (!start1Date && (start1.includes('开放') || start1.includes('申请'))) {
+        // 如果开始时间是状态文本，只显示截止时间
+        const end1Date = parseDate(end1)
+        if (end1Date) {
+          timeDisplay = `截止 ${end1Date.getFullYear()}.${end1Date.getMonth() + 1}.${end1Date.getDate()}`
+        } else {
+          timeDisplay = start1
+        }
+      } else {
+        // 正常的日期范围
+        timeDisplay = formatDateRange(start1, end1)
+      }
     } else {
       // 只有开始时间，直接显示（可能是"开放申请"这样的文本）
       timeDisplay = start1
@@ -770,8 +782,20 @@ const formatTransferDateRange = (): string => {
     
     let timeDisplay = ''
     if (end2) {
-      // 有截止时间，格式化日期范围
-      timeDisplay = formatDateRange(start2, end2)
+      // 检查开始时间是否为文本状态（如"开放申请"）
+      const start2Date = parseDate(start2)
+      if (!start2Date && (start2.includes('开放') || start2.includes('申请'))) {
+        // 如果开始时间是状态文本，只显示截止时间
+        const end2Date = parseDate(end2)
+        if (end2Date) {
+          timeDisplay = `截止 ${end2Date.getFullYear()}.${end2Date.getMonth() + 1}.${end2Date.getDate()}`
+        } else {
+          timeDisplay = start2
+        }
+      } else {
+        // 正常的日期范围
+        timeDisplay = formatDateRange(start2, end2)
+      }
     } else {
       // 只有开始时间，直接显示
       timeDisplay = start2
@@ -837,11 +861,19 @@ const hasValidP1Info = (p1: any): boolean => {
 const hasValidTransferInfo = (transfer: any): boolean => {
   if (!transfer) return false
   // 检查是否有至少一个有效的开始时间（可以没有截止时间）
-  // 或者有插班详情链接
+  // 或者有插班详情链接（兼容两种字段名）
   const hasTime1 = transfer.插班申请开始时间1
   const hasTime2 = transfer.插班申请开始时间2
-  const hasLink = transfer.插班详情链接
+  const hasLink = transfer.插班详情链接 || transfer.插班申请详情链接
   return !!(hasTime1 || hasTime2 || hasLink)
+}
+
+// 获取插班详情链接（兼容两种字段名）
+const getTransferDetailLink = (): string | undefined => {
+  const transfer = props.school.transferInfo?.插班
+  if (!transfer) return undefined
+  // 优先使用 插班申请详情链接，如果不存在则使用 插班详情链接
+  return transfer.插班申请详情链接 || transfer.插班详情链接
 }
 
 const isCardOpenForP1 = (p1Info: any): boolean => {

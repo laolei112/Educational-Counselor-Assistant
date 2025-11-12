@@ -94,15 +94,41 @@ export const isCardOpen = (info: any, isTransfer = false): boolean => {
     // 检查插班信息，可能有多个时间段
     const startTime1 = info.插班申请开始时间1
     const startTime2 = info.插班申请开始时间2
+    const end1 = info.插班申请截止时间1 ? parseDate(info.插班申请截止时间1) : null
+    const end2 = info.插班申请截止时间2 ? parseDate(info.插班申请截止时间2) : null
     
     // 检查是否明确标记为"开放申请"或"开放中"
+    let hasOpenStatus1 = false
+    let hasOpenStatus2 = false
+    
     if (startTime1 && typeof startTime1 === 'string') {
       const start1Lower = startTime1.toLowerCase().trim()
-      if (start1Lower.includes('开放申请') || start1Lower.includes('开放中')) return true
+      if (start1Lower.includes('开放申请') || start1Lower.includes('开放中')) {
+        hasOpenStatus1 = true
+        // 如果有截止时间，需要检查是否已过期
+        if (end1) {
+          if (now <= end1) return true
+          // 截止时间已过，继续检查其他条件
+        } else {
+          // 没有截止时间，认为是开放的
+          return true
+        }
+      }
     }
+    
     if (startTime2 && typeof startTime2 === 'string') {
       const start2Lower = startTime2.toLowerCase().trim()
-      if (start2Lower.includes('开放申请') || start2Lower.includes('开放中')) return true
+      if (start2Lower.includes('开放申请') || start2Lower.includes('开放中')) {
+        hasOpenStatus2 = true
+        // 如果有截止时间，需要检查是否已过期
+        if (end2) {
+          if (now <= end2) return true
+          // 截止时间已过，继续检查其他条件
+        } else {
+          // 没有截止时间，认为是开放的
+          return true
+        }
+      }
     }
     
     // 检查"每年X月"格式 - 当前月份匹配则认为开放
@@ -117,9 +143,7 @@ export const isCardOpen = (info: any, isTransfer = false): boolean => {
     
     // 检查具体日期范围
     const start1 = startTime1 ? parseDate(startTime1) : null
-    const end1 = info.插班申请截止时间1 ? parseDate(info.插班申请截止时间1) : null
     const start2 = startTime2 ? parseDate(startTime2) : null
-    const end2 = info.插班申请截止时间2 ? parseDate(info.插班申请截止时间2) : null
     
     // 只有开始时间，没有截止时间的情况
     // 只在开始时间后的合理范围内（90天）认为是开放
@@ -140,15 +164,23 @@ export const isCardOpen = (info: any, isTransfer = false): boolean => {
   } else {
     // S1/小一申请
     const startTime = info.入学申请开始时间 || info.小一入学申请开始时间
+    const end = info.入学申请截至时间 || info.小一入学申请截至时间 ? parseDate(info.入学申请截至时间 || info.小一入学申请截至时间) : null
     
-    // 检查是否为"开放申请"
+    // 检查是否为"开放申请"或"开放中"
     if (startTime && typeof startTime === 'string') {
       const startLower = startTime.toLowerCase().trim()
-      if (startLower.includes('开放申请') || startLower.includes('开放中')) return true
+      if (startLower.includes('开放申请') || startLower.includes('开放中')) {
+        // 如果有截止时间，需要检查是否已过期
+        if (end) {
+          return now <= end
+        } else {
+          // 没有截止时间，认为是开放的
+          return true
+        }
+      }
     }
     
     const start = startTime ? parseDate(startTime) : null
-    const end = info.入学申请截至时间 || info.小一入学申请截至时间 ? parseDate(info.入学申请截至时间 || info.小一入学申请截至时间) : null
     
     // 有开始和截止时间，检查是否在范围内
     if (start && end && now >= start && now <= end) return true
