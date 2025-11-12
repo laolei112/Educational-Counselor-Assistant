@@ -738,30 +738,56 @@ const formatTransferDateRange = (): string => {
   const transfer = props.school.transferInfo?.插班
   if (!transfer) return '-'
   
-  // 优先使用第一个时间段，如果没有则使用第二个
   let display = "";
-  if (transfer.插班申请开始时间1 && transfer.插班申请截止时间1) {
-    const dateRange = formatDateRange(transfer.插班申请开始时间1, transfer.插班申请截止时间1)
+  
+  // 处理第一个时间段
+  if (transfer.插班申请开始时间1) {
+    const start1 = transfer.插班申请开始时间1
+    const end1 = transfer.插班申请截止时间1
     const grade = transfer.可插班年级1 || ''
-    if (grade && grade !== '/') {
-      display = `插班${grade}-${dateRange}`
+    
+    let timeDisplay = ''
+    if (end1) {
+      // 有截止时间，格式化日期范围
+      timeDisplay = formatDateRange(start1, end1)
     } else {
-      display = dateRange
+      // 只有开始时间，直接显示（可能是"开放申请"这样的文本）
+      timeDisplay = start1
+    }
+    
+    if (grade && grade !== '/') {
+      display = `插班${grade}-${timeDisplay}`
+    } else {
+      display = timeDisplay
     }
   }
-  // 第二个时间段，显示时要换行
-  if (transfer.插班申请开始时间2 && transfer.插班申请截止时间2) {
-    const dateRange = formatDateRange(transfer.插班申请开始时间2, transfer.插班申请截止时间2)
+  
+  // 处理第二个时间段
+  if (transfer.插班申请开始时间2) {
+    const start2 = transfer.插班申请开始时间2
+    const end2 = transfer.插班申请截止时间2
     const grade = transfer.可插班年级2 || ''
+    
+    let timeDisplay = ''
+    if (end2) {
+      // 有截止时间，格式化日期范围
+      timeDisplay = formatDateRange(start2, end2)
+    } else {
+      // 只有开始时间，直接显示
+      timeDisplay = start2
+    }
+    
     if (display) {
       display += '\n'
     }
+    
     if (grade && grade !== '/') {
-      display += `插班${grade}-${dateRange}`
+      display += `插班${grade}-${timeDisplay}`
     } else {
-      display += dateRange
+      display += timeDisplay
     }
   }
+  
   // 如果没有任何时间信息，返回默认值
   if (!display) {
     return '-'
@@ -796,22 +822,26 @@ const extractAdmissionDetails = (): string => {
 
 const hasValidS1Info = (s1: any): boolean => {
   if (!s1) return false
-  // 检查是否有有效的开始时间和结束时间
-  return !!(s1.入学申请开始时间 && s1.入学申请截至时间)
+  // 检查是否有有效的开始时间（可以没有截止时间）
+  // 或者有申请详情链接
+  return !!(s1.入学申请开始时间 || s1.申请详情地址)
 }
 
 const hasValidP1Info = (p1: any): boolean => {
   if (!p1) return false
-  // 检查是否有有效的开始时间和结束时间
-  return !!(p1.小一入学申请开始时间 && p1.小一入学申请截至时间)
+  // 检查是否有有效的开始时间（可以没有截止时间）
+  // 或者有申请详情链接
+  return !!(p1.小一入学申请开始时间 || p1.小一申请详情地址)
 }
 
 const hasValidTransferInfo = (transfer: any): boolean => {
   if (!transfer) return false
-  // 检查是否有至少一个有效的时间段
-  const hasTime1 = transfer.插班申请开始时间1 && transfer.插班申请截止时间1
-  const hasTime2 = transfer.插班申请开始时间2 && transfer.插班申请截止时间2
-  return hasTime1 || hasTime2
+  // 检查是否有至少一个有效的开始时间（可以没有截止时间）
+  // 或者有插班详情链接
+  const hasTime1 = transfer.插班申请开始时间1
+  const hasTime2 = transfer.插班申请开始时间2
+  const hasLink = transfer.插班详情链接
+  return !!(hasTime1 || hasTime2 || hasLink)
 }
 
 const isCardOpenForP1 = (p1Info: any): boolean => {

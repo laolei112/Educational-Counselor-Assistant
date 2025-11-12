@@ -192,16 +192,26 @@ export const isMarkedAsClosed = (info: any, isTransfer = false): boolean => {
 
 /**
  * 格式化日期范围
+ * 如果无法解析为日期（如"开放申请"），则直接返回原始文本
  */
 export const formatDateRange = (start?: string, end?: string): string => {
-  if (!start || !end) return '-'
+  if (!start) return '-'
+  if (!end) return start // 只有开始时间，直接返回
   
   const formatDateStr = (dateStr: string): string => {
     const date = parseDate(dateStr)
-    if (!date) return dateStr
+    if (!date) return dateStr // 无法解析，返回原始文本
     return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`
   }
   
-  return `${formatDateStr(start)}-${formatDateStr(end)}`
+  const formattedStart = formatDateStr(start)
+  const formattedEnd = formatDateStr(end)
+  
+  // 如果都无法解析为日期，只返回开始时间文本
+  if (formattedStart === start && formattedEnd === end && parseDate(start) === null) {
+    return start
+  }
+  
+  return `${formattedStart}-${formattedEnd}`
 }
 
