@@ -36,6 +36,11 @@ def generate_token(client_id: str, metadata: Dict = None) -> str:
     }
     
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    
+    # 确保token是字符串类型（某些PyJWT版本返回bytes）
+    if isinstance(token, bytes):
+        token = token.decode('utf-8')
+    
     return token
 
 
