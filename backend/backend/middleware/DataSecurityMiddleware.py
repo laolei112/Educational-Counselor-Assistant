@@ -3,7 +3,7 @@
 负责API响应数据的加密，实现"双模响应"
 """
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from utils.data_encryptor import DataEncryptor
 import json
 
@@ -35,42 +35,55 @@ class DataSecurityMiddleware:
         if not self.ENABLE_ENCRYPTION:
             return response
             
-        # 仅处理 JsonResponse
-        if not isinstance(response, JsonResponse):
+        # 1. 检查是否为 JSON 响应
+        # DRF 返回的响应通常是 HttpResponse，但 Content-Type 是 application/json
+        content_type = response.get('Content-Type', '')
+        if 'application/json' not in content_type:
             return response
             
-        # 检查路径
+        # 2. 检查路径
         if not any(request.path.startswith(p) for p in self.ENCRYPT_PATHS):
             return response
             
-        # 关键判断：如果是验证过的SEO爬虫，返回明文！
+        # 3. 关键判断：如果是验证过的SEO爬虫，返回明文！
         if getattr(request, 'is_verified_seo_bot', False):
             return response
             
-        # 否则，加密数据
+        # 4. 加密数据
         try:
             # 获取原始数据
-            # JsonResponse.content 是 bytes，需要解码后加载
+            # DRF 的 Response 如果还未渲染 (rendered_content)，可能需要先渲染
+            # 但通常在中间件阶段 content 已经是 bytes
+            if hasattr(response, 'render') and callable(response.render):
+                 response.render()
+                 
             original_content = response.content.decode('utf-8')
             json_data = json.loads(original_content)
             
-            # 仅加密 data 字段，保留外层结构（code, message等）
-            # 这样前端容易判断请求状态
+            # 仅加密 data 字段
             if isinstance(json_data, dict) and 'data' in json_data:
                 if json_data['data'] is not None:
                     encrypted_result = DataEncryptor.encrypt_data(json_data['data'])
                     json_data['data'] = encrypted_result
                     
-                    # 重建响应
-                    new_response = JsonResponse(json_data, status=response.status_code)
+                    # 重建响应 (使用 HttpResponse 确保兼容性)
+                    new_content = json.dumps(json_data).encode('utf-8')
+                    new_response = HttpResponse(
+                        new_content, 
+                        content_type='application/json',
+                        status=response.status_code
+                    )
+                    
                     # 复制原响应头
                     for k, v in response.items():
-                        new_response[k] = v
+                        if k not in ['Content-Length', 'Content-Type']:
+                            new_response[k] = v
+                            
                     return new_response
                     
         except Exception as e:
-            # 加密失败降级为明文，或记录错误
+            # 打印错误但不中断流程，降级为明文
             print(f"Response encryption failed: {e}")
+            pass
             
         return response
-
