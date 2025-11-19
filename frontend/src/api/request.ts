@@ -1,6 +1,7 @@
 import { API_CONFIG } from './config'
 import type { ApiResponse } from './types'
-import { tokenManager } from '../utils/token'
+// import { tokenManager } from '../utils/token'  // 移除：不再需要 JWT
+import { securityManager } from '../utils/security'
 import { getDeviceFingerprint } from '../utils/crypto'
 
 // HTTP请求错误类
@@ -21,7 +22,7 @@ interface RequestConfig {
   headers?: Record<string, string>
   body?: any
   timeout?: number
-  skipSignature?: boolean  // 是否跳过签名（用于某些不需要签名的请求）
+  skipSignature?: boolean  // 是否跳过Token
 }
 
 // 构建完整URL
@@ -60,7 +61,6 @@ async function request<T = any>(
 
   const url = buildUrl(path, method === 'GET' ? params : undefined)
   
-  // 生成请求签名（用于防爬取）
   const requestHeaders: Record<string, string> = {
     ...API_CONFIG.HEADERS,
     ...headers
@@ -68,14 +68,23 @@ async function request<T = any>(
   
   if (!skipSignature) {
     try {
-      // 使用JWT Token替代签名（性能更好）
-      const token = await tokenManager.getToken()
-      requestHeaders['Authorization'] = `Bearer ${token}`
+      // 1. JWT 认证 (已移除：无登录功能)
+      // const token = await tokenManager.getToken()
+      // requestHeaders['Authorization'] = `Bearer ${token}`
+      
+      // 2. 设备指纹
       requestHeaders['X-Device-Id'] = getDeviceFingerprint()
+
+      // 3. 动态反爬 Token
+      // 仅对数据接口添加
+      if (path.includes('/schools/') || path.includes('/primary/') || path.includes('/secondary/')) {
+         const dynamicToken = await securityManager.getToken()
+         requestHeaders['X-Request-Token'] = dynamicToken
+      }
+
     } catch (err) {
-      console.error('获取Token失败:', err)
-      // Token获取失败时抛出错误
-      throw new HttpError(0, '无法获取访问凭证，请检查网络连接')
+      console.error('获取凭证失败:', err)
+      // 即使失败也尝试请求，可能是未登录访问公开接口
     }
   }
   
@@ -95,32 +104,32 @@ async function request<T = any>(
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
       
-      // 如果是401错误且使用了Token，尝试刷新Token后重试
-      if (response.status === 401 && !skipSignature) {
-        console.log('Token可能已过期，尝试刷新并重试...')
-        try {
-          // 清除旧Token
-          tokenManager.clearToken()
-          // 获取新Token
-          const newToken = await tokenManager.getToken()
-          // 更新请求头
-          requestHeaders['Authorization'] = `Bearer ${newToken}`
+      // 处理 401 JWT 过期 (已移除)
+      // if (response.status === 401 && !skipSignature) { ... }
+
+      // 处理 403 动态 Token 过期
+      if (response.status === 403 && errorData.message?.includes('Token')) {
+          console.log('动态Token失效，尝试刷新...')
+          securityManager.clearToken()
+          const newToken = await securityManager.getToken()
+          requestHeaders['X-Request-Token'] = newToken
           
-          // 重试请求（仅重试一次）
+          // 重试
           const retryResponse = await fetch(url, {
-            method,
-            headers: requestHeaders,
-            body: body ? JSON.stringify(body) : undefined,
-            signal: controller.signal
+              method,
+              headers: requestHeaders,
+              body: body ? JSON.stringify(body) : undefined,
+              signal: controller.signal
           })
           
           if (retryResponse.ok) {
-            const retryData = await retryResponse.json()
-            return retryData
+             const retryRawData = await retryResponse.json()
+             // 解密重试后的数据
+             if (retryRawData.data && retryRawData.data.encrypted) {
+                 retryRawData.data = securityManager.decryptData(retryRawData.data)
+             }
+             return retryRawData
           }
-        } catch (retryErr) {
-          console.error('重试失败:', retryErr)
-        }
       }
       
       throw new HttpError(
@@ -130,8 +139,22 @@ async function request<T = any>(
       )
     }
     
-    const data = await response.json()
-    return data
+    // 解析响应数据
+    const rawData = await response.json()
+
+    // 自动解密数据
+    // 检查 data 字段是否为加密结构
+    if (rawData.data && rawData.data.encrypted) {
+        try {
+            // 替换为解密后的数据
+            rawData.data = securityManager.decryptData(rawData.data)
+        } catch (e) {
+            console.error('数据解密失败', e)
+            // 如果解密失败，可能是数据已经被篡改或密钥不对，但不应阻塞流程
+        }
+    }
+    
+    return rawData
     
   } catch (error) {
     clearTimeout(timeoutId)
@@ -164,4 +187,4 @@ export const http = {
     
   delete: <T = any>(path: string, params?: Record<string, any>) =>
     request<T>(path, { method: 'DELETE' }, params)
-} 
+}

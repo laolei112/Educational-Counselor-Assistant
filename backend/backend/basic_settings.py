@@ -65,10 +65,12 @@ MIDDLEWARE = [
     # ========== 防爬取和安全中间件（按顺序执行）==========
     "backend.middleware.RateLimitMiddleware.RateLimitMiddleware",  # 频率限制（最先执行，快速拒绝）
     "backend.middleware.AntiCrawlerMiddleware.AntiCrawlerMiddleware",  # 反爬虫检测
-    "backend.middleware.TokenAuthMiddleware.TokenAuthMiddleware",  # JWT Token认证（推荐）
+    # "backend.middleware.TokenAuthMiddleware.TokenAuthMiddleware",  # JWT Token认证（已移除：无登录功能）
+    "backend.middleware.DynamicTokenMiddleware.DynamicTokenMiddleware",  # 动态Token + SEO验证
+    "backend.middleware.DataSecurityMiddleware.DataSecurityMiddleware",  # 数据加密（双模响应）
     # "backend.middleware.SignatureMiddleware.SignatureMiddleware",  # 签名验证（旧方案，已注释）
     # =====================================================
-    "backend.middleware.AuthMiddleware.AuthMiddleware",  # 登录态验证
+    # "backend.middleware.AuthMiddleware.AuthMiddleware",  # 登录态验证（已移除：无登录功能）
     "backend.middleware.ExceptionMiddleware.ExceptionMiddleware",  # noqa
 ]
 
