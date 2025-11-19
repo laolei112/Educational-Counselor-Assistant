@@ -7,6 +7,7 @@ urls = [
     re_path(r"^schools/", include(schools_urls)),
     
     # Token认证API（推荐使用）
+    path('auth/request-token', auth_views.request_dynamic_token, name='request_dynamic_token'),  # 新增：动态反爬Token
     path('auth/token', auth_views.get_token, name='get_token'),
     path('auth/refresh', auth_views.refresh_token, name='refresh_token'),
     path('auth/revoke', auth_views.revoke_token, name='revoke_token'),
