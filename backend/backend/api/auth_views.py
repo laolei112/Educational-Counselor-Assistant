@@ -1,6 +1,11 @@
 import secrets
 import time
+import json
 from django.core.cache import cache
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from common.logger import loginfo
 
 @csrf_exempt
 @require_http_methods(["GET"])
@@ -48,3 +53,23 @@ def request_dynamic_token(request):
             'success': False,
             'message': '系统错误'
         }, status=500)
+
+# ----------------------------------------------------------
+# 以下函数仅为兼容性保留 (如果有其他地方引用)，但不再包含JWT逻辑
+# ----------------------------------------------------------
+
+@csrf_exempt
+def get_token(request):
+    return JsonResponse({'code': 410, 'message': 'JWT认证已废弃'}, status=410)
+
+@csrf_exempt
+def refresh_token(request):
+    return JsonResponse({'code': 410, 'message': 'JWT认证已废弃'}, status=410)
+
+@csrf_exempt
+def revoke_token(request):
+    return JsonResponse({'code': 410, 'message': 'JWT认证已废弃'}, status=410)
+
+@csrf_exempt
+def token_info(request):
+    return JsonResponse({'code': 410, 'message': 'JWT认证已废弃'}, status=410)
