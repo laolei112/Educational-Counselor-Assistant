@@ -68,15 +68,15 @@ class DynamicTokenMiddleware:
             return self.get_response(request)
         
         path = request.path
+
+        # 1. 白名单路径检查 (优先放行，避免不必要的DNS反查，解决GSC抓取超时问题)
+        if self._is_whitelisted(path):
+            return self.get_response(request)
         
-        # 1. 检查是否为搜索引擎
+        # 2. 检查是否为搜索引擎
         if self._is_search_engine(request):
             request.is_verified_seo_bot = True
             # 搜索引擎直接放行，跳过Token验证
-            return self.get_response(request)
-            
-        # 2. 白名单路径检查
-        if self._is_whitelisted(path):
             return self.get_response(request)
         
         # 3. Token验证
