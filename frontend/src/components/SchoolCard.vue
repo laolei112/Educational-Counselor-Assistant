@@ -1,7 +1,7 @@
 <template>
-  <div class="school-card" @click="handleCardClick">
+  <article class="school-card" @click="handleCardClick">
     <!-- Header: 校名 + 标签 -->
-    <div class="card-header">
+    <header class="card-header">
       <h3 class="school-name">{{ getSchoolName() }}</h3>
       <div class="header-tags">
         <span 
@@ -23,7 +23,7 @@
           {{ genderTag }}
         </span>
       </div>
-    </div>
+    </header>
 
     <!-- Meta行: 地区 | 对应校网 | 宗教 -->
     <div class="meta-row">
@@ -80,7 +80,7 @@
     </div>
 
     <!-- Footer: KPI徽章（左） + 操作"详情"（右） -->
-    <div class="card-footer">
+    <footer class="card-footer">
       <div class="footer-left">
         <!-- 小学显示升学比例 -->
         <span 
@@ -100,8 +100,8 @@
       <div class="footer-right">
         <span class="details-link">{{ getText('school.details') }}→</span>
       </div>
-    </div>
-  </div>
+    </footer>
+  </article>
 </template>
 
 <script setup lang="ts">
