@@ -397,13 +397,19 @@
           <p>{{ hasSearchResults ? '没有找到匹配的学校' : '当前类型下没找到学校数据' }}</p>
         </div>
         <div v-else class="schools-grid">
-            <SchoolCard 
-            v-for="school in sortedSchools" 
+            <!-- 使用 a 标签包裹，利于 SEO -->
+            <a 
+              v-for="school in sortedSchools" 
               :key="school.id"
-              :school="school"
-              @click="handleSchoolClick"
-            class="school-card-item"
-            />
+              :href="`/school/${school.type}/${school.id}`"
+              class="school-card-link"
+              @click.prevent="handleSchoolClick(school)"
+            >
+              <SchoolCard 
+                :school="school"
+                class="school-card-item"
+              />
+            </a>
           </div>
           
           <!-- 加载状态指示器 -->
@@ -431,8 +437,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, computed, ref } from 'vue'
+import { onMounted, onUnmounted, computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRoute, useRouter } from 'vue-router'
 import { useSchoolStore } from '@/stores/school'
 import { useLanguageStore } from '@/stores/language'
 import SchoolCard from '@/components/SchoolCard.vue'
@@ -440,6 +447,8 @@ import SchoolDetailModal from '@/components/SchoolDetailModal.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import type { School } from '@/types/school'
 
+const route = useRoute()
+const router = useRouter()
 const schoolStore = useSchoolStore()
 const languageStore = useLanguageStore()
 
@@ -640,31 +649,51 @@ const handleTypeChange = async (type: 'primary' | 'secondary') => {
   await setSchoolType(type)
 }
 
-// 处理学校卡片点击 - 调用详情接口获取完整数据
-const handleSchoolClick = async (school: School) => {
-  try {
-    // 显示加载状态
-    showDetailModal.value = true
-    selectedSchool.value = null
-    
-    // 调用详情接口获取完整数据
-    const detailData = await schoolStore.fetchSchoolDetail(school.id, school.type)
-    
-    // 设置详情数据
-    selectedSchool.value = detailData
-  } catch (error) {
-    console.error('获取学校详情失败:', error)
-    // 如果详情接口失败，使用列表数据作为后备
-    selectedSchool.value = school
-  }
+// 处理学校卡片点击 - 路由跳转（SEO友好）
+const handleSchoolClick = (school: School) => {
+  router.push({
+    name: 'school-detail',
+    params: { type: school.type, id: school.id }
+  })
 }
+
+// 监听路由变化处理弹窗
+watch(() => route.name, async (newRouteName) => {
+  if (newRouteName === 'school-detail') {
+    const { id, type } = route.params
+    if (id && type) {
+      showDetailModal.value = true
+      // 如果当前已有数据且ID匹配，不重新加载（除非是部分数据需要补全）
+      if (selectedSchool.value?.id === Number(id)) {
+        return
+      }
+      
+      selectedSchool.value = null
+      try {
+        const detailData = await schoolStore.fetchSchoolDetail(Number(id), type as any)
+        selectedSchool.value = detailData
+      } catch (error) {
+        console.error('获取学校详情失败:', error)
+        // 可以考虑跳转回列表或显示错误
+      }
+    }
+  } else {
+    showDetailModal.value = false
+    // 延迟清除数据，避免关闭动画时内容闪烁
+    setTimeout(() => {
+      if (!showDetailModal.value) {
+        selectedSchool.value = null
+      }
+    }, 300)
+  }
+}, { immediate: true }) // 立即执行以处理直接访问详情页的情况
 
 // 处理关闭弹窗
 const handleCloseModal = () => {
+  // 返回列表页（去除URL中的ID）
+  router.push({ name: 'home' })
+  // showDetailModal 会通过 watch 自动更新，但手动设置可以让交互更即时
   showDetailModal.value = false
-  setTimeout(() => {
-    selectedSchool.value = null
-  }, 300)
 }
 
 // 处理实时搜索输入
@@ -1167,6 +1196,13 @@ const handleRetry = async () => {
 
 .school-card-item:hover {
   transform: scale(1.02);
+}
+
+.school-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
 }
 
 /* Loading Indicator */

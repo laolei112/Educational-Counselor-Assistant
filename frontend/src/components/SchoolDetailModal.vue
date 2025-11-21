@@ -442,6 +442,34 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+// SEO: 动态更新页面标题
+// 当弹窗显示时，更新标题；隐藏时，恢复默认标题
+const originalTitle = document.title
+watch(() => props.visible, (newVisible) => {
+  if (newVisible && props.school) {
+    const name = convertIfNeeded(props.school.name)
+    document.title = `${name} - BetterSchool 香港升学助手`
+    
+    // 更新 meta description (如果需要更高级的SEO，建议使用 @vueuse/head)
+    const metaDesc = document.querySelector('meta[name="description"]')
+    if (metaDesc) {
+      metaDesc.setAttribute('content', `查看${name}的详细资料：学费、Band等级、升学数据、${convertIfNeeded(props.school.district)}...`)
+    }
+  } else {
+    document.title = originalTitle
+    // 恢复默认 description
+    const metaDesc = document.querySelector('meta[name="description"]')
+    if (metaDesc) {
+      metaDesc.setAttribute('content', '提供香港中小学详细信息、升学指导、学校对比等服务...')
+    }
+  }
+}, { immediate: true })
+
+// 组件销毁时恢复标题
+onUnmounted(() => {
+  document.title = originalTitle
+})
+
 // 控制教学语言说明弹窗显示
 const showLanguageInfo = ref(false)
 

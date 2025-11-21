@@ -12,6 +12,14 @@ const router = createRouter({
       component: Home
     },
     {
+      // 新增：学校详情页路由
+      // 这对 SEO 至关重要，让每个学校都有独立的 URL
+      path: '/school/:type/:id',
+      name: 'school-detail',
+      component: Home, // 仍然复用 Home 组件，在内部通过路由参数控制弹窗
+      props: true
+    },
+    {
       path: '/debug',
       name: 'debug',
       component: DebugPage
@@ -21,7 +29,18 @@ const router = createRouter({
       name: 'search-test',
       component: SearchTest
     }
-  ]
+  ],
+  // 滚动行为控制
+  scrollBehavior(to, from, savedPosition) {
+    // 如果是同一页面的弹窗打开/关闭，保持位置
+    if (to.name === 'school-detail' && from.name === 'home') {
+      return savedPosition || { top: 0 }
+    }
+    if (to.name === 'home' && from.name === 'school-detail') {
+      return savedPosition || { top: 0 }
+    }
+    return { top: 0 }
+  }
 })
 
-export default router 
+export default router
