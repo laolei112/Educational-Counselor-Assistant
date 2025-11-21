@@ -1,11 +1,14 @@
 from django.urls import include, re_path, path
 from backend.api.schools import urls as schools_urls
-from backend.api import signature_views, auth_views, scheduler_views
+from backend.api import signature_views, auth_views, scheduler_views, seo_views
 
 
 urls = [
     re_path(r"^schools/", include(schools_urls)),
     
+    # SEO Sitemap
+    path('sitemap.xml', seo_views.sitemap_view, name='sitemap_xml'),
+
     # Token认证API（推荐使用）
     path('auth/request-token', auth_views.request_dynamic_token, name='request_dynamic_token'),  # 新增：动态反爬Token
     path('auth/token', auth_views.get_token, name='get_token'),

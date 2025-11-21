@@ -43,6 +43,7 @@ class DynamicTokenMiddleware:
         '/api/auth/request-token',
         '/api/auth/login',
         '/api/auth/register',
+        '/api/sitemap.xml',
         '/nginx-health',
         '/admin/',
     ]

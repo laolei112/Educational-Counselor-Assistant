@@ -10,8 +10,7 @@ class DataEncryptor:
     数据加密工具类 (AES-CBC模式)
     """
     # 默认密钥（实际生产环境应从环境变量获取）
-    # 前端使用了 padEnd(32, '\0')，这里必须保持一致
-    DEFAULT_KEY = b'Educational_Counselor_Secret_K'.ljust(32, b'\0')[:32]  # 32 bytes for AES-256
+    DEFAULT_KEY = b'Educational_Counselor_Secret_K'[:32]  # 32 bytes for AES-256
     BLOCK_SIZE = 16
 
     @classmethod
