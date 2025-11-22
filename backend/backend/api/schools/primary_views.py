@@ -1,3 +1,6 @@
+import json
+import time
+import hashlib
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -7,9 +10,6 @@ from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.utils.text_converter import normalize_keyword
 from backend.utils.cache import CacheManager
 from common.logger import loginfo
-import json
-import time
-import hashlib
 
 
 def sort_yearly_stats(promotion_info):
@@ -27,11 +27,13 @@ def sort_yearly_stats(promotion_info):
             # 返回新的字典以避免修改原数据
             new_info = promotion_info.copy()
             new_info['yearly_stats'] = sorted_stats
+            loginfo(f"sorted_stats: {sorted_stats}")
             return new_info
         except Exception:
             # 如果排序失败（例如键不是可比较的），返回原数据
+            loginfo(f"sorted_stats failed, promotion_info: {promotion_info}")
             return promotion_info
-            
+    loginfo(f"promotion_info: {promotion_info}")
     return promotion_info
 
 
@@ -122,18 +124,6 @@ def get_cache_key_for_query(params):
     param_str = json.dumps(params, sort_keys=True)
     hash_value = hashlib.md5(param_str.encode()).hexdigest()
     return f"primary_schools_count:{hash_value}"
-
-
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.db.models import Q, Count, F
-from backend.models.tb_primary_schools import TbPrimarySchools
-from backend.utils.text_converter import normalize_keyword
-from common.logger import loginfo
-import json
-import time
 
 
 def serialize_primary_school_for_list(school):
