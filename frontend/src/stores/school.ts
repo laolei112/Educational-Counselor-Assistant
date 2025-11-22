@@ -683,6 +683,31 @@ export const useSchoolStore = defineStore('school', () => {
     }
   }
 
+  /**
+   * 获取学校推荐列表
+   */
+  const fetchSchoolRecommendations = async (schoolId: number, type: 'primary' | 'secondary') => {
+    try {
+      let response: { success: boolean; data: { related: School[], popular: School[] }; message?: string }
+      
+      if (type === 'primary') {
+        response = await schoolApi.getPrimaryRecommendations(schoolId)
+      } else {
+        response = await schoolApi.getSecondaryRecommendations(schoolId)
+      }
+      
+      if (response.success) {
+        return response.data
+      } else {
+        console.warn('获取推荐学校失败:', response.message)
+        return { related: [], popular: [] }
+      }
+    } catch (err) {
+      console.error('获取推荐学校失败:', err)
+      return { related: [], popular: [] }
+    }
+  }
+
     return {
     // 状态
     schools,
@@ -722,6 +747,7 @@ export const useSchoolStore = defineStore('school', () => {
     loadFilterOptions,
     ensureFilterOptions,
     initFilters,
-    fetchSchoolDetail
+    fetchSchoolDetail,
+    fetchSchoolRecommendations
   }
 })

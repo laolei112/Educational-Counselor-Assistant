@@ -428,6 +428,50 @@
             </div>
           </div>
         </section>
+
+        <!-- 内链推荐模块 -->
+        <section v-if="recommendations.related.length || recommendations.popular.length" class="recommendations-section">
+          <h3>🔎 你可能想浏览</h3>
+          
+          <div v-if="recommendations.related.length" class="recommendation-group">
+            <h4>同区学校推荐</h4>
+            <div class="recommendation-list">
+              <div 
+                v-for="recSchool in recommendations.related" 
+                :key="recSchool.id" 
+                class="recommendation-item"
+                @click="handleRecommendationClick(recSchool)"
+              >
+                <a :href="`/school/${recSchool.type}/${recSchool.id}`" @click.prevent class="rec-link">
+                  <span class="rec-name">{{ convertIfNeeded(recSchool.name) }}</span>
+                  <span class="rec-meta">{{ convertIfNeeded(recSchool.district) }} | {{ getCategoryLabel(recSchool.category) }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="recommendations.popular.length" class="recommendation-group">
+            <h4>热门学校推荐</h4>
+            <div class="recommendation-list">
+              <div 
+                v-for="recSchool in recommendations.popular" 
+                :key="recSchool.id" 
+                class="recommendation-item"
+                @click="handleRecommendationClick(recSchool)"
+              >
+                <a :href="`/school/${recSchool.type}/${recSchool.id}`" @click.prevent class="rec-link">
+                  <span class="rec-name">{{ convertIfNeeded(recSchool.name) }}</span>
+                  <span class="rec-meta">
+                    {{ convertIfNeeded(recSchool.district) }} | 
+                    <span v-if="recSchool.band1Rate !== undefined && recSchool.band1Rate !== null">Band 1: {{ recSchool.band1Rate.toFixed(0) }}%</span>
+                    <span v-else-if="recSchool.schoolGroup">{{ convertIfNeeded(recSchool.schoolGroup) }}</span>
+                    <span v-else>热门</span>
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -435,6 +479,8 @@
 
 <script setup lang="ts">
 import { ref, watch, onUnmounted, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useSchoolStore } from '@/stores/school'
 import type { School } from '@/types/school'
 import { formatTuition } from '@/utils/formatter'
 import { useLanguageStore } from '@/stores/language'
@@ -451,12 +497,37 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+const router = useRouter()
+const schoolStore = useSchoolStore()
+
+const recommendations = ref<{ related: School[], popular: School[] }>({ related: [], popular: [] })
+
+// 加载推荐数据
+const loadRecommendations = async () => {
+  if (!props.school) return
+  const data = await schoolStore.fetchSchoolRecommendations(props.school.id, props.school.type as any)
+  recommendations.value = data
+}
+
+// 处理推荐点击
+const handleRecommendationClick = (school: School) => {
+  // 关闭当前弹窗
+  emit('close')
+  // 跳转到新学校详情
+  router.push({
+    name: 'school-detail',
+    params: { type: school.type, id: school.id }
+  })
+}
 
 // SEO: 动态更新页面标题
 // 当弹窗显示时，更新标题；隐藏时，恢复默认标题
 const originalTitle = document.title
-watch(() => props.visible, (newVisible) => {
+watch(() => props.visible, async (newVisible) => {
   if (newVisible && props.school) {
+    // 加载推荐
+    loadRecommendations()
+    
     const name = convertIfNeeded(props.school.name)
     document.title = `${name} - BetterSchool 香港升学助手`
     
@@ -2035,6 +2106,71 @@ section h3 {
     padding: 2px 5px;
     top: 8px;
     right: 8px;
+  }
+}
+
+/* 推荐模块样式 */
+.recommendations-section {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid #e9ecef;
+}
+
+.recommendation-group {
+  margin-bottom: 24px;
+}
+
+.recommendation-group h4 {
+  font-size: 15px;
+  color: #6c757d;
+  margin: 0 0 12px 0;
+  font-weight: 600;
+}
+
+.recommendation-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.recommendation-item {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.recommendation-item:hover {
+  background: white;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+}
+
+.rec-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.rec-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.rec-meta {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .recommendation-list {
+    grid-template-columns: 1fr;
   }
 }
 </style> 

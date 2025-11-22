@@ -526,6 +526,86 @@ def primary_school_detail(request, school_id):
 
 @csrf_exempt
 @require_http_methods(["GET"])
+def primary_school_recommendations(request, school_id):
+    """
+    获取小学推荐列表（同区学校、热门学校）
+    GET /api/schools/primary/{id}/recommendations/
+    """
+    try:
+        school_id = int(school_id)
+        
+        # 缓存优化
+        cache_key = f"primary_school_recommendations:{school_id}"
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            return JsonResponse({
+                "code": 200,
+                "message": "成功",
+                "success": True,
+                "data": cached_data
+            })
+            
+        try:
+            current_school = TbPrimarySchools.objects.get(id=school_id)
+        except TbPrimarySchools.DoesNotExist:
+            return JsonResponse({
+                "code": 404,
+                "message": "学校不存在",
+                "success": False,
+                "data": None
+            })
+            
+        # 1. 同区推荐 (Same District) - 随机取4个
+        related_schools = TbPrimarySchools.objects.filter(
+            district=current_school.district
+        ).exclude(id=school_id).order_by('?')[:4]
+        
+        # 2. 热门推荐 (Popular/High Banding) - 取全港Band1率最高的4个
+        # 注意：band1_rate 是生成列，可能为 None
+        popular_schools = TbPrimarySchools.objects.exclude(
+            id=school_id
+        ).exclude(
+            id__in=[s.id for s in related_schools]
+        ).order_by('-band1_rate')[:4]
+        
+        # 序列化函数 (精简版)
+        def serialize_simple(school):
+            return {
+                "id": school.id,
+                "name": school.school_name,
+                "type": "primary",
+                "district": school.district,
+                "category": school.school_category,
+                "tuition": school.tuition or "-",
+                "band1Rate": float(school.band1_rate) if school.band1_rate is not None else None
+            }
+            
+        data = {
+            "related": [serialize_simple(s) for s in related_schools],
+            "popular": [serialize_simple(s) for s in popular_schools]
+        }
+        
+        # 缓存 6 小时
+        cache.set(cache_key, data, 21600)
+        
+        return JsonResponse({
+            "code": 200,
+            "message": "成功",
+            "success": True,
+            "data": data
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            "code": 500,
+            "message": f"服务器错误: {str(e)}",
+            "success": False,
+            "data": None
+        })
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
 def primary_schools_stats(request):
     """
     获取小学统计信息(简化版本,只返回学校总数)
