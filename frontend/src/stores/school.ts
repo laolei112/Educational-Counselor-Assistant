@@ -46,6 +46,9 @@ export const useSchoolStore = defineStore('school', () => {
     bandings: []
   })
   
+  // 筛选选项是否已加载
+  const filterOptionsLoaded = ref(false)
+  
   // 无限滚动状态
   const hasMore = ref(true)
   const loadingMore = ref(false)
@@ -212,10 +215,21 @@ export const useSchoolStore = defineStore('school', () => {
   // Actions
   
   /**
-   * 获取筛选选项（在初始化时调用）
+   * 获取筛选选项（延迟加载，避免阻塞关键渲染路径）
    */
   const initFilters = async () => {
-    await loadFilterOptions()
+    // 延迟加载filter选项，让页面先渲染
+    // 使用 requestIdleCallback 或 setTimeout 延迟执行
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        loadFilterOptions()
+      }, { timeout: 2000 })
+    } else {
+      // 降级方案：使用 setTimeout
+      setTimeout(() => {
+        loadFilterOptions()
+      }, 100)
+    }
   }
 
   /**
@@ -382,9 +396,18 @@ export const useSchoolStore = defineStore('school', () => {
       category: '',
       banding: ''
     }
+    // 优先加载学校列表
     await fetchSchools()
-    // 加载筛选选项
-    await loadFilterOptions()
+    // 延迟加载筛选选项，避免阻塞关键渲染路径
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        loadFilterOptions()
+      }, { timeout: 2000 })
+    } else {
+      setTimeout(() => {
+        loadFilterOptions()
+      }, 100)
+    }
   }
   
   /**
@@ -428,8 +451,14 @@ export const useSchoolStore = defineStore('school', () => {
   
   /**
    * 加载筛选选项（片区列表等）
+   * @param force 是否强制重新加载
    */
-  const loadFilterOptions = async () => {
+  const loadFilterOptions = async (force: boolean = false) => {
+    // 如果已加载且不强制重新加载，则跳过
+    if (filterOptionsLoaded.value && !force) {
+      return
+    }
+    
     try {
       if (currentType.value === 'primary') {
         const response = await schoolApi.getPrimaryFilters()
@@ -439,6 +468,7 @@ export const useSchoolStore = defineStore('school', () => {
           filterOptions.value.categories = response.data.categories || []
           // 清空中学特有的选项
           filterOptions.value.bandings = []
+          filterOptionsLoaded.value = true
         }
       } else {
         // 中学筛选选项
@@ -450,6 +480,7 @@ export const useSchoolStore = defineStore('school', () => {
             // 清空小学特有的选项
             filterOptions.value.schoolNets = []
             filterOptions.value.categories = []
+            filterOptionsLoaded.value = true
           } else {
             console.warn('中学筛选选项API返回失败:', response)
             filterOptions.value.districts = []
@@ -469,6 +500,15 @@ export const useSchoolStore = defineStore('school', () => {
       filterOptions.value.schoolNets = []
       filterOptions.value.categories = []
       filterOptions.value.bandings = []
+    }
+  }
+  
+  /**
+   * 确保筛选选项已加载（懒加载）
+   */
+  const ensureFilterOptions = async () => {
+    if (!filterOptionsLoaded.value) {
+      await loadFilterOptions()
     }
   }
 
@@ -680,6 +720,7 @@ export const useSchoolStore = defineStore('school', () => {
     setFilters,
     clearFilters,
     loadFilterOptions,
+    ensureFilterOptions,
     initFilters,
     fetchSchoolDetail
   }

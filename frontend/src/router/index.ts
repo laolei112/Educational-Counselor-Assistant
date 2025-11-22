@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import DebugPage from '../views/DebugPage.vue'
-import SearchTest from '../views/SearchTest.vue'
+// 使用动态import延迟加载非关键页面
+const DebugPage = () => import('../views/DebugPage.vue')
+const SearchTest = () => import('../views/SearchTest.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

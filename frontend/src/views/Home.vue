@@ -525,7 +525,7 @@ const showMobileFilters = ref(false)
 const sortBy = ref<'none' | 'fee' | 'district'>('none')
 
 // 切换筛选下拉菜单
-const toggleFilterDropdown = (type: string, event?: Event) => {
+const toggleFilterDropdown = async (type: string, event?: Event) => {
   // 阻止事件冒泡，防止触发外部点击关闭
   if (event) {
     event.stopPropagation()
@@ -536,6 +536,8 @@ const toggleFilterDropdown = (type: string, event?: Event) => {
   if (activeFilterDropdown.value === type) {
     activeFilterDropdown.value = null
   } else {
+    // 在打开下拉菜单时，确保filter选项已加载（懒加载）
+    await schoolStore.ensureFilterOptions()
     activeFilterDropdown.value = type
   }
 }
@@ -629,10 +631,12 @@ const handleClickOutside = (event: Event) => {
 onMounted(async () => {
   // 语言设置已在 store 初始化时自动从 localStorage 加载，无需再次初始化
   
-  // 初始化筛选选项
-  await initFilters()
-  
+  // 优先加载学校列表，筛选选项延迟加载
   await fetchSchools()
+  
+  // 延迟初始化筛选选项，避免阻塞关键渲染路径
+  initFilters()
+  
   window.addEventListener('scroll', handleScroll)
   document.addEventListener('click', handleClickOutside)
 })

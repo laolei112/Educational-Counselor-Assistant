@@ -2,10 +2,11 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 import { cssOptimizer } from './vite-plugin-css-optimizer'
+import { resourceHints } from './vite-plugin-resource-hints'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), cssOptimizer()],
+  plugins: [vue(), cssOptimizer(), resourceHints()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -39,13 +40,40 @@ export default defineConfig({
         comments: false
       }
     },
-    // 分块策略 - 将关键代码分离
+    // 分块策略 - 将关键代码分离，优化加载性能
     rollupOptions: {
       output: {
-        // 手动分块，将加密相关代码单独打包
-        manualChunks: {
-          'crypto-utils': ['./src/utils/crypto.ts'],
-          'vue-vendor': ['vue', 'vue-router', 'pinia']
+        // 手动分块，优化代码分割
+        manualChunks: (id) => {
+          // 将node_modules中的依赖分离
+          if (id.includes('node_modules')) {
+            // Vue核心库单独打包
+            if (id.includes('vue') && !id.includes('vue-router') && !id.includes('pinia')) {
+              return 'vue-core'
+            }
+            // Vue Router单独打包
+            if (id.includes('vue-router')) {
+              return 'vue-router'
+            }
+            // Pinia单独打包
+            if (id.includes('pinia')) {
+              return 'pinia'
+            }
+            // 加密相关库
+            if (id.includes('crypto-js')) {
+              return 'crypto-utils'
+            }
+            // 其他第三方库
+            return 'vendor'
+          }
+          // 工具函数单独打包
+          if (id.includes('/utils/')) {
+            return 'utils'
+          }
+          // API相关代码单独打包
+          if (id.includes('/api/')) {
+            return 'api'
+          }
         },
         // 混淆文件名
         chunkFileNames: 'assets/[name]-[hash].js',
