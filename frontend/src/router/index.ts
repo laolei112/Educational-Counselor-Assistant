@@ -13,6 +13,23 @@ const router = createRouter({
       component: Home
     },
     {
+      path: '/primary',
+      name: 'primary',
+      component: Home,
+      beforeEnter: (to, from, next) => {
+        // 可以在这里做一些初始化，比如设置 store 的 currentType
+        next()
+      }
+    },
+    {
+      path: '/secondary',
+      name: 'secondary',
+      component: Home,
+      beforeEnter: (to, from, next) => {
+        next()
+      }
+    },
+    {
       // 新增：学校详情页路由
       // 这对 SEO 至关重要，让每个学校都有独立的 URL
       path: '/school/:type/:id',

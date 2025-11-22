@@ -664,6 +664,13 @@ onMounted(async () => {
     }
   }
 
+  // 检查是否有 primary 或 secondary 路由
+  if (route.name === 'primary') {
+    await setSchoolType('primary')
+  } else if (route.name === 'secondary') {
+    await setSchoolType('secondary')
+  }
+
   // 使用节流优化滚动事件，避免强制重排
   throttledHandleScroll = rafThrottle(handleScrollInternal)
   window.addEventListener('scroll', throttledHandleScroll, { passive: true })
@@ -695,35 +702,33 @@ const handleSchoolClick = (school: School) => {
 }
 
 // 监听路由变化处理弹窗
-watch(() => route.name, async (newRouteName) => {
-  if (newRouteName === 'school-detail') {
-    const { id, type } = route.params
-    if (id && type) {
+watch(() => route.params, async (newParams, oldParams) => {
+  // 检查路由是否是 school-detail
+  if (route.name === 'school-detail') {
+    const { id, type } = newParams
+    
+    // 检查ID是否发生变化
+    if (id && type && (id !== oldParams?.id || type !== oldParams?.type)) {
       showDetailModal.value = true
-      // 如果当前已有数据且ID匹配，不重新加载（除非是部分数据需要补全）
-      if (selectedSchool.value?.id === Number(id)) {
-        return
-      }
+      selectedSchool.value = null // 先清空，显示加载状态（如有）
       
-      selectedSchool.value = null
       try {
         const detailData = await schoolStore.fetchSchoolDetail(Number(id), type as any)
         selectedSchool.value = detailData
       } catch (error) {
         console.error('获取学校详情失败:', error)
-        // 可以考虑跳转回列表或显示错误
       }
     }
   } else {
+    // 如果不是详情页路由，关闭弹窗
     showDetailModal.value = false
-    // 延迟清除数据，避免关闭动画时内容闪烁
     setTimeout(() => {
       if (!showDetailModal.value) {
         selectedSchool.value = null
       }
     }, 300)
   }
-}, { immediate: true }) // 立即执行以处理直接访问详情页的情况
+}, { deep: true, immediate: true })
 
 // 处理关闭弹窗
 const handleCloseModal = () => {
