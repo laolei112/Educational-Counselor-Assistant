@@ -1,6 +1,16 @@
 <template>
   <div v-if="visible" class="modal-overlay" @click="closeModal">
     <div class="modal-container" @click.stop>
+      <!-- 分享按钮 -->
+      <button class="share-btn" @click="handleShare" title="分享此学校">
+        <span>📤</span>
+      </button>
+
+      <!-- 复制提示 Toast -->
+      <div v-if="showCopyToast" class="toast-message">
+        📋 链接已复制
+      </div>
+
       <!-- 关闭按钮 -->
       <button class="close-btn" @click="closeModal">
         <span>✕</span>
@@ -472,6 +482,40 @@ onUnmounted(() => {
 
 // 控制教学语言说明弹窗显示
 const showLanguageInfo = ref(false)
+const showCopyToast = ref(false)
+
+// 分享功能
+const handleShare = async () => {
+  const shareData = {
+    title: document.title,
+    text: `查看${displayName.value}的详细资料：${districtText.value} | ${getCategoryLabel(props.school.category)}`,
+    url: window.location.href
+  }
+
+  // 1. 优先尝试使用 Web Share API (移动端原生体验)
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData)
+      return
+    } catch (err) {
+      // 用户取消或不支持，降级处理
+      console.log('Share cancelled or not supported')
+    }
+  }
+
+  // 2. 降级方案：复制链接到剪贴板
+  try {
+    await navigator.clipboard.writeText(window.location.href)
+    showCopyToast.value = true
+    setTimeout(() => {
+      showCopyToast.value = false
+    }, 2000)
+  } catch (err) {
+    console.error('复制失败:', err)
+    // 兜底：提示用户手动复制
+    alert(`请复制链接分享：${window.location.href}`)
+  }
+}
 
 // 语言切换与文本转换
 const languageStore = useLanguageStore()
@@ -1012,6 +1056,58 @@ const extractAdmissionCriteria = (): string[] => {
   z-index: 1001;
   transition: all 0.2s;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.share-btn {
+  position: fixed;
+  top: 20px;
+  right: 72px; /* 关闭按钮左侧 */
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #374151;
+  z-index: 1001;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.share-btn:hover {
+  background: #f3f4f6;
+  border-color: rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+}
+
+.share-btn:active {
+  transform: scale(0.95);
+}
+
+.toast-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 2000;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -40%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
 }
 
 .close-btn:hover {
@@ -1734,6 +1830,15 @@ section h3 {
     width: 44px;
     height: 44px;
     font-size: 22px;
+    border-width: 2px;
+  }
+  
+  .share-btn {
+    top: 10px;
+    right: 64px; /* 调整移动端间距 */
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
     border-width: 2px;
   }
   
