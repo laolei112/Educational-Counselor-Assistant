@@ -196,8 +196,7 @@ export const schoolApi = {
    */
   getPrimaryRecommendations: async (id: number) => {
     // 实际实现应该调用后端API，这里可以复用详情接口的路由结构或新增recommendations路由
-    // 暂时假设后端会提供 /schools/primary/:id/recommendations
-    return http.get<{ related: School[], popular: School[] }>(`${API_PATHS.SCHOOLS.PRIMARY}${id}/recommendations`)
+    return http.get<{ related: School[], popular: School[] }>(`${API_PATHS.SCHOOLS.PRIMARY}${id}/recommendations/`)
   },
 
   /**
@@ -205,6 +204,6 @@ export const schoolApi = {
    * @param id 学校ID
    */
   getSecondaryRecommendations: async (id: number) => {
-    return http.get<{ related: School[], popular: School[] }>(`${API_PATHS.SCHOOLS.SECONDARY}${id}/recommendations`)
+    return http.get<{ related: School[], popular: School[] }>(`${API_PATHS.SCHOOLS.SECONDARY}${id}/recommendations/`)
   }
 } 
