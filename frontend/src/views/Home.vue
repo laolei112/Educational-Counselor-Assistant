@@ -651,6 +651,19 @@ onMounted(async () => {
   // 延迟初始化筛选选项，避免阻塞关键渲染路径
   initFilters()
   
+  // 检查是否有详情页参数
+  const { id, type } = route.params
+  if (id && type) {
+    showDetailModal.value = true
+    try {
+      // 直接请求详情，不需要等待列表加载
+      const detailData = await schoolStore.fetchSchoolDetail(Number(id), type as any)
+      selectedSchool.value = detailData
+    } catch (error) {
+      console.error('获取学校详情失败:', error)
+    }
+  }
+
   // 使用节流优化滚动事件，避免强制重排
   throttledHandleScroll = rafThrottle(handleScrollInternal)
   window.addEventListener('scroll', throttledHandleScroll, { passive: true })
