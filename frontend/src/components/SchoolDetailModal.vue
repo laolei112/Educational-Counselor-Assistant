@@ -315,11 +315,11 @@
                 </tr>
               </thead>
               <tbody>
-                <template v-for="(yearData, year) in promotionDataByYear" :key="year">
+                <template v-for="yearData in promotionDataByYear" :key="yearData.year">
                   <template v-if="yearData.schools && Object.keys(yearData.schools).length > 0">
-                    <tr v-for="(schoolName, index) in Object.keys(yearData.schools)" :key="`${year}-${schoolName}`">
+                    <tr v-for="(schoolName, index) in Object.keys(yearData.schools)" :key="`${yearData.year}-${schoolName}`">
                       <td v-if="index === 0" :rowspan="Object.keys(yearData.schools).length" class="year-cell">
-                        {{ year }}
+                        {{ yearData.year }}
                       </td>
                       <td v-if="index === 0" :rowspan="Object.keys(yearData.schools).length" class="rate-cell">
                         <span v-if="yearData.band1Rate !== undefined" class="rate-value">
@@ -340,7 +340,7 @@
                     </tr>
                   </template>
                   <!-- <tr v-else>
-                    <td class="year-cell">{{ year }}</td>
+                    <td class="year-cell">{{ yearData.year }}</td>
                     <td class="rate-cell">
                       <span v-if="yearData.band1Rate !== undefined" class="rate-value">
                         {{ yearData.band1Rate.toFixed(2) }}%
@@ -642,12 +642,12 @@ const promotionDataByYear = computed(() => {
   
   // 按年份降序排序（最近一年在前）
   const sortedYears = Object.keys(yearlyData).sort((a, b) => Number(b) - Number(a))
-  const sortedData: Record<string, any> = {}
-  sortedYears.forEach(year => {
-    sortedData[year] = yearlyData[year]
-  })
   
-  return sortedData
+  // 返回数组以保证顺序（对象会自动按Key升序重排）
+  return sortedYears.map(year => ({
+    year,
+    ...yearlyData[year]
+  }))
 })
 
 // 汇总升学数据（如果没有按年份的数据）
