@@ -175,22 +175,48 @@ def seo_school_detail_view(request, school_type, school_id):
         </html>
         """, content_type="text/html")
 
-    # 4. Inject Tags
-    # We replace the default title and inject meta tags before </head>
-    
-    # Replace Title
-    # Handles <title>BetterSchool</title> or other variations
+    # 4. Inject Tags and Content
     import re
-    # Use DOTALL to match across newlines just in case
+    import json
+    
+    # A. Head Injection (Meta Tags)
+    # Replace Title
     html_content = re.sub(r'<title>.*?</title>', f'<title>{title}</title>', html_content, flags=re.DOTALL)
     
-    # Remove existing meta description and og tags to avoid duplicates
+    # Remove existing meta tags
     html_content = re.sub(r'<meta\s+name="description".*?>', '', html_content, flags=re.DOTALL)
     html_content = re.sub(r'<meta\s+property="og:.*?".*?>', '', html_content, flags=re.DOTALL)
+    
+    # Prepare Canonical URL
+    canonical_tag = f'<link rel="canonical" href="{url}" />'
+    
+    # Prepare JSON-LD (Structured Data)
+    json_ld_data = {
+        "@context": "https://schema.org",
+        "@type": "School",
+        "name": name,
+        "description": description,
+        "url": url,
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Hong Kong",
+            "addressRegion": district,
+            "streetAddress": getattr(school, 'address', '') or district
+        }
+    }
+    if hasattr(school, 'phone') and school.phone:
+        json_ld_data["telephone"] = school.phone
+    if hasattr(school, 'website') and school.website:
+        json_ld_data["sameAs"] = school.website
+    if tuition:
+         json_ld_data["priceRange"] = tuition
+         
+    json_ld_script = f'<script type="application/ld+json">{json.dumps(json_ld_data, ensure_ascii=False)}</script>'
     
     # New Meta Tags
     meta_tags = f"""
     <meta name="description" content="{description}" />
+    {canonical_tag}
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -205,14 +231,51 @@ def seo_school_detail_view(request, school_type, school_id):
     <meta property="twitter:title" content="{title}" />
     <meta property="twitter:description" content="{description}" />
     <meta property="twitter:image" content="{image_url}" />
+    
+    {json_ld_script}
     """
     
     # Insert before </head>
     if '</head>' in html_content:
         html_content = html_content.replace('</head>', f'{meta_tags}</head>')
     else:
-        # If for some reason no head tag
         html_content += meta_tags
+
+    # B. Body Injection (Visible Content for Crawlers)
+    # We inject a hidden-but-visible-to-bots div or put it inside app div before hydration
+    # Putting it inside <div id="app"> allows Vue to overwrite it upon hydration (hydration mismatch warning might occur in dev, but safe in prod)
+    # Or commonly, put it in <noscript> or a specifically marked div that Vue ignores or replaces.
+    # Since we want it to be indexed, putting it inside <div id="app"> is a common "Pre-rendering" trick.
+    
+    # Generate a rich HTML summary
+    features_html = ""
+    if hasattr(school, 'features') and school.features:
+        # features might be a list or json
+        feats = school.features if isinstance(school.features, list) else []
+        if feats:
+            features_html = "<ul>" + "".join([f"<li>{f}</li>" for f in feats]) + "</ul>"
+            
+    body_content = f"""
+    <div style="position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
+        <h1>{name}</h1>
+        <p>{description}</p>
+        <dl>
+            <dt>区域</dt><dd>{district}</dd>
+            <dt>类别</dt><dd>{category}</dd>
+            <dt>学费</dt><dd>{tuition}</dd>
+            <dt>地址</dt><dd>{getattr(school, 'address', '')}</dd>
+        </dl>
+        {features_html}
+        <a href="{url}">查看详情</a>
+    </div>
+    """
+    
+    # Inject into body (start of body)
+    if '<div id="app">' in html_content:
+        # Insert INSIDE #app so it's treated as initial content
+        html_content = html_content.replace('<div id="app">', f'<div id="app">{body_content}')
+    elif '<body>' in html_content:
+        html_content = html_content.replace('<body>', f'<body>{body_content}')
 
     return HttpResponse(html_content, content_type="text/html")
 
