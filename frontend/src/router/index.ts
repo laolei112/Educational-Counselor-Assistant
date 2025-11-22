@@ -31,16 +31,29 @@ const router = createRouter({
       component: SearchTest
     }
   ],
-  // 滚动行为控制
+  // 滚动行为控制 - 优化版本，避免不必要的滚动导致重排
   scrollBehavior(to, from, savedPosition) {
     // 如果是同一页面的弹窗打开/关闭，保持位置
     if (to.name === 'school-detail' && from.name === 'home') {
-      return savedPosition || { top: 0 }
+      // 如果有保存的位置，使用它；否则不滚动（避免强制重排）
+      return savedPosition || null
     }
     if (to.name === 'home' && from.name === 'school-detail') {
-      return savedPosition || { top: 0 }
+      // 如果有保存的位置，使用它；否则不滚动（避免强制重排）
+      return savedPosition || null
     }
-    return { top: 0 }
+    // 只有在真正需要滚动到顶部时才滚动
+    // 使用 Promise + requestAnimationFrame 延迟执行，避免强制重排
+    if (to.hash) {
+      // 如果有锚点，滚动到锚点
+      return { el: to.hash, behavior: 'smooth' }
+    }
+    // 否则延迟滚动到顶部，避免强制重排
+    return new Promise((resolve) => {
+      requestAnimationFrame(() => {
+        resolve({ top: 0, behavior: 'smooth' })
+      })
+    })
   }
 })
 

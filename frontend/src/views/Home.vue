@@ -446,6 +446,7 @@ import SchoolCard from '@/components/SchoolCard.vue'
 import SchoolDetailModal from '@/components/SchoolDetailModal.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import type { School } from '@/types/school'
+import { rafThrottle } from '@/utils/throttle'
 
 const route = useRoute()
 const router = useRouter()
@@ -500,24 +501,37 @@ const displaySchoolCount = computed(() => {
 // 滚动加载相关
 let isLoadingMoreData = false
 
-// 滚动检测函数
-const handleScroll = async () => {
+// 缓存窗口高度（不会频繁变化，避免重复查询）
+let cachedWindowHeight = window.innerHeight
+
+// 监听窗口大小变化，更新缓存的窗口高度
+const updateWindowHeight = () => {
+  cachedWindowHeight = window.innerHeight
+}
+
+// 滚动检测函数 - 优化版本，避免强制重排
+const handleScrollInternal = async () => {
   if (isLoadingMoreData || !hasMoreData.value) return
   
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-  const windowHeight = window.innerHeight
-  const documentHeight = document.documentElement.scrollHeight
-  
-  // 当滚动到距离底部100px时触发加载
-  if (scrollTop + windowHeight >= documentHeight - 100) {
-    isLoadingMoreData = true
-    try {
-      await loadMore()
-    } finally {
-      isLoadingMoreData = false
+  // 使用 requestAnimationFrame 批量读取几何属性，避免强制重排
+  requestAnimationFrame(() => {
+    // 批量读取所有需要的几何属性，减少重排次数
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+    const documentHeight = document.documentElement.scrollHeight
+    const windowHeight = cachedWindowHeight
+    
+    // 当滚动到距离底部100px时触发加载
+    if (scrollTop + windowHeight >= documentHeight - 100) {
+      isLoadingMoreData = true
+      loadMore().finally(() => {
+        isLoadingMoreData = false
+      })
     }
-  }
+  })
 }
+
+// 使用节流优化滚动事件处理
+let throttledHandleScroll: ((...args: any[]) => void) | null = null
 
 // 活动中的下拉菜单
 const activeFilterDropdown = ref<string | null>(null)
@@ -637,13 +651,19 @@ onMounted(async () => {
   // 延迟初始化筛选选项，避免阻塞关键渲染路径
   initFilters()
   
-  window.addEventListener('scroll', handleScroll)
+  // 使用节流优化滚动事件，避免强制重排
+  throttledHandleScroll = rafThrottle(handleScrollInternal)
+  window.addEventListener('scroll', throttledHandleScroll, { passive: true })
+  window.addEventListener('resize', updateWindowHeight, { passive: true })
   document.addEventListener('click', handleClickOutside)
 })
 
 // 组件卸载时移除滚动监听
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
+  if (throttledHandleScroll) {
+    window.removeEventListener('scroll', throttledHandleScroll)
+  }
+  window.removeEventListener('resize', updateWindowHeight)
   document.removeEventListener('click', handleClickOutside)
   activeFilterDropdown.value = null
 })

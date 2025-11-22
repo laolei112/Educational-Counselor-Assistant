@@ -690,19 +690,25 @@ const promotionSummary = computed(() => {
 
 // 监听弹窗显示状态，控制 body 滚动
 watch(() => props.visible, (newVisible) => {
-  if (newVisible) {
-    // 弹窗打开时，禁用 body 滚动
-    document.body.style.overflow = 'hidden'
-  } else {
-    // 弹窗关闭时，恢复 body 滚动
-    document.body.style.overflow = ''
-    showLanguageInfo.value = false
-  }
+  // 使用 requestAnimationFrame 延迟样式修改，避免强制重排
+  requestAnimationFrame(() => {
+    if (newVisible) {
+      // 弹窗打开时，禁用 body 滚动
+      document.body.style.overflow = 'hidden'
+    } else {
+      // 弹窗关闭时，恢复 body 滚动
+      document.body.style.overflow = ''
+      showLanguageInfo.value = false
+    }
+  })
 })
 
 // 组件销毁时确保恢复 body 滚动
 onUnmounted(() => {
-  document.body.style.overflow = ''
+  // 使用 requestAnimationFrame 延迟样式修改，避免强制重排
+  requestAnimationFrame(() => {
+    document.body.style.overflow = ''
+  })
 })
 
 const closeModal = () => {
