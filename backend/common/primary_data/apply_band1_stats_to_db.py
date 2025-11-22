@@ -177,6 +177,12 @@ def apply_stats_to_database(stats_file):
                                 if not latest_band1_rate:
                                     latest_band1_rate = school_stat['band1_rate']
                                     print(f"❌ 错误: {primary_school:35s} - 没有找到最新年份的数据")
+                # 显式排序
+                raw_stats = school_stat.get('yearly_stats', {})
+                # 确保按年份字符串降序排序
+                sorted_items = sorted(raw_stats.items(), key=lambda x: str(x[0]), reverse=True)
+                sorted_stats = dict(sorted_items)
+                
                 # 更新 promotion_info 字段
                 db_school.promotion_info = {
                     'latest_year': latest_year,
@@ -188,13 +194,13 @@ def apply_stats_to_database(stats_file):
                         {'school': k, 'count': v} 
                         for k, v in list(school_stat['secondary_schools'].items())
                     ],
-                    'yearly_stats': school_stat.get('yearly_stats', {}),  # 年度数据
+                    'yearly_stats': sorted_stats,
                     # 注意：yearly_stats下的schools格式为 {学校名: {'count': 人数, 'band': banding}}
                     # 旧格式 {学校名: 人数} 已废弃，但代码会兼容处理
                     'data_source': 'excel_import',
                     'last_updated': '2025-10-19'
                 }
-                db_school.save()
+                db_school.save(update_fields=['promotion_info', 'updated_at'])
                 
                 updated_count += 1
                 match_info = f"(繁:{primary_school}→简:{primary_school_simplified})" if primary_school != primary_school_simplified else ""

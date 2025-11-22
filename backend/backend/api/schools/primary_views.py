@@ -12,6 +12,29 @@ import time
 import hashlib
 
 
+def sort_yearly_stats(promotion_info):
+    """
+    辅助函数：对 promotion_info 中的 yearly_stats 按年份降序排序
+    解决 MySQL JSON 字段存储不保证顺序的问题
+    """
+    if not promotion_info or not isinstance(promotion_info, dict):
+        return promotion_info
+    
+    if 'yearly_stats' in promotion_info and isinstance(promotion_info['yearly_stats'], dict):
+        try:
+            # 按年份降序排序
+            sorted_stats = dict(sorted(promotion_info['yearly_stats'].items(), key=lambda x: x[0], reverse=True))
+            # 返回新的字典以避免修改原数据
+            new_info = promotion_info.copy()
+            new_info['yearly_stats'] = sorted_stats
+            return new_info
+        except Exception:
+            # 如果排序失败（例如键不是可比较的），返回原数据
+            return promotion_info
+            
+    return promotion_info
+
+
 def serialize_primary_school(school):
     """
     序列化小学数据为前端需要的格式
@@ -26,6 +49,9 @@ def serialize_primary_school(school):
             for grade in ['primary_1', 'primary_2', 'primary_3', 'primary_4', 'primary_5', 'primary_6']
             if isinstance(school.total_classes_info.get(grade), (int, float))
         )
+    
+    # 处理 promotion_info 排序
+    promotion_info = sort_yearly_stats(school.promotion_info)
     
     return {
         "id": school.id,
@@ -73,7 +99,7 @@ def serialize_primary_school(school):
         # 插班信息
         "transferInfo": school.transfer_info if school.transfer_info else {},
         # 升学信息
-        "promotionInfo": school.promotion_info if school.promotion_info else {},
+        "promotionInfo": promotion_info if promotion_info else {},
         # Band1比例
         "band1Rate": float(school.band1_rate) if school.band1_rate is not None else (
             school.promotion_info.get('band1_rate') if school.promotion_info and isinstance(school.promotion_info, dict) else None
@@ -162,7 +188,8 @@ def serialize_primary_school_optimized(school):
     """
     # 预先获取 JSON 字段,避免多次访问
     total_classes_info = school.total_classes_info or {}
-    promotion_info = school.promotion_info or {}
+    # 排序 yearly_stats
+    promotion_info = sort_yearly_stats(school.promotion_info or {})
     
     # 快速计算总班数(避免方法调用)
     total_classes = 0
