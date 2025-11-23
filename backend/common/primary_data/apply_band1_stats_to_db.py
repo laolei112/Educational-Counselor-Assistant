@@ -163,20 +163,24 @@ def apply_stats_to_database(stats_file):
         try:
             # 在数据库中查找学校（支持繁简转换）
             db_school = match_school_in_db(primary_school, district)
-            latest_year = max(school_stat['yearly_stats'].keys())
+            
+            # 安全获取最新年份
+            yearly_keys = school_stat.get('yearly_stats', {}).keys()
+            if yearly_keys:
+                latest_year = max(yearly_keys)
+            else:
+                # 如果没有年份数据，默认使用当前年份
+                latest_year = '2025'
+                
             if db_school:
-                # 确定最新年份
-                available_years = sorted([y for y in school_stat.get('yearly_stats', {}).keys() if y.isdigit()], reverse=True)
-                latest_year = available_years[0] if available_years else None
+                # 确定最新年份 - 这一步已经在上面做了，这里只是为了兼容后续逻辑变量名
+                # available_years 逻辑可以简化，因为我们已经有了 latest_year
                 
                 # 获取该年份的 band1_rate，如果没有则使用总体 rate
-                if available_years:
+                if yearly_keys:
                     latest_band1_rate = school_stat['yearly_stats'][latest_year].get('rate', 0)
                 else:
                     latest_band1_rate = school_stat.get('band1_rate', 0)
-                    # 如果没有年份数据，尝试推断一个年份（例如当前年份或根据数据源）
-                    if not latest_year:
-                        latest_year = '2025'
 
                 # 显式排序
                 raw_stats = school_stat.get('yearly_stats', {})
