@@ -42,15 +42,23 @@ def serialize_primary_school(school):
     序列化小学数据为前端需要的格式
     优化: 减少方法调用,直接访问属性
     """
-    # 优化: 直接从 total_classes_info 获取总班数,避免额外的 get_total_classes() 调用
+    # 优化: 直接从 total_classes_info 获取总班数,优先使用 current_year_total_classes
     total_classes = 0
     if school.total_classes_info and isinstance(school.total_classes_info, dict):
-        # 计算所有年级的班级总数
-        total_classes = sum(
-            school.total_classes_info.get(grade, 0) 
-            for grade in ['primary_1', 'primary_2', 'primary_3', 'primary_4', 'primary_5', 'primary_6']
-            if isinstance(school.total_classes_info.get(grade), (int, float))
-        )
+        # 尝试从 current_year_total_classes 获取
+        if 'current_year_total_classes' in school.total_classes_info:
+            try:
+                total_classes = int(school.total_classes_info['current_year_total_classes'])
+            except (ValueError, TypeError):
+                pass
+        
+        # 如果没有获取到（为0），则回退到计算所有年级的班级总数
+        if total_classes == 0:
+            total_classes = sum(
+                school.total_classes_info.get(grade, 0) 
+                for grade in ['primary_1', 'primary_2', 'primary_3', 'primary_4', 'primary_5', 'primary_6']
+                if isinstance(school.total_classes_info.get(grade), (int, float))
+            )
     
     # 处理 promotion_info 排序
     promotion_info = sort_yearly_stats(school.promotion_info)
@@ -184,10 +192,19 @@ def serialize_primary_school_optimized(school):
     # 快速计算总班数(避免方法调用)
     total_classes = 0
     if isinstance(total_classes_info, dict):
-        for grade in ('primary_1', 'primary_2', 'primary_3', 'primary_4', 'primary_5', 'primary_6'):
-            val = total_classes_info.get(grade, 0)
-            if isinstance(val, (int, float)):
-                total_classes += val
+        # 优先使用 current_year_total_classes
+        if 'current_year_total_classes' in total_classes_info:
+            try:
+                total_classes = int(total_classes_info['current_year_total_classes'])
+            except (ValueError, TypeError):
+                pass
+        
+        # 如果没有获取到（为0），则回退到计算所有年级的班级总数
+        if total_classes == 0:
+            for grade in ('primary_1', 'primary_2', 'primary_3', 'primary_4', 'primary_5', 'primary_6'):
+                val = total_classes_info.get(grade, 0)
+                if isinstance(val, (int, float)):
+                    total_classes += val
     
     # 获取 band1_rate (优先使用生成列)
     band1_rate = None
