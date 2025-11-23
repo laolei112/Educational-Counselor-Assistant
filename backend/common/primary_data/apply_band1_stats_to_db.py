@@ -165,18 +165,19 @@ def apply_stats_to_database(stats_file):
             db_school = match_school_in_db(primary_school, district)
             latest_year = max(school_stat['yearly_stats'].keys())
             if db_school:
-                latest_band1_rate = school_stat['yearly_stats'].get('2025', {}).get('rate', 0)
-                if not latest_band1_rate:
-                    latest_band1_rate = school_stat['yearly_stats'].get('2024', {}).get('rate', 0)
-                    if not latest_band1_rate:
-                        latest_band1_rate = school_stat['yearly_stats'].get('2023', {}).get('rate', 0)
-                        if not latest_band1_rate:
-                            latest_band1_rate = school_stat['yearly_stats'].get('2022', {}).get('rate', 0)
-                            if not latest_band1_rate:
-                                latest_band1_rate = school_stat['yearly_stats'].get('2021', {}).get('rate', 0)
-                                if not latest_band1_rate:
-                                    latest_band1_rate = school_stat['band1_rate']
-                                    print(f"❌ 错误: {primary_school:35s} - 没有找到最新年份的数据")
+                # 确定最新年份
+                available_years = sorted([y for y in school_stat.get('yearly_stats', {}).keys() if y.isdigit()], reverse=True)
+                latest_year = available_years[0] if available_years else None
+                
+                # 获取该年份的 band1_rate，如果没有则使用总体 rate
+                if available_years:
+                    latest_band1_rate = school_stat['yearly_stats'][latest_year].get('rate', 0)
+                else:
+                    latest_band1_rate = school_stat.get('band1_rate', 0)
+                    # 如果没有年份数据，尝试推断一个年份（例如当前年份或根据数据源）
+                    if not latest_year:
+                        latest_year = '2025'
+
                 # 显式排序
                 raw_stats = school_stat.get('yearly_stats', {})
                 # 确保按年份字符串降序排序
@@ -188,12 +189,16 @@ def apply_stats_to_database(stats_file):
                     'latest_year': latest_year,
                     'band1_rate': latest_band1_rate,
                     'total_graduates': school_stat['total_students'],
+                    'school_total_from_excel': school_stat.get('school_total_from_excel'),  # 新增：Excel读取的总人数
                     'band1_graduates': school_stat['band1_students'],
                     'band_distribution': school_stat['band_distribution'],
                     'top_secondary_schools': [
                         {'school': k, 'count': v} 
                         for k, v in list(school_stat['secondary_schools'].items())
                     ],
+                    # 为了兼容前端 promotionSummary，添加 schools 字段
+                    # 这样即使没有年份数据，前端也能显示总体升学中学列表
+                    'schools': school_stat['secondary_schools'],
                     'yearly_stats': sorted_stats,
                     # 注意：yearly_stats下的schools格式为 {学校名: {'count': 人数, 'band': banding}}
                     # 旧格式 {学校名: 人数} 已废弃，但代码会兼容处理
