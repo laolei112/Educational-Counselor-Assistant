@@ -37,6 +37,30 @@ def sort_yearly_stats(promotion_info):
     return promotion_info
 
 
+def get_band1_rate(school):
+    """
+    获取学校的 Band 1 比例
+    如果 promotion_info 中的 band1_rate_null 为 True，返回 None
+    否则优先使用 school.band1_rate，如果为 None 则从 promotion_info 中获取
+    """
+    # 检查 promotion_info 中的 band1_rate_null 标志
+    if school.promotion_info and isinstance(school.promotion_info, dict):
+        if school.promotion_info.get('band1_rate_null') is True:
+            return None
+    
+    # 优先使用 school.band1_rate
+    if school.band1_rate is not None:
+        return float(school.band1_rate)
+    
+    # 如果 school.band1_rate 为 None，尝试从 promotion_info 中获取
+    if school.promotion_info and isinstance(school.promotion_info, dict):
+        band1_rate = school.promotion_info.get('band1_rate')
+        if band1_rate is not None:
+            return float(band1_rate)
+    
+    return None
+
+
 def serialize_primary_school(school):
     """
     序列化小学数据为前端需要的格式
@@ -111,9 +135,7 @@ def serialize_primary_school(school):
         # 升学信息
         "promotionInfo": promotion_info if promotion_info else {},
         # Band1比例
-        "band1Rate": float(school.band1_rate) if school.band1_rate is not None else (
-            school.promotion_info.get('band1_rate') if school.promotion_info and isinstance(school.promotion_info, dict) else None
-        ),
+        "band1Rate": get_band1_rate(school),
         # 其他
         "isFullDay": school.is_full_day(),
         "isCoed": school.is_coed(),
@@ -151,8 +173,8 @@ def serialize_primary_school_for_list(school):
     - assessmentInfo (评估政策)
     - promotionInfo (升学详情JSON，band1_rate已提取为生成列)
     """
-    # 直接使用 band1_rate 生成列（不需要从 promotion_info 中获取）
-    band1_rate = float(school.band1_rate) if school.band1_rate is not None else None
+    # 使用统一的函数获取 band1_rate（会检查 band1_rate_null 标志）
+    band1_rate = get_band1_rate(school)
     
     return {
         # 基本信息
@@ -206,12 +228,8 @@ def serialize_primary_school_optimized(school):
                 if isinstance(val, (int, float)):
                     total_classes += val
     
-    # 获取 band1_rate (优先使用生成列)
-    band1_rate = None
-    if school.band1_rate is not None:
-        band1_rate = float(school.band1_rate)
-    elif isinstance(promotion_info, dict):
-        band1_rate = promotion_info.get('band1_rate')
+    # 使用统一的函数获取 band1_rate（会检查 band1_rate_null 标志）
+    band1_rate = get_band1_rate(school)
     
     return {
         "id": school.id,
@@ -594,7 +612,7 @@ def primary_school_recommendations(request, school_id):
                 "district": school.district,
                 "category": school.school_category,
                 "tuition": school.tuition or "-",
-                "band1Rate": float(school.band1_rate) if school.band1_rate is not None else None
+                "band1Rate": get_band1_rate(school)
             }
             
         data = {
