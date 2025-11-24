@@ -1,4 +1,5 @@
 import json
+import re
 import time
 import hashlib
 from django.http import JsonResponse
@@ -12,9 +13,47 @@ from backend.utils.cache import CacheManager
 from common.logger import loginfo
 
 
+def get_band_sort_key(band_str):
+    """
+    获取 Band 的排序键，用于排序
+    返回 (band_number, sub_level)
+    - band_number: 1, 2, 3, 999 (数字越小优先级越高，999表示未知)
+    - sub_level: 1(A), 2(B), 3(C), 4(无子级别), 999 (子级别越小优先级越高)
+    
+    排序优先级：Band 1A > Band 1B > Band 1C > Band 1 > Band 2A > ... > 未知
+    """
+    if not band_str or band_str == '未知':
+        return (999, 999)
+    
+    band_str = str(band_str).strip()
+    
+    # 提取 Band 数字（更精确的匹配）
+    band_number = 999
+    # 匹配 "Band 1", "Band 2", "Band 3" 或 "1", "2", "3" 开头
+    match = re.search(r'Band\s*(\d)|^(\d)', band_str, re.IGNORECASE)
+    if match:
+        band_number = int(match.group(1) or match.group(2))
+    
+    # 提取子级别 (A, B, C) - 更精确的匹配，避免误匹配
+    sub_level = 4  # 默认无子级别
+    # 匹配 "Band 1A", "Band 1B", "Band 1C" 等格式
+    sub_match = re.search(r'Band\s*\d+([ABC])', band_str, re.IGNORECASE)
+    if sub_match:
+        sub_char = sub_match.group(1).upper()
+        if sub_char == 'A':
+            sub_level = 1
+        elif sub_char == 'B':
+            sub_level = 2
+        elif sub_char == 'C':
+            sub_level = 3
+    
+    return (band_number, sub_level)
+
+
 def sort_yearly_stats(promotion_info):
     """
     辅助函数：对 promotion_info 中的 yearly_stats 按年份降序排序
+    并对每个年份的 schools 按照 Band 进行排序
     解决 MySQL JSON 字段存储不保证顺序的问题
     """
     if not promotion_info or not isinstance(promotion_info, dict):
@@ -24,6 +63,21 @@ def sort_yearly_stats(promotion_info):
         try:
             # 按年份降序排序
             sorted_stats = dict(sorted(promotion_info['yearly_stats'].items(), key=lambda x: x[0], reverse=True))
+            
+            # 对每个年份的 schools 按照 Band 进行排序
+            for year, year_data in sorted_stats.items():
+                if isinstance(year_data, dict) and 'schools' in year_data and isinstance(year_data['schools'], dict):
+                    schools_dict = year_data['schools']
+                    # 转换为列表，按照 Band 排序
+                    schools_sorted = sorted(
+                        schools_dict.items(),
+                        key=lambda x: get_band_sort_key(
+                            x[1].get('band', '未知') if isinstance(x[1], dict) else '未知'
+                        )
+                    )
+                    # 转换回字典（Python 3.7+ 字典保持插入顺序）
+                    sorted_stats[year]['schools'] = dict(schools_sorted)
+            
             # 返回新的字典以避免修改原数据
             new_info = promotion_info.copy()
             new_info['yearly_stats'] = sorted_stats
