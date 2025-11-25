@@ -16,10 +16,11 @@ from backend.models.tb_secondary_schools import TbSecondarySchools
 from backend.api.schools.primary_views import (
     serialize_primary_school, 
     get_cache_key_for_query,
-    get_primary_filters
+    # get_primary_filters
 )
 from backend.api.schools.secondary_views import (
     serialize_secondary_school_for_list,
+    serialize_secondary_school,
     get_cache_key_for_secondary_query
 )
 from backend.utils.cache import CacheManager
@@ -48,6 +49,11 @@ class Command(BaseCommand):
             help='只预热统计信息',
         )
         parser.add_argument(
+            '--details',
+            action='store_true',
+            help='预热所有学校详情',
+        )
+        parser.add_argument(
             '--verbose',
             action='store_true',
             help='显示详细信息',
@@ -65,7 +71,8 @@ class Command(BaseCommand):
         warmup_all = not any([
             options['primary'], 
             options['secondary'], 
-            options['stats']
+            options['stats'],
+            options['details']
         ])
         
         stats = {
@@ -73,6 +80,7 @@ class Command(BaseCommand):
             'secondary': 0,
             'filters': 0,
             'stats': 0,
+            'details': 0,
             'errors': 0
         }
         
@@ -91,12 +99,12 @@ class Command(BaseCommand):
                 stats['secondary'] = secondary_count
                 self.stdout.write(self.style.SUCCESS(f'  ✓ 中学缓存预热完成：{secondary_count} 条'))
             
-            # 预热筛选选项
-            if warmup_all:
-                self.stdout.write('\n🔍 预热筛选选项...')
-                filter_count = self._warmup_filters()
-                stats['filters'] = filter_count
-                self.stdout.write(self.style.SUCCESS(f'  ✓ 筛选选项预热完成：{filter_count} 条'))
+            # # 预热筛选选项
+            # if warmup_all:
+            #     self.stdout.write('\n🔍 预热筛选选项...')
+            #     filter_count = self._warmup_filters()
+            #     stats['filters'] = filter_count
+            #     self.stdout.write(self.style.SUCCESS(f'  ✓ 筛选选项预热完成：{filter_count} 条'))
             
             # 预热统计信息
             if warmup_all or options['stats']:
@@ -104,6 +112,13 @@ class Command(BaseCommand):
                 stats_count = self._warmup_stats()
                 stats['stats'] = stats_count
                 self.stdout.write(self.style.SUCCESS(f'  ✓ 统计信息预热完成：{stats_count} 条'))
+            
+            # 预热所有学校详情
+            if warmup_all or options['details']:
+                self.stdout.write('\n📝 预热所有学校详情...')
+                details_count = self._warmup_all_details()
+                stats['details'] = details_count
+                self.stdout.write(self.style.SUCCESS(f'  ✓ 学校详情预热完成：{details_count} 条'))
             
             elapsed_time = time.time() - start_time
             
@@ -115,6 +130,7 @@ class Command(BaseCommand):
             self.stdout.write(f'  中学缓存：{stats["secondary"]} 条')
             self.stdout.write(f'  筛选选项：{stats["filters"]} 条')
             self.stdout.write(f'  统计信息：{stats["stats"]} 条')
+            self.stdout.write(f'  学校详情：{stats["details"]} 条')
             self.stdout.write(f'  失败数量：{stats["errors"]} 条')
             self.stdout.write(f'  总耗时：{elapsed_time:.2f} 秒')
             self.stdout.write('='*60)
@@ -270,51 +286,51 @@ class Command(BaseCommand):
         
         return count
 
-    def _warmup_filters(self):
-        """预热筛选选项"""
-        count = 0
+    # def _warmup_filters(self):
+    #     """预热筛选选项"""
+    #     count = 0
         
-        try:
-            # 预热小学筛选选项
-            primary_filters = get_primary_filters()
-            cache_key = 'primary_filters'
-            cache.set(cache_key, primary_filters, timeout=3600)  # 1小时
-            count += 1
+    #     try:
+    #         # 预热小学筛选选项
+    #         primary_filters = get_primary_filters()
+    #         cache_key = 'primary_filters'
+    #         cache.set(cache_key, primary_filters, timeout=3600)  # 1小时
+    #         count += 1
             
-            if self.verbose:
-                self.stdout.write(f'  ✓ 小学筛选选项已缓存')
+    #         if self.verbose:
+    #             self.stdout.write(f'  ✓ 小学筛选选项已缓存')
             
-            # 预热中学筛选选项
-            secondary_districts = list(
-                TbSecondarySchools.objects
-                .values_list('district', flat=True)
-                .distinct()
-                .order_by('district')
-            )
-            secondary_groups = list(
-                TbSecondarySchools.objects
-                .exclude(Q(school_group__isnull=True) | Q(school_group=''))
-                .values_list('school_group', flat=True)
-                .distinct()
-                .order_by('school_group')
-            )
+    #         # 预热中学筛选选项
+    #         secondary_districts = list(
+    #             TbSecondarySchools.objects
+    #             .values_list('district', flat=True)
+    #             .distinct()
+    #             .order_by('district')
+    #         )
+    #         secondary_groups = list(
+    #             TbSecondarySchools.objects
+    #             .exclude(Q(school_group__isnull=True) | Q(school_group=''))
+    #             .values_list('school_group', flat=True)
+    #             .distinct()
+    #             .order_by('school_group')
+    #         )
             
-            secondary_filters = {
-                'districts': secondary_districts,
-                'schoolGroups': secondary_groups
-            }
+    #         secondary_filters = {
+    #             'districts': secondary_districts,
+    #             'schoolGroups': secondary_groups
+    #         }
             
-            cache_key = 'secondary_filters'
-            cache.set(cache_key, secondary_filters, timeout=3600)  # 1小时
-            count += 1
+    #         cache_key = 'secondary_filters'
+    #         cache.set(cache_key, secondary_filters, timeout=3600)  # 1小时
+    #         count += 1
             
-            if self.verbose:
-                self.stdout.write(f'  ✓ 中学筛选选项已缓存')
+    #         if self.verbose:
+    #             self.stdout.write(f'  ✓ 中学筛选选项已缓存')
                 
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f'  ✗ 筛选选项缓存失败: {str(e)}'))
+    #     except Exception as e:
+    #         self.stdout.write(self.style.ERROR(f'  ✗ 筛选选项缓存失败: {str(e)}'))
         
-        return count
+    #     return count
 
     def _warmup_stats(self):
         """预热统计信息"""
@@ -356,5 +372,53 @@ class Command(BaseCommand):
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'  ✗ 统计信息缓存失败: {str(e)}'))
         
+        return count
+
+    def _warmup_all_details(self):
+        """预热所有学校详情数据"""
+        count = 0
+        
+        # 1. 小学详情
+        try:
+            primary_schools = TbPrimarySchools.objects.all()
+            total_primary = primary_schools.count()
+            if self.verbose:
+                self.stdout.write(f'  正在预热 {total_primary} 所小学的详情...')
+                
+            for school in primary_schools:
+                try:
+                    cache_key = f"primary_school_detail:{school.id}"
+                    data = serialize_primary_school(school)
+                    cache.set(cache_key, data, timeout=86400) # 24小时
+                    count += 1
+                except Exception as e:
+                    if self.verbose:
+                        self.stdout.write(self.style.ERROR(f'    小学ID {school.id} 预热失败: {str(e)}'))
+                    continue
+                    
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f'  ✗ 小学详情预热失败: {str(e)}'))
+
+        # 2. 中学详情
+        try:
+            secondary_schools = TbSecondarySchools.objects.all()
+            total_secondary = secondary_schools.count()
+            if self.verbose:
+                self.stdout.write(f'  正在预热 {total_secondary} 所中学的详情...')
+                
+            for school in secondary_schools:
+                try:
+                    cache_key = f"secondary_school_detail:{school.id}"
+                    data = serialize_secondary_school(school)
+                    cache.set(cache_key, data, timeout=86400) # 24小时
+                    count += 1
+                except Exception as e:
+                    if self.verbose:
+                        self.stdout.write(self.style.ERROR(f'    中学ID {school.id} 预热失败: {str(e)}'))
+                    continue
+                    
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f'  ✗ 中学详情预热失败: {str(e)}'))
+            
         return count
 
