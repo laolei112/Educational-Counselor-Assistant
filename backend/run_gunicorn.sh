@@ -60,6 +60,13 @@ run_gunicorn()
     $PYTHONPATH --version
     $PYTHONPATH manage.py migrate
     $PYTHONPATH manage.py collectstatic
+    
+    # 启动时立即后台执行一次缓存预热
+    nohup $PYTHONPATH manage.py warmup_cache > /dev/null 2>&1 &
+    
+    # 设置 RUN_MAIN 环境变量，确保 scheduler 在 apps.py 中能正确启动
+    export RUN_MAIN=true
+    
     $GUNICORNPATH backend.wsgi:application -t 900 -c config/gunicorn/backend.py --capture-output --access-logfile log/backend_access.log
     echo $?
 }
