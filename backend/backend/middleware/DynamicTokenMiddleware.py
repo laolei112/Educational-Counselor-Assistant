@@ -51,7 +51,9 @@ class DynamicTokenMiddleware:
     TOKEN_EXPIRE_TIME = 60
     MAX_TOKENS_PER_CLIENT = 10
     
-    ENABLE_DYNAMIC_TOKEN = True
+    ENABLE_DYNAMIC_TOKEN = False
+    # 暂时关闭Token鉴权，但保留SEO识别逻辑
+    SKIP_TOKEN_VERIFICATION = True
     
     def __init__(self, get_response):
         self.get_response = get_response
@@ -83,6 +85,10 @@ class DynamicTokenMiddleware:
         if self._needs_token_verification(path):
             if path == '/api/auth/request-token':
                 return self._handle_token_request(request)
+            
+            # 如果配置了跳过验证，直接放行
+            if self.SKIP_TOKEN_VERIFICATION:
+                return self.get_response(request)
                 
             is_valid, error_msg = self._verify_token(request)
             if not is_valid:
