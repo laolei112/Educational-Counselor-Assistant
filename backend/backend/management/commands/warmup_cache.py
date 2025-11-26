@@ -10,6 +10,7 @@
 """
 from django.core.management.base import BaseCommand
 from django.core.cache import cache
+from django.db import close_old_connections
 from django.db.models import Q
 from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.models.tb_secondary_schools import TbSecondarySchools
@@ -60,6 +61,9 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        # 确保在执行命令前关闭失效的数据库连接
+        close_old_connections()
+        
         start_time = time.time()
         self.verbose = options.get('verbose', False)
         

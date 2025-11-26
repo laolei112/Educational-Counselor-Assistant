@@ -72,6 +72,18 @@ class CacheScheduler:
             misfire_grace_time=300
         )
         loginfo("已添加定时任务: 每天中午12:00预热学校列表")
+        
+        # 任务5: 每天凌晨 5:00 全量预热（包括所有学校详情）
+        self.scheduler.add_job(
+            func=self._warmup_with_details,
+            trigger=CronTrigger(hour=5, minute=0),
+            id='warmup_details_daily_5am',
+            name='全量学校详情预热(凌晨5点)',
+            replace_existing=True,
+            max_instances=1,
+            misfire_grace_time=600
+        )
+        loginfo("已添加定时任务: 每天凌晨5:00全量预热(含详情)")
     
     def _warmup_all_cache(self):
         """完整预热所有缓存"""
@@ -115,6 +127,21 @@ class CacheScheduler:
             
         except Exception as e:
             logerror(f"学校列表预热失败: {str(e)}")
+
+    def _warmup_with_details(self):
+        """全量预热(包含详情)"""
+        try:
+            start_time = time.time()
+            loginfo("开始全量预热(含学校详情)...")
+            
+            # 不带参数即为预热所有内容(根据warmup_cache.py的逻辑)
+            call_command('warmup_cache')
+            
+            elapsed = time.time() - start_time
+            loginfo(f"全量预热完成，耗时: {elapsed:.2f}秒")
+            
+        except Exception as e:
+            logerror(f"全量预热失败: {str(e)}")
     
     def start(self):
         """启动调度器"""
