@@ -2,6 +2,7 @@ import json
 import re
 import time
 import hashlib
+import traceback
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -534,7 +535,7 @@ def primary_schools_list(request):
         
     except ValueError as e:
         total_time = (time.time() - start_time) * 1000
-        loginfo(f"[PERF] GET /api/schools/primary/ (query-optimized) - ERROR (ValueError) | Total: {total_time:.2f}ms | Error: {str(e)}")
+        loginfo(f"[PERF] GET /api/schools/primary/ (query-optimized) - ERROR (ValueError) | Total: {total_time:.2f}ms | Error: {traceback.format_exc()}")
         return JsonResponse({
             "code": 400,
             "message": f"参数错误: {str(e)}",
@@ -543,7 +544,7 @@ def primary_schools_list(request):
         })
     except Exception as e:
         total_time = (time.time() - start_time) * 1000
-        loginfo(f"[PERF] GET /api/schools/primary/ (query-optimized) - ERROR | Total: {total_time:.2f}ms | Error: {str(e)}")
+        loginfo(f"[PERF] GET /api/schools/primary/ (query-optimized) - ERROR | Total: {total_time:.2f}ms | Error: {traceback.format_exc()}")
         return JsonResponse({
             "code": 500,
             "message": f"服务器错误: {str(e)}",
