@@ -369,6 +369,40 @@ export const useLanguageStore = defineStore('language', () => {
       'footer.meta.updated': {
         'zh-CN': '更新日期',
         'zh-TW': '更新日期'
+      },
+      
+      // 联系我们相关
+      'contact.button.title': {
+        'zh-CN': '联系我们',
+        'zh-TW': '聯絡我們'
+      },
+      'contact.button.text': {
+        'zh-CN': '联系我们',
+        'zh-TW': '聯絡我們'
+      },
+      'contact.modal.title': {
+        'zh-CN': '联系我们',
+        'zh-TW': '聯絡我們'
+      },
+      'contact.modal.subtitle': {
+        'zh-CN': '扫描下方二维码，通过微信或WhatsApp与我们联系',
+        'zh-TW': '掃描下方二維碼，通過微信或WhatsApp與我們聯繫'
+      },
+      'contact.wechat.label': {
+        'zh-CN': '微信',
+        'zh-TW': '微信'
+      },
+      'contact.wechat.hint': {
+        'zh-CN': '扫描二维码添加微信',
+        'zh-TW': '掃描二維碼添加微信'
+      },
+      'contact.whatsapp.label': {
+        'zh-CN': 'WhatsApp',
+        'zh-TW': 'WhatsApp'
+      },
+      'contact.whatsapp.hint': {
+        'zh-CN': '扫描二维码添加WhatsApp',
+        'zh-TW': '掃描二維碼添加WhatsApp'
       }
     }
     

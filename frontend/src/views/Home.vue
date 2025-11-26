@@ -433,6 +433,9 @@
       :visible="showDetailModal" 
       @close="handleCloseModal" 
     />
+    
+    <!-- 联系我们按钮 -->
+    <ContactButton />
   </div>
 </template>
 
@@ -445,6 +448,7 @@ import { useLanguageStore } from '@/stores/language'
 import SchoolCard from '@/components/SchoolCard.vue'
 import SchoolDetailModal from '@/components/SchoolDetailModal.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
+import ContactButton from '@/components/ContactButton.vue'
 import type { School } from '@/types/school'
 import { rafThrottle } from '@/utils/throttle'
 

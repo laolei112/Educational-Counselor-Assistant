@@ -226,5 +226,25 @@ export default {
       version: '版本',
       updated: '更新日期'
     }
+  },
+
+  // 聯絡我們相關
+  contact: {
+    button: {
+      title: '聯絡我們',
+      text: '聯絡我們'
+    },
+    modal: {
+      title: '聯絡我們',
+      subtitle: '掃描下方二維碼，通過微信或WhatsApp與我們聯繫'
+    },
+    wechat: {
+      label: '微信',
+      hint: '掃描二維碼添加微信'
+    },
+    whatsapp: {
+      label: 'WhatsApp',
+      hint: '掃描二維碼添加WhatsApp'
+    }
   }
 }

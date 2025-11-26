@@ -226,5 +226,25 @@ export default {
       version: '版本',
       updated: '更新日期'
     }
+  },
+
+  // 联系我们相关
+  contact: {
+    button: {
+      title: '联系我们',
+      text: '联系我们'
+    },
+    modal: {
+      title: '联系我们',
+      subtitle: '扫描下方二维码，通过微信或WhatsApp与我们联系'
+    },
+    wechat: {
+      label: '微信',
+      hint: '扫描二维码添加微信'
+    },
+    whatsapp: {
+      label: 'WhatsApp',
+      hint: '扫描二维码添加WhatsApp'
+    }
   }
 }
