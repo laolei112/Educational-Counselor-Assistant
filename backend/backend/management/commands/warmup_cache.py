@@ -300,13 +300,18 @@ class Command(BaseCommand):
                 # 序列化
                 schools_data = [serialize_primary_school(s) for s in schools]
                 
-                # 构建响应数据
+                # 构建响应数据 - 与 API 返回格式完全一致
                 result = {
-                    'list': schools_data,
-                    'page': page,
-                    'pageSize': page_size,
-                    'total': total,
-                    'totalPages': (total + page_size - 1) // page_size
+                    "code": 200,
+                    "message": "成功",
+                    "success": True,
+                    "data": {
+                        'list': schools_data,
+                        'page': page,
+                        'pageSize': page_size,
+                        'total': total,
+                        'totalPages': (total + page_size - 1) // page_size
+                    }
                 }
                 
                 # 生成缓存键 - 使用与 API 完全一致的参数格式
@@ -458,13 +463,18 @@ class Command(BaseCommand):
                 # 序列化（列表页使用精简版本）
                 schools_data = [serialize_secondary_school_for_list(s) for s in schools]
                 
-                # 构建响应数据
+                # 构建响应数据 - 与 API 返回格式完全一致
                 result = {
-                    'list': schools_data,
-                    'page': page,
-                    'pageSize': page_size,
-                    'total': total,
-                    'totalPages': (total + page_size - 1) // page_size
+                    "code": 200,
+                    "message": "成功",
+                    "success": True,
+                    "data": {
+                        'list': schools_data,
+                        'page': page,
+                        'pageSize': page_size,
+                        'total': total,
+                        'totalPages': (total + page_size - 1) // page_size
+                    }
                 }
                 
                 # 生成缓存键 - 使用与 API 完全一致的参数格式

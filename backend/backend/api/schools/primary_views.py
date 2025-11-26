@@ -383,12 +383,30 @@ def primary_schools_list(request):
         cached_data = cache.get(cache_key)
         if cached_data:
             total_time = (time.time() - start_time) * 1000
+            
+            # 兼容两种缓存格式：
+            # 1. warmup_cache 格式：直接是 data 部分 {'list': ..., 'total': ...}
+            # 2. API 格式：完整的响应格式 {'code': 200, 'data': {...}}
+            if 'data' in cached_data:
+                # API 格式，直接返回
+                result_data = cached_data
+                data_part = cached_data['data']
+            else:
+                # warmup_cache 格式，需要包装成完整响应格式
+                result_data = {
+                    "code": 200,
+                    "message": "成功",
+                    "success": True,
+                    "data": cached_data
+                }
+                data_part = cached_data
+            
             loginfo(
                 f"[PERF] GET /api/schools/primary/ (from-cache) | "
                 f"Total: {total_time:.2f}ms | "
-                f"Result: total={cached_data['data']['total']}, page={page}, pageSize={page_size}, items={len(cached_data['data']['list'])}"
+                f"Result: total={data_part.get('total', 0)}, page={data_part.get('page', page)}, pageSize={data_part.get('pageSize', page_size)}, items={len(data_part.get('list', []))}"
             )
-            return JsonResponse(cached_data)
+            return JsonResponse(result_data)
         
         step_times['cache_check'] = (time.time() - step_start) * 1000
         step_start = time.time()
