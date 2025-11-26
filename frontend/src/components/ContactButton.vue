@@ -6,8 +6,8 @@
       @click="showModal = true"
       :title="getText('contact.button.title')"
     >
-      <span class="contact-icon">💬</span>
-      <span class="contact-text">{{ getText('contact.button.text') }}</span>
+      <img src="/images/services.png" alt="客服" class="contact-icon-image" />
+      <span class="contact-text">{{ getText('contact.service.text') }}</span>
     </button>
 
     <!-- 联系模态框 -->
@@ -102,21 +102,26 @@ const handleImageError = (event: Event) => {
   position: relative;
 }
 
-/* 固定在右下角的按钮 */
+/* 固定在右侧中间的按钮 */
 .contact-button {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
   z-index: 999;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: linear-gradient(to right, #2563eb, #60a5fa);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  justify-content: center;
+  gap: 4px;
+  padding: 10px;
+  background: white;
+  color: #2563eb;
+  border: 2px solid #93c5fd;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -125,21 +130,30 @@ const handleImageError = (event: Event) => {
 }
 
 .contact-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
-  background: linear-gradient(to right, #1d4ed8, #3b82f6);
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+  background: #f0f7ff;
+  border-color: #60a5fa;
+  color: #1d4ed8;
 }
 
 .contact-button:active {
-  transform: translateY(0);
+  transform: translateY(-50%) scale(0.98);
+  background: #e0f0ff;
 }
 
-.contact-icon {
-  font-size: 18px;
+.contact-icon-image {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .contact-text {
+  font-size: 10px;
   white-space: nowrap;
+  line-height: 1.2;
+  font-weight: 600;
 }
 
 /* 模态框遮罩 */
@@ -317,14 +331,19 @@ const handleImageError = (event: Event) => {
 /* 响应式设计 */
 @media (max-width: 768px) {
   .contact-button {
-    bottom: 16px;
-    right: 16px;
-    padding: 10px 16px;
-    font-size: 13px;
+    right: 12px;
+    width: 60px;
+    height: 60px;
+    padding: 8px;
+  }
+
+  .contact-icon-image {
+    width: 28px;
+    height: 28px;
   }
 
   .contact-text {
-    display: none;
+    font-size: 9px;
   }
 
   .contact-modal-container {
@@ -353,9 +372,20 @@ const handleImageError = (event: Event) => {
 
 @media (max-width: 480px) {
   .contact-button {
-    bottom: 12px;
-    right: 12px;
-    padding: 8px 12px;
+    right: 8px;
+    width: 55px;
+    height: 55px;
+    padding: 6px;
+    gap: 3px;
+  }
+
+  .contact-icon-image {
+    width: 24px;
+    height: 24px;
+  }
+
+  .contact-text {
+    font-size: 8px;
   }
 
   .qr-code-wrapper {

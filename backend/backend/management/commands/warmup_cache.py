@@ -149,42 +149,148 @@ class Command(BaseCommand):
         """预热小学列表数据"""
         count = 0
         
-        # 常用查询组合
+        # 常用查询组合 - 注意：参数格式必须与 API 视图中的 cache_params 完全一致
+        # API 中使用：category, district, school_net, gender, religion, teaching_language, keyword, page, page_size
         common_queries = [
-            # 1. 首页默认查询（第一页）
-            {'page': 1, 'pageSize': 20},
+            # 1. 首页默认查询（第一页）- 所有筛选参数为 None
+            {
+                'category': None,
+                'district': None,
+                'school_net': None,
+                'gender': None,
+                'religion': None,
+                'teaching_language': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
             # 2. 常见片区
-            {'page': 1, 'pageSize': 20, 'district': '港岛（中西区）'},
-            {'page': 1, 'pageSize': 20, 'district': '九龙（油尖旺区）'},
-            {'page': 1, 'pageSize': 20, 'district': '新界（沙田区）'},
+            {
+                'category': None,
+                'district': '港岛（中西区）',
+                'school_net': None,
+                'gender': None,
+                'religion': None,
+                'teaching_language': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
+            {
+                'category': None,
+                'district': '九龙（油尖旺区）',
+                'school_net': None,
+                'gender': None,
+                'religion': None,
+                'teaching_language': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
+            {
+                'category': None,
+                'district': '新界（沙田区）',
+                'school_net': None,
+                'gender': None,
+                'religion': None,
+                'teaching_language': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
             # 3. 常见校网
-            {'page': 1, 'pageSize': 20, 'schoolNet': '11'},
-            {'page': 1, 'pageSize': 20, 'schoolNet': '41'},
+            {
+                'category': None,
+                'district': None,
+                'school_net': '11',
+                'gender': None,
+                'religion': None,
+                'teaching_language': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
+            {
+                'category': None,
+                'district': None,
+                'school_net': '41',
+                'gender': None,
+                'religion': None,
+                'teaching_language': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
             # 4. 常见类别
-            {'page': 1, 'pageSize': 20, 'category': '官立'},
-            {'page': 1, 'pageSize': 20, 'category': '资助'},
-            {'page': 1, 'pageSize': 20, 'category': '私立'},
+            {
+                'category': '官立',
+                'district': None,
+                'school_net': None,
+                'gender': None,
+                'religion': None,
+                'teaching_language': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
+            {
+                'category': '资助',
+                'district': None,
+                'school_net': None,
+                'gender': None,
+                'religion': None,
+                'teaching_language': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
+            {
+                'category': '私立',
+                'district': None,
+                'school_net': None,
+                'gender': None,
+                'religion': None,
+                'teaching_language': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
         ]
         
-        for query_params in common_queries:
+        for cache_params in common_queries:
             try:
                 if self.verbose:
-                    self.stdout.write(f'  预热查询: {query_params}')
+                    self.stdout.write(f'  预热查询: {cache_params}')
                 
                 # 构建查询
                 queryset = TbPrimarySchools.objects.all()
                 
                 # 应用筛选条件
-                if 'district' in query_params:
-                    queryset = queryset.filter(district=query_params['district'])
-                if 'schoolNet' in query_params:
-                    queryset = queryset.filter(school_net=query_params['schoolNet'])
-                if 'category' in query_params:
-                    queryset = queryset.filter(school_category=query_params['category'])
+                if cache_params.get('district'):
+                    queryset = queryset.filter(district=cache_params['district'])
+                if cache_params.get('school_net'):
+                    queryset = queryset.filter(school_net=cache_params['school_net'])
+                if cache_params.get('category'):
+                    queryset = queryset.filter(school_category=cache_params['category'])
+                if cache_params.get('gender'):
+                    queryset = queryset.filter(student_gender=cache_params['gender'])
+                if cache_params.get('religion'):
+                    queryset = queryset.filter(religion=cache_params['religion'])
+                if cache_params.get('teaching_language'):
+                    queryset = queryset.filter(teaching_language__icontains=cache_params['teaching_language'])
+                if cache_params.get('keyword'):
+                    keyword = cache_params['keyword']
+                    queryset = queryset.filter(
+                        Q(school_name__icontains=keyword) |
+                        Q(school_name_traditional__icontains=keyword) |
+                        Q(school_name_english__icontains=keyword) |
+                        Q(district__icontains=keyword) |
+                        Q(school_net__icontains=keyword)
+                    )
                 
                 # 分页
-                page = query_params.get('page', 1)
-                page_size = query_params.get('pageSize', 20)
+                page = cache_params.get('page', 1)
+                page_size = cache_params.get('page_size', 20)
                 offset = (page - 1) * page_size
                 
                 # 获取数据
@@ -203,18 +309,18 @@ class Command(BaseCommand):
                     'totalPages': (total + page_size - 1) // page_size
                 }
                 
-                # 生成缓存键
-                cache_key = get_cache_key_for_query(query_params)
+                # 生成缓存键 - 使用与 API 完全一致的参数格式
+                cache_key = get_cache_key_for_query(cache_params)
                 
                 # 缓存数据（30分钟）
                 cache.set(cache_key, result, timeout=1800)
                 count += 1
                 
                 if self.verbose:
-                    self.stdout.write(f'    ✓ 已缓存 {len(schools_data)} 条记录')
+                    self.stdout.write(f'    ✓ 已缓存 {len(schools_data)} 条记录，缓存键: {cache_key}')
                     
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f'  ✗ 失败: {query_params} - {str(e)}'))
+                self.stdout.write(self.style.ERROR(f'  ✗ 失败: {cache_params} - {str(e)}'))
                 continue
         
         return count
@@ -223,39 +329,126 @@ class Command(BaseCommand):
         """预热中学列表数据"""
         count = 0
         
-        # 常用查询组合
+        # 常用查询组合 - 注意：参数格式必须与 API 视图中的 cache_params 完全一致
+        # API 中使用：category, district, school_group, gender, religion, keyword, page, page_size
         common_queries = [
-            # 1. 首页默认查询
-            {'page': 1, 'pageSize': 20},
+            # 1. 首页默认查询 - 所有筛选参数为 None
+            {
+                'category': None,
+                'district': None,
+                'school_group': None,
+                'gender': None,
+                'religion': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
             # 2. 常见片区
-            {'page': 1, 'pageSize': 20, 'district': '港岛区'},
-            {'page': 1, 'pageSize': 20, 'district': '九龙城'},
-            {'page': 1, 'pageSize': 20, 'district': '沙田'},
+            {
+                'category': None,
+                'district': '港岛区',
+                'school_group': None,
+                'gender': None,
+                'religion': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
+            {
+                'category': None,
+                'district': '九龙城',
+                'school_group': None,
+                'gender': None,
+                'religion': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
+            {
+                'category': None,
+                'district': '沙田',
+                'school_group': None,
+                'gender': None,
+                'religion': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
             # 3. 常见学校组别 (Banding)
-            {'page': 1, 'pageSize': 20, 'schoolGroup': '1A'},
-            {'page': 1, 'pageSize': 20, 'schoolGroup': '1B'},
-            {'page': 1, 'pageSize': 20, 'schoolGroup': '2A'},
+            {
+                'category': None,
+                'district': None,
+                'school_group': '1A',
+                'gender': None,
+                'religion': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
+            {
+                'category': None,
+                'district': None,
+                'school_group': '1B',
+                'gender': None,
+                'religion': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
+            {
+                'category': None,
+                'district': None,
+                'school_group': '2A',
+                'gender': None,
+                'religion': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
             # 4. 组合查询
-            {'page': 1, 'pageSize': 20, 'district': '九龙城', 'schoolGroup': '1A'},
+            {
+                'category': None,
+                'district': '九龙城',
+                'school_group': '1A',
+                'gender': None,
+                'religion': None,
+                'keyword': None,
+                'page': 1,
+                'page_size': 20
+            },
         ]
         
-        for query_params in common_queries:
+        for cache_params in common_queries:
             try:
                 if self.verbose:
-                    self.stdout.write(f'  预热查询: {query_params}')
+                    self.stdout.write(f'  预热查询: {cache_params}')
                 
                 # 构建查询
                 queryset = TbSecondarySchools.objects.all()
                 
                 # 应用筛选条件
-                if 'district' in query_params:
-                    queryset = queryset.filter(district=query_params['district'])
-                if 'schoolGroup' in query_params:
-                    queryset = queryset.filter(school_group=query_params['schoolGroup'])
+                if cache_params.get('district'):
+                    queryset = queryset.filter(district=cache_params['district'])
+                if cache_params.get('school_group'):
+                    queryset = queryset.filter(school_group=cache_params['school_group'])
+                if cache_params.get('category'):
+                    queryset = queryset.filter(school_category=cache_params['category'])
+                if cache_params.get('gender'):
+                    queryset = queryset.filter(student_gender=cache_params['gender'])
+                if cache_params.get('religion'):
+                    queryset = queryset.filter(religion=cache_params['religion'])
+                if cache_params.get('keyword'):
+                    keyword = cache_params['keyword']
+                    queryset = queryset.filter(
+                        Q(school_name__icontains=keyword) |
+                        Q(school_name_traditional__icontains=keyword) |
+                        Q(school_name_english__icontains=keyword) |
+                        Q(district__icontains=keyword)
+                    )
                 
                 # 分页
-                page = query_params.get('page', 1)
-                page_size = query_params.get('pageSize', 20)
+                page = cache_params.get('page', 1)
+                page_size = cache_params.get('page_size', 20)
                 offset = (page - 1) * page_size
                 
                 # 获取数据
@@ -274,18 +467,18 @@ class Command(BaseCommand):
                     'totalPages': (total + page_size - 1) // page_size
                 }
                 
-                # 生成缓存键
-                cache_key = get_cache_key_for_secondary_query(query_params)
+                # 生成缓存键 - 使用与 API 完全一致的参数格式
+                cache_key = get_cache_key_for_secondary_query(cache_params)
                 
                 # 缓存数据（30分钟）
                 cache.set(cache_key, result, timeout=1800)
                 count += 1
                 
                 if self.verbose:
-                    self.stdout.write(f'    ✓ 已缓存 {len(schools_data)} 条记录')
+                    self.stdout.write(f'    ✓ 已缓存 {len(schools_data)} 条记录，缓存键: {cache_key}')
                     
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f'  ✗ 失败: {query_params} - {str(e)}'))
+                self.stdout.write(self.style.ERROR(f'  ✗ 失败: {cache_params} - {str(e)}'))
                 continue
         
         return count
