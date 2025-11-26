@@ -11,7 +11,7 @@
 from django.core.management.base import BaseCommand
 from django.core.cache import cache
 from django.db import close_old_connections
-from django.db.models import Q
+from django.db.models import Q, F
 from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.models.tb_secondary_schools import TbSecondarySchools
 from backend.api.schools.primary_views import (
@@ -24,6 +24,7 @@ from backend.api.schools.secondary_views import (
     serialize_secondary_school,
     get_cache_key_for_secondary_query
 )
+from backend.utils.text_converter import normalize_keyword
 from backend.utils.cache import CacheManager
 from common.logger import loginfo
 import json
@@ -288,14 +289,20 @@ class Command(BaseCommand):
                         Q(school_net__icontains=keyword)
                     )
                 
+                # 应用排序逻辑 - 与 API 视图保持一致
+                # 按 band1_rate 降序，然后按 school_name 升序
+                queryset = queryset.order_by('-band1_rate', 'school_name')
+                
                 # 分页
                 page = cache_params.get('page', 1)
                 page_size = cache_params.get('page_size', 20)
                 offset = (page - 1) * page_size
                 
+                # 先获取总数（在排序后）
+                total = queryset.count()
+                
                 # 获取数据
                 schools = list(queryset[offset:offset + page_size])
-                total = queryset.count()
                 
                 # 序列化
                 schools_data = [serialize_primary_school(s) for s in schools]
@@ -444,21 +451,30 @@ class Command(BaseCommand):
                     queryset = queryset.filter(religion=cache_params['religion'])
                 if cache_params.get('keyword'):
                     keyword = cache_params['keyword']
+                    # 标准化关键词（与 API 视图保持一致）
+                    normalized_keyword = normalize_keyword(keyword)
                     queryset = queryset.filter(
+                        Q(school_name__icontains=normalized_keyword) | 
                         Q(school_name__icontains=keyword) |
+                        Q(school_name_traditional__icontains=normalized_keyword) |
                         Q(school_name_traditional__icontains=keyword) |
-                        Q(school_name_english__icontains=keyword) |
-                        Q(district__icontains=keyword)
+                        Q(school_name_english__icontains=keyword)
                     )
+                
+                # 应用排序逻辑 - 与 API 视图保持一致
+                # 按 school_group 升序（NULL 值排在最后），然后按 school_name 升序
+                queryset = queryset.order_by(F('school_group').asc(nulls_last=True), 'school_name')
                 
                 # 分页
                 page = cache_params.get('page', 1)
                 page_size = cache_params.get('page_size', 20)
                 offset = (page - 1) * page_size
                 
+                # 先获取总数（在排序后）
+                total = queryset.count()
+                
                 # 获取数据
                 schools = list(queryset[offset:offset + page_size])
-                total = queryset.count()
                 
                 # 序列化（列表页使用精简版本）
                 schools_data = [serialize_secondary_school_for_list(s) for s in schools]
