@@ -1225,7 +1225,7 @@ section h3 {
 
   .header-content {
     justify-content: flex-start;
-    padding: 0 16px;
+    padding: 0 16px 0 0;
   }
 
   .header-logo {
@@ -1233,10 +1233,10 @@ section h3 {
   }
 
   .header-icon {
-    width: 80px;
-    height: 80px;
-    margin-top: -20px;
-    margin-bottom: -20px;
+    width: 120px;
+    height: 120px;
+    margin-top: -40px;
+    margin-bottom: -40px;
   }
 
   .header-title {
