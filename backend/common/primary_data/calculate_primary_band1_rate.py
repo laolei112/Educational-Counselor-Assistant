@@ -7,6 +7,7 @@
 
 import pandas as pd
 import json
+import re
 from pathlib import Path
 from collections import defaultdict
 import ast
@@ -272,6 +273,43 @@ def is_band_1(band_str):
     return 'Band 1' in band_str or band_str.startswith('1')
 
 
+def get_band_sort_key(band_str):
+    """
+    获取 Band 的排序键，用于排序
+    返回 (band_number, sub_level)
+    - band_number: 1, 2, 3, 999 (数字越小优先级越高，999表示未知)
+    - sub_level: 1(A), 2(B), 3(C), 4(无子级别), 999 (子级别越小优先级越高)
+    
+    排序优先级：Band 1A > Band 1B > Band 1C > Band 1 > Band 2A > ... > 未知
+    """
+    if not band_str or band_str == '未知':
+        return (999, 999)
+    
+    band_str = str(band_str).strip()
+    
+    # 提取 Band 数字（更精确的匹配）
+    band_number = 999
+    # 匹配 "Band 1", "Band 2", "Band 3" 或 "1", "2", "3" 开头
+    match = re.search(r'Band\s*(\d)|^(\d)', band_str, re.IGNORECASE)
+    if match:
+        band_number = int(match.group(1) or match.group(2))
+    
+    # 提取子级别 (A, B, C) - 更精确的匹配，避免误匹配
+    sub_level = 4  # 默认无子级别
+    # 匹配 "Band 1A", "Band 1B", "Band 1C" 等格式
+    sub_match = re.search(r'Band\s*\d+([ABC])', band_str, re.IGNORECASE)
+    if sub_match:
+        sub_char = sub_match.group(1).upper()
+        if sub_char == 'A':
+            sub_level = 1
+        elif sub_char == 'B':
+            sub_level = 2
+        elif sub_char == 'C':
+            sub_level = 3
+    
+    return (band_number, sub_level)
+
+
 def match_school_name(target_name, band_map, band_map_simplified, alias_map=None, alias_map_simplified=None):
     """
     匹配学校名称，支持繁简转换、别名和模糊匹配
@@ -419,14 +457,19 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
         secondary_school = row.get('升入学校')
         count = row.get('人数')
         year = row.get('年份')
-        # 跳过空值
-        if pd.isna(secondary_school) or pd.isna(count):
+        
+        # 必须有学校名称，但人数可以缺失（记录为0）
+        if pd.isna(secondary_school):
             continue
         
+        # 处理人数：如果缺失或无效，默认为0，以便记录学校名称
         try:
-            count = int(count)
+            if pd.isna(count):
+                count = 0
+            else:
+                count = int(count)
         except (ValueError, TypeError):
-            continue
+            count = 0
         
         # 处理年份（合并单元格已前向填充）
         if pd.notna(year):
@@ -487,11 +530,22 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
     yearly_band1_rates = {}
     for year, stats in yearly_stats.items():
         rate = (stats['band1'] / stats['total'] * 100) if stats['total'] > 0 else 0
+        
+        # 对 schools 按照 Band 进行排序
+        schools_dict = stats['schools']
+        # 转换为列表，按照 Band 排序
+        schools_sorted = sorted(
+            schools_dict.items(),
+            key=lambda x: get_band_sort_key(x[1].get('band', '未知') if isinstance(x[1], dict) else '未知')
+        )
+        # 转换回字典（Python 3.7+ 字典保持插入顺序）
+        schools_ordered = dict(schools_sorted)
+        
         yearly_band1_rates[year] = {
             'total': stats['total'],
             'band1': stats['band1'],
             'rate': round(rate, 2),
-            'schools': stats['schools'],  # 保存升学中学信息（包含count和band）
+            'schools': schools_ordered,  # 保存升学中学信息（包含count和band，按Band排序）
             'band_dist': dict(stats['band_dist']),  # 保存Band分布
             'unmatched': list(stats['unmatched'])  # 保存未匹配学校
         }
@@ -505,6 +559,7 @@ def process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, 
         'band_distribution': dict(band_distribution),
         'secondary_schools': dict(sorted(school_stats.items(), key=lambda x: x[1], reverse=True)),
         'unmatched_schools': list(unmatched_schools),
+        'band1_rate_null': True if total_students == 0 else False,
         'yearly_stats': dict(yearly_band1_rates)  # 新增：按年份统计
     }
 
@@ -527,7 +582,8 @@ def process_excel_file(file_path, band_map, band_map_simplified, school_totals=N
                 df = pd.read_excel(file_path, sheet_name=sheet_name)
                 result = process_primary_school_sheet(sheet_name, df, band_map, band_map_simplified, school_totals, alias_map, alias_map_simplified)
                 
-                if result['total_students'] > 0:
+                # 只要有学生人数 > 0，或者有解析出的中学记录（即使人数为0），都保留
+                if result['total_students'] > 0 or result['secondary_schools']:
                     result['district'] = district
                     results.append(result)
                     # 显示总体和年度数据
@@ -539,11 +595,23 @@ def process_excel_file(file_path, band_map, band_map_simplified, school_totals=N
                             y_stat = result['yearly_stats'][y]
                             yearly_parts.append(f"{y}年:{y_stat['rate']:.1f}%")
                         yearly_info = " [" + ", ".join(yearly_parts) + "]"
+
+                        # 把total_students为0的学校的yearly_stats中的count设置为未知
+                        if result['total_students'] == 0:
+                            for y in years:
+                                y_stat = result['yearly_stats'][y]
+                                for sec_school, school_info in y_stat['schools'].items():
+                                    school_info['count'] = '未知'
                     
                     excel_total_info = ""
                     if result.get('school_total_from_excel'):
                         excel_total_info = f" [Excel总人数:{result['school_total_from_excel']}]"
-                    print(f"    ✅ {sheet_name:30s} - 总体:{result['band1_rate']:5.2f}% ({result['band1_students']}/{result['total_students']}){yearly_info}{excel_total_info}")
+                    
+                    # 提示信息根据是否有总人数区分
+                    if result['total_students'] > 0:
+                        print(f"    ✅ {sheet_name:30s} - 总体:{result['band1_rate']:5.2f}% ({result['band1_students']}/{result['total_students']}){yearly_info}{excel_total_info}")
+                    else:
+                        print(f"    ✅ {sheet_name:30s} - 仅记录学校列表 (无人数){yearly_info}{excel_total_info}")
                 else:
                     print(f"    ⚠️  {sheet_name:30s} - 无数据")
                     

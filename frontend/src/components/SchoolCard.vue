@@ -1,107 +1,97 @@
 <template>
-  <article class="school-card" @click="handleCardClick">
-    <!-- Header: 校名 + 标签 -->
-    <header class="card-header">
-      <h3 class="school-name">{{ getSchoolName() }}</h3>
-      <div class="header-tags">
-        <span 
-          v-if="school.type === 'secondary' && school.schoolGroup"
-          class="group-badge"
-        >
-          {{ school.schoolGroup }}
-        </span>
-        <span 
-          v-if="schoolTypeTag"
-          :class="['type-tag', getTypeTagClass(school.schoolType || school.category)]"
-        >
-          {{ schoolTypeTag }}
-        </span>
-        <span 
-          v-if="genderTag"
-          class="gender-tag"
-        >
-          {{ genderTag }}
-        </span>
-      </div>
-    </header>
+  <a :href="`/school/${school.type}/${school.id}`" class="school-card-link">
+    <article class="school-card">
+      <!-- Header: 校名 + 标签 -->
+      <header class="card-header">
+        <h3 class="school-name">{{ getSchoolName() }}</h3>
+        <div class="header-tags">
+          <span 
+            v-if="school.type === 'secondary' && school.schoolGroup"
+            class="group-badge"
+          >
+            {{ school.schoolGroup }}
+          </span>
+          <span 
+            v-if="schoolTypeTag"
+            :class="['type-tag', getTypeTagClass(school.schoolType || school.category)]"
+          >
+            {{ schoolTypeTag }}
+          </span>
+          <span 
+            v-if="genderTag"
+            class="gender-tag"
+          >
+            {{ genderTag }}
+          </span>
+        </div>
+      </header>
 
-    <!-- Meta行: 地区 | 对应校网 | 宗教 -->
-    <div class="meta-row">
-      <span class="meta-item">{{ convertIfNeeded('片区') }}：{{ convertIfNeeded(school.district) || '—' }}</span>
-      <span class="meta-divider">｜</span>
-      <span class="meta-item">{{ convertIfNeeded('对应校网') }}：{{ school.schoolNet || '—' }}</span>
-      <span class="meta-divider">｜</span>
-      <span class="meta-item">{{ convertIfNeeded('宗教') }}：{{ convertIfNeeded(school.religion) || '—' }}</span>
-    </div>
+      <!-- Meta行: 地区 | 对应校网 | 宗教 -->
+      <div class="meta-row">
+        <span class="meta-item">{{ convertIfNeeded('片区') }}：{{ convertIfNeeded(school.district) || '—' }}</span>
+        <span class="meta-divider">｜</span>
+        <span class="meta-item">{{ convertIfNeeded('对应校网') }}：{{ school.schoolNet || '—' }}</span>
+        <span class="meta-divider">｜</span>
+        <span class="meta-item">{{ convertIfNeeded('宗教') }}：{{ convertIfNeeded(school.religion) || '—' }}</span>
+      </div>
 
-    <!-- KV信息区: 使用CSS Grid，固定标签列 + 自适应值列 -->
-    <div class="kv-info-grid">
-      <!-- 办学性质 -->
-      <!-- <div class="kv-row">
-        <span class="kv-label">{{ getText('school.schoolType') }}</span>
-        <span class="kv-value">{{ getSchoolTypeLabel(school.schoolType || school.category) || '—' }}</span>
-      </div> -->
-      
-      <!-- 性别 -->
-      <!-- <div class="kv-row">
-        <span class="kv-label">{{ getText('school.gender') }}</span>
-        <span class="kv-value">{{ getGenderLabel(school.gender) || '—' }}</span>
-      </div> -->
-      
-      <!-- 学费 -->
-      <div class="kv-row">
-        <span class="kv-label">{{ getText('school.tuition') }}</span>
-        <span class="kv-value">{{ formatTuition(school.tuition) }}</span>
+      <!-- KV信息区: 使用CSS Grid，固定标签列 + 自适应值列 -->
+      <div class="kv-info-grid">
+        <!-- 学费 -->
+        <div class="kv-row">
+          <span class="kv-label">{{ getText('school.tuition') }}</span>
+          <span class="kv-value">{{ formatTuition(school.tuition) }}</span>
+        </div>
+        
+        <!-- 结龙学校 -->
+        <div v-if="school.secondaryInfo?.through_train" class="kv-row">
+          <span class="kv-label">{{ getText('school.throughTrain') }}</span>
+          <span class="kv-value truncate-text" :title="convertIfNeeded(school.secondaryInfo.through_train)">
+            {{ convertIfNeeded(school.secondaryInfo.through_train) }}
+          </span>
+        </div>
+        
+        <!-- 直属中学 -->
+        <div v-if="school.secondaryInfo?.direct" class="kv-row">
+          <span class="kv-label">{{ getText('school.direct') }}</span>
+          <span class="kv-value truncate-text" :title="convertIfNeeded(school.secondaryInfo.direct)">
+            {{ convertIfNeeded(school.secondaryInfo.direct) }}
+          </span>
+        </div>
+        
+        <!-- 联系中学 -->
+        <div v-if="school.secondaryInfo?.associated" class="kv-row">
+          <span class="kv-label">{{ getText('school.associated') }}</span>
+          <span class="kv-value truncate-text" :title="convertIfNeeded(school.secondaryInfo.associated)">
+            {{ convertIfNeeded(school.secondaryInfo.associated) }}
+          </span>
+        </div>
       </div>
-      
-      <!-- 结龙学校 -->
-      <div v-if="school.secondaryInfo?.through_train" class="kv-row">
-        <span class="kv-label">{{ getText('school.throughTrain') }}</span>
-        <span class="kv-value truncate-text" :title="convertIfNeeded(school.secondaryInfo.through_train)">
-          {{ convertIfNeeded(school.secondaryInfo.through_train) }}
-        </span>
-      </div>
-      
-      <!-- 直属中学 -->
-      <div v-if="school.secondaryInfo?.direct" class="kv-row">
-        <span class="kv-label">{{ getText('school.direct') }}</span>
-        <span class="kv-value truncate-text" :title="convertIfNeeded(school.secondaryInfo.direct)">
-          {{ convertIfNeeded(school.secondaryInfo.direct) }}
-        </span>
-      </div>
-      
-      <!-- 联系中学 -->
-      <div v-if="school.secondaryInfo?.associated" class="kv-row">
-        <span class="kv-label">{{ getText('school.associated') }}</span>
-        <span class="kv-value truncate-text" :title="convertIfNeeded(school.secondaryInfo.associated)">
-          {{ convertIfNeeded(school.secondaryInfo.associated) }}
-        </span>
-      </div>
-    </div>
 
-    <!-- Footer: KPI徽章（左） + 操作"详情"（右） -->
-    <footer class="card-footer">
-      <div class="footer-left">
-        <!-- 小学显示升学比例 -->
-        <span 
-          v-if="school.type === 'primary' && school.band1Rate !== undefined && school.band1Rate !== null"
-          class="kpi-badge"
-        >
-          {{ getText('school.band1Rate') }}：{{ school.band1Rate }}%
-        </span>
-        <!-- 申请状态徽章 -->
-        <span 
-          v-if="applicationStatus"
-          :class="['status-badge', `status-${applicationStatus}`]"
-        >
-          {{ getStatusLabel(applicationStatus) }}
-        </span>
-      </div>
-      <div class="footer-right">
-        <span class="details-link">{{ getText('school.details') }}→</span>
-      </div>
-    </footer>
-  </article>
+      <!-- Footer: KPI徽章（左） + 操作"详情"（右） -->
+      <footer class="card-footer">
+        <div class="footer-left">
+          <!-- 小学显示升学比例 -->
+          <span 
+            v-if="school.type === 'primary' && school.band1Rate !== undefined && school.band1Rate !== null"
+            class="kpi-badge"
+          >
+            {{ getText('school.band1Rate') }}：{{ school.band1Rate }}%
+          </span>
+          <!-- 申请状态徽章 -->
+          <span 
+            v-if="applicationStatus"
+            :class="['status-badge', `status-${applicationStatus}`]"
+          >
+            {{ getStatusLabel(applicationStatus) }}
+          </span>
+        </div>
+        <div class="footer-right">
+          <span class="details-link">{{ getText('school.details') }}→</span>
+        </div>
+      </footer>
+    </article>
+  </a>
 </template>
 
 <script setup lang="ts">
@@ -115,17 +105,19 @@ interface Props {
   school: School
 }
 
-interface Emits {
-  (e: 'click', school: School): void
-}
+// 移除 click emit，改为直接链接跳转
+// interface Emits {
+//   (e: 'click', school: School): void
+// }
 
 const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
+// const emit = defineEmits<Emits>()
 const languageStore = useLanguageStore()
 
-const handleCardClick = () => {
-  emit('click', props.school)
-}
+// 移除点击处理函数，由外层 a 标签接管
+// const handleCardClick = () => {
+//   emit('click', props.school)
+// }
 
 // 计算申请状态
 const applicationStatus = computed(() => {

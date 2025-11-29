@@ -18,5 +18,12 @@ urlpatterns = [
     re_path(r"^302", redirect_view),
     # SEO-friendly school detail pages (Server-Side Meta Injection)
     re_path(r"^school/(?P<school_type>\w+)/(?P<school_id>\d+)$", seo_views.seo_school_detail_view),
+    # SEO-friendly list pages
+    re_path(r"^primary/?$", lambda r: seo_views.seo_school_list_view(r, 'primary')),
+    re_path(r"^secondary/?$", lambda r: seo_views.seo_school_list_view(r, 'secondary')),
+    re_path(r"^$", lambda r: seo_views.seo_school_list_view(r, None)), # Home page
+    
+    re_path(r"^sitemap\.xml$", seo_views.sitemap_view),
+    
     re_path(r"^api/", include(api.urls)),
 ]

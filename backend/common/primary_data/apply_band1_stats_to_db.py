@@ -200,9 +200,8 @@ def apply_stats_to_database(stats_file):
                         {'school': k, 'count': v} 
                         for k, v in list(school_stat['secondary_schools'].items())
                     ],
+                    'band1_rate_null': school_stat.get('band1_rate_null', False),
                     # 为了兼容前端 promotionSummary，添加 schools 字段
-                    # 这样即使没有年份数据，前端也能显示总体升学中学列表
-                    'schools': school_stat['secondary_schools'],
                     'yearly_stats': sorted_stats,
                     # 注意：yearly_stats下的schools格式为 {学校名: {'count': 人数, 'band': banding}}
                     # 旧格式 {学校名: 人数} 已废弃，但代码会兼容处理

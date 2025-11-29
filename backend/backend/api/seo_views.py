@@ -5,6 +5,8 @@ from django.views.decorators.cache import cache_page
 from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.models.tb_secondary_schools import TbSecondarySchools
 from django.utils import timezone
+import re
+import json
 
 # Cache for 1 hour (3600 seconds)
 # Sitemaps don't change that often, so caching is good.
@@ -72,6 +74,113 @@ def sitemap_view(request):
     return HttpResponse('\n'.join(xml), content_type="application/xml")
 
 
+def get_index_html_content():
+    """
+    Helper to read the index.html template from various possible locations
+    """
+    possible_paths = [
+        # Docker production path (mounted via volume)
+        '/app/dist/index.html', 
+        # Local dev path relative to backend/backend/api/seo_views.py -> ... -> frontend/dist
+        os.path.join(settings.BASE_DIR, '../frontend/dist/index.html'),
+        # Fallback relative path
+        os.path.join(os.path.dirname(os.path.dirname(settings.BASE_DIR)), 'frontend/dist/index.html'),
+    ]
+    
+    for path in possible_paths:
+        if os.path.exists(path):
+            try:
+                with open(path, 'r', encoding='utf-8') as f:
+                    return f.read()
+            except Exception as e:
+                print(f"Error reading {path}: {e}")
+                continue
+    return ""
+
+
+def seo_school_list_view(request, school_type=None):
+    """
+    Server-side rendering for school list pages (/primary, /secondary)
+    """
+    # 1. Prepare SEO Data
+    if school_type == 'primary':
+        title = "全港小学排名及大全 - BetterSchool 香港升学助手"
+        description = "BetterSchool 提供全港小学排名、学校分区、校网、类别及学费等详细资讯，助家长为子女选择最合适的小学。"
+        url = "https://betterschool.hk/primary"
+        h1_text = "全港小学排名及大全"
+    elif school_type == 'secondary':
+        title = "全港中学排名及大全 - BetterSchool 香港升学助手"
+        description = "BetterSchool 提供全港中学排名、Banding、分区、校网及DSE成绩等详细资讯，助家长为子女规划升学之路。"
+        url = "https://betterschool.hk/secondary"
+        h1_text = "全港中学排名及大全"
+    else:
+        # Home or unknown
+        title = "BetterSchool - 香港升学助手 | 全港中小学排名及升学资讯"
+        description = "BetterSchool 是您的香港升学助手，提供全港中小学排名、详细学校资料、升学攻略及校网分析，助您做出明智的升学决定。"
+        url = "https://betterschool.hk/"
+        h1_text = "香港升学助手 - BetterSchool"
+
+    image_url = "https://betterschool.hk/favicon.jpg"
+
+    # 2. Read Template
+    html_content = get_index_html_content()
+    
+    if not html_content:
+        return HttpResponse(f"Template not found. Please build frontend.", status=500)
+
+    # 3. Inject Tags
+    # Replace Title
+    html_content = re.sub(r'<title>.*?</title>', f'<title>{title}</title>', html_content, flags=re.DOTALL)
+    
+    # Remove existing meta tags to avoid duplicates
+    html_content = re.sub(r'<meta\s+name="description".*?>', '', html_content, flags=re.DOTALL)
+    html_content = re.sub(r'<meta\s+property="og:.*?".*?>', '', html_content, flags=re.DOTALL)
+    html_content = re.sub(r'<meta\s+property="twitter:.*?".*?>', '', html_content, flags=re.DOTALL)
+    
+    canonical_tag = f'<link rel="canonical" href="{url}" />'
+    
+    meta_tags = f"""
+    <meta name="description" content="{description}" />
+    {canonical_tag}
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{url}" />
+    <meta property="og:title" content="{title}" />
+    <meta property="og:description" content="{description}" />
+    <meta property="og:image" content="{image_url}" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="{url}" />
+    <meta property="twitter:title" content="{title}" />
+    <meta property="twitter:description" content="{description}" />
+    <meta property="twitter:image" content="{image_url}" />
+    """
+    
+    if '</head>' in html_content:
+        html_content = html_content.replace('</head>', f'{meta_tags}</head>')
+    else:
+        html_content += meta_tags
+
+    # 4. Inject Body Content (Hidden H1/Desc for Crawlers)
+    body_content = f"""
+    <div style="position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
+        <h1>{h1_text}</h1>
+        <p>{description}</p>
+        <a href="https://betterschool.hk/primary">全港小学</a>
+        <a href="https://betterschool.hk/secondary">全港中学</a>
+    </div>
+    """
+    
+    if '<div id="app">' in html_content:
+        html_content = html_content.replace('<div id="app">', f'<div id="app">{body_content}')
+    elif '<body>' in html_content:
+        html_content = html_content.replace('<body>', f'<body>{body_content}')
+
+    return HttpResponse(html_content, content_type="text/html")
+
+
 def seo_school_detail_view(request, school_type, school_id):
     """
     Server-side rendering for school detail pages to support SEO and Social Sharing.
@@ -103,16 +212,11 @@ def seo_school_detail_view(request, school_type, school_id):
         gender = getattr(school, 'student_gender', '') or ""
         tuition = getattr(school, 'tuition', '') or ""
         
-        # Convert category for better readability if needed, or keep as is.
-        # Just simple concatenation for description.
-        
         title = f"{name} - BetterSchool 香港升学助手"
         
         # Construct a rich description
-        # Example: "查看 St. Paul's Co-educational College 的详细资料：中西区 | 直资 | 男女校 | 学费: $65,800 | Band 1A ..."
         desc_parts = []
         if district: desc_parts.append(district)
-        # Mapping category to Chinese label if stored in English (simple check)
         cat_map = {'elite': '名校联盟', 'traditional': '传统名校', 'direct': '直资', 'government': '官立', 'private': '私立'}
         desc_parts.append(cat_map.get(category, category))
         
@@ -125,95 +229,45 @@ def seo_school_detail_view(request, school_type, school_id):
             
         description = f"查看{name}的详细资料：{' | '.join(desc_parts)}。提供全面的升学数据、面试题目、入学申请资讯。"
         
-        # If school has specific image, use it (optional)
-    
-    # 3. Read Template (dist/index.html)
-    # Try to find the file in possible locations
-    possible_paths = [
-        # Docker production path (mounted via volume)
-        '/app/dist/index.html', 
-        # Local dev path relative to backend/backend/api/seo_views.py -> ... -> frontend/dist
-        os.path.join(settings.BASE_DIR, '../frontend/dist/index.html'),
-        # Fallback relative path
-        os.path.join(os.path.dirname(os.path.dirname(settings.BASE_DIR)), 'frontend/dist/index.html'),
-    ]
-    
-    html_content = ""
-    found_path = ""
-    for path in possible_paths:
-        if os.path.exists(path):
-            try:
-                with open(path, 'r', encoding='utf-8') as f:
-                    html_content = f.read()
-                found_path = path
-                break
-            except Exception as e:
-                print(f"Error reading {path}: {e}")
-                continue
+    # 3. Read Template
+    html_content = get_index_html_content()
             
     if not html_content:
-        # Fallback HTML if index.html is not found
-        return HttpResponse(f"""
-        <!DOCTYPE html>
-        <html lang="zh-CN">
-        <head>
-            <meta charset="UTF-8" />
-            <title>{title}</title>
-            <meta name="description" content="{description}" />
-            <meta property="og:title" content="{title}" />
-            <meta property="og:description" content="{description}" />
-            <meta property="og:image" content="{image_url}" />
-            <meta property="og:url" content="{url}" />
-            <meta name="robots" content="index, follow" />
-        </head>
-        <body>
-            <h1>{title}</h1>
-            <p>{description}</p>
-            <p>正在加载完整内容...</p>
-            <script>window.location.reload()</script>
-        </body>
-        </html>
-        """, content_type="text/html")
+        return HttpResponse("Template not found", status=500)
 
     # 4. Inject Tags and Content
-    import re
-    import json
     
     # A. Head Injection (Meta Tags)
-    # Replace Title
     html_content = re.sub(r'<title>.*?</title>', f'<title>{title}</title>', html_content, flags=re.DOTALL)
-    
-    # Remove existing meta tags
     html_content = re.sub(r'<meta\s+name="description".*?>', '', html_content, flags=re.DOTALL)
     html_content = re.sub(r'<meta\s+property="og:.*?".*?>', '', html_content, flags=re.DOTALL)
     
-    # Prepare Canonical URL
     canonical_tag = f'<link rel="canonical" href="{url}" />'
     
     # Prepare JSON-LD (Structured Data)
     json_ld_data = {
         "@context": "https://schema.org",
         "@type": "School",
-        "name": name,
+        "name": name if school else "BetterSchool",
         "description": description,
         "url": url,
         "address": {
             "@type": "PostalAddress",
             "addressLocality": "Hong Kong",
-            "addressRegion": district,
-            "streetAddress": getattr(school, 'address', '') or district
+            "addressRegion": district if school else "",
+            "streetAddress": getattr(school, 'address', '') or district if school else ""
         }
     }
-    if hasattr(school, 'phone') and school.phone:
-        json_ld_data["telephone"] = school.phone
-    if hasattr(school, 'website') and school.website:
-        json_ld_data["sameAs"] = school.website
-    if tuition:
-         json_ld_data["priceRange"] = tuition
+    if school:
+        if hasattr(school, 'phone') and school.phone:
+            json_ld_data["telephone"] = school.phone
+        if hasattr(school, 'website') and school.website:
+            json_ld_data["sameAs"] = school.website
+        if tuition:
+             json_ld_data["priceRange"] = tuition
          
     json_ld_script = f'<script type="application/ld+json">{json.dumps(json_ld_data, ensure_ascii=False)}</script>'
     
-    # New Meta Tags
     meta_tags = f"""
     <meta name="description" content="{description}" />
     {canonical_tag}
@@ -235,47 +289,36 @@ def seo_school_detail_view(request, school_type, school_id):
     {json_ld_script}
     """
     
-    # Insert before </head>
     if '</head>' in html_content:
         html_content = html_content.replace('</head>', f'{meta_tags}</head>')
     else:
         html_content += meta_tags
 
     # B. Body Injection (Visible Content for Crawlers)
-    # We inject a hidden-but-visible-to-bots div or put it inside app div before hydration
-    # Putting it inside <div id="app"> allows Vue to overwrite it upon hydration (hydration mismatch warning might occur in dev, but safe in prod)
-    # Or commonly, put it in <noscript> or a specifically marked div that Vue ignores or replaces.
-    # Since we want it to be indexed, putting it inside <div id="app"> is a common "Pre-rendering" trick.
-    
-    # Generate a rich HTML summary
     features_html = ""
-    if hasattr(school, 'features') and school.features:
-        # features might be a list or json
+    if school and hasattr(school, 'features') and school.features:
         feats = school.features if isinstance(school.features, list) else []
         if feats:
             features_html = "<ul>" + "".join([f"<li>{f}</li>" for f in feats]) + "</ul>"
             
     body_content = f"""
     <div style="position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
-        <h1>{name}</h1>
+        <h1>{name if school else title}</h1>
         <p>{description}</p>
         <dl>
-            <dt>区域</dt><dd>{district}</dd>
-            <dt>类别</dt><dd>{category}</dd>
-            <dt>学费</dt><dd>{tuition}</dd>
-            <dt>地址</dt><dd>{getattr(school, 'address', '')}</dd>
+            <dt>区域</dt><dd>{district if school else ''}</dd>
+            <dt>类别</dt><dd>{category if school else ''}</dd>
+            <dt>学费</dt><dd>{tuition if school else ''}</dd>
+            <dt>地址</dt><dd>{getattr(school, 'address', '') if school else ''}</dd>
         </dl>
         {features_html}
         <a href="{url}">查看详情</a>
     </div>
     """
     
-    # Inject into body (start of body)
     if '<div id="app">' in html_content:
-        # Insert INSIDE #app so it's treated as initial content
         html_content = html_content.replace('<div id="app">', f'<div id="app">{body_content}')
     elif '<body>' in html_content:
         html_content = html_content.replace('<body>', f'<body>{body_content}')
 
     return HttpResponse(html_content, content_type="text/html")
-

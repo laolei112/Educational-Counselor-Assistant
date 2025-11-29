@@ -426,8 +426,8 @@
       </div>
     </div>
     
-    <!-- 学校详情弹窗 -->
-    <SchoolDetailModal 
+    <!-- 学校详情弹窗 - 移除，改为页面跳转 -->
+    <!-- <SchoolDetailModal 
       v-if="selectedSchool" 
       :school="selectedSchool" 
       :visible="showDetailModal" 
@@ -446,7 +446,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { useSchoolStore } from '@/stores/school'
 import { useLanguageStore } from '@/stores/language'
 import SchoolCard from '@/components/SchoolCard.vue'
-import SchoolDetailModal from '@/components/SchoolDetailModal.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import ContactButton from '@/components/ContactButton.vue'
 import type { School } from '@/types/school'
@@ -457,303 +456,57 @@ const router = useRouter()
 const schoolStore = useSchoolStore()
 const languageStore = useLanguageStore()
 
-// 获取多语言文本
+// 从 store 获取状态
+const {
+  currentType,
+  searchKeyword,
+  filters,
+  filterOptions,
+  isLoading,
+  hasError,
+  error,
+  enableMock,
+  currentPageData,
+  hasSearchResults,
+  isLoadingMore,
+  hasMoreData,
+  pagination
+} = storeToRefs(schoolStore)
+
+// 本地状态
+const activeFilterDropdown = ref<string | null>(null)
+const showMobileFilters = ref(false)
+const searchTimeout = ref<NodeJS.Timeout | null>(null)
+
+// 计算属性
 const getText = (key: string) => {
   return languageStore.getText(key)
 }
 
-const { 
-  currentType, 
-  filteredSchools, 
-  stats, 
-  isLoading, 
-  hasError, 
-  error,
-  enableMock,
-  pagination,
-  searchKeyword,
-  hasSearchResults,
-  currentPageData,
-  hasMoreData,
-  isLoadingMore,
-  filters,
-  filterOptions
-} = storeToRefs(schoolStore)
-
-const { 
-  setSchoolType, 
-  fetchSchools, 
-  clearError, 
-  searchSchools, 
-  clearSearch, 
-  loadMore,
-  setFilters,
-  clearFilters,
-  initFilters
-} = schoolStore
-
-// 学校详情弹窗相关
-const selectedSchool = ref<School | null>(null)
-const showDetailModal = ref(false)
-
-// 计算显示的学校总数
-// 使用 pagination.total（服务器返回的总数），这代表符合当前筛选和搜索条件的所有学校数量
 const displaySchoolCount = computed(() => {
-  return pagination.value.total || 0
+  return pagination.value.total || currentPageData.value.length
 })
 
-// 滚动加载相关
-let isLoadingMoreData = false
-
-// 缓存窗口高度（不会频繁变化，避免重复查询）
-let cachedWindowHeight = window.innerHeight
-
-// 监听窗口大小变化，更新缓存的窗口高度
-const updateWindowHeight = () => {
-  cachedWindowHeight = window.innerHeight
-}
-
-// 滚动检测函数 - 优化版本，避免强制重排
-const handleScrollInternal = async () => {
-  if (isLoadingMoreData || !hasMoreData.value) return
-  
-  // 使用 requestAnimationFrame 批量读取几何属性，避免强制重排
-  requestAnimationFrame(() => {
-    // 批量读取所有需要的几何属性，减少重排次数
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const documentHeight = document.documentElement.scrollHeight
-    const windowHeight = cachedWindowHeight
-    
-    // 当滚动到距离底部100px时触发加载
-    if (scrollTop + windowHeight >= documentHeight - 100) {
-      isLoadingMoreData = true
-      loadMore().finally(() => {
-        isLoadingMoreData = false
-      })
-    }
-  })
-}
-
-// 使用节流优化滚动事件处理
-let throttledHandleScroll: ((...args: any[]) => void) | null = null
-
-// 活动中的下拉菜单
-const activeFilterDropdown = ref<string | null>(null)
-const showMobileFilters = ref(false)
-const sortBy = ref<'none' | 'fee' | 'district'>('none')
-
-// 切换筛选下拉菜单
-const toggleFilterDropdown = async (type: string, event?: Event) => {
-  // 阻止事件冒泡，防止触发外部点击关闭
-  if (event) {
-    event.stopPropagation()
-  }
-  
-  // 如果点击的是当前已打开的下拉菜单，则关闭它
-  // 如果点击的是其他下拉菜单，则切换过去
-  if (activeFilterDropdown.value === type) {
-    activeFilterDropdown.value = null
-  } else {
-    // 在打开下拉菜单时，确保filter选项已加载（懒加载）
-    await schoolStore.ensureFilterOptions()
-    activeFilterDropdown.value = type
-  }
-}
-
-// 选择学校类型
-const selectSchoolType = async (type: 'primary' | 'secondary') => {
-  activeFilterDropdown.value = null
-  await handleTypeChange(type)
-}
-
-// 选择筛选选项 - 直接关闭菜单
-const selectFilter = async (type: keyof typeof filters.value, value: string, event?: Event) => {
-  // 阻止事件冒泡
-  if (event) {
-    event.stopPropagation()
-  }
-  
-  if (type === 'district') {
-    filters.value.district = value
-  } else if (type === 'schoolNet') {
-    filters.value.schoolNet = value
-  } else if (type === 'category') {
-    filters.value.category = value
-  } else if (type === 'banding') {
-    filters.value.banding = value
-  }
-  
-  // 关闭下拉菜单
-  activeFilterDropdown.value = null
-  await handleFilterChange()
-  
-  // 移动端选择后不立即关闭面板，让用户可以看到所有选项
-}
-
-// 处理筛选条件变化
-const handleFilterChange = async () => {
-  await setFilters({
-    district: filters.value.district,
-    schoolNet: filters.value.schoolNet,
-    category: filters.value.category,
-    banding: filters.value.banding
-  })
-}
-
-// 选择排序方式
-const selectSort = (sort: 'none' | 'fee' | 'district', event?: Event) => {
-  // 阻止事件冒泡
-  if (event) {
-    event.stopPropagation()
-  }
-  
-  sortBy.value = sort
-  activeFilterDropdown.value = null
-}
-
-// 排序后的学校列表
+// 排序后的学校列表（可以根据需要添加排序逻辑）
 const sortedSchools = computed(() => {
-  let schools = [...currentPageData.value]
-  
-  if (sortBy.value === 'fee') {
-    schools.sort((a, b) => {
-      const aFee = typeof a.tuition === 'number' ? a.tuition : (typeof a.tuition === 'string' ? parseFloat(a.tuition) || 0 : 0)
-      const bFee = typeof b.tuition === 'number' ? b.tuition : (typeof b.tuition === 'string' ? parseFloat(b.tuition) || 0 : 0)
-      return bFee - aFee // 降序
-    })
-  } else if (sortBy.value === 'district') {
-    schools.sort((a, b) => {
-      const aDistrict = a.district ?? ''
-      const bDistrict = b.district ?? ''
-      return aDistrict.localeCompare(bDistrict)
-    })
-  }
-  
-  return schools
+  return currentPageData.value
 })
 
-// 点击外部关闭下拉菜单
-const handleClickOutside = (event: Event) => {
-  const target = event.target as HTMLElement
-  // 检查点击是否在下拉菜单相关区域外
-  if (activeFilterDropdown.value) {
-    const isClickInFilterWrapper = target.closest('.filter-select-wrapper')
-    const isClickInDropdown = target.closest('.filter-dropdown-menu')
-    if (!isClickInFilterWrapper && !isClickInDropdown) {
-    activeFilterDropdown.value = null
-    }
-  }
-}
-
-// 组件挂载时获取数据并添加滚动监听
-onMounted(async () => {
-  // 语言设置已在 store 初始化时自动从 localStorage 加载，无需再次初始化
-  
-  // 优先加载学校列表，筛选选项延迟加载
-  await fetchSchools()
-  
-  // 延迟初始化筛选选项，避免阻塞关键渲染路径
-  initFilters()
-  
-  // 检查是否有详情页参数
-  const { id, type } = route.params
-  if (id && type) {
-    showDetailModal.value = true
-    try {
-      // 直接请求详情，不需要等待列表加载
-      const detailData = await schoolStore.fetchSchoolDetail(Number(id), type as any)
-      selectedSchool.value = detailData
-    } catch (error) {
-      console.error('获取学校详情失败:', error)
-    }
-  }
-
-  // 检查是否有 primary 或 secondary 路由
-  if (route.name === 'primary') {
-    await setSchoolType('primary')
-  } else if (route.name === 'secondary') {
-    await setSchoolType('secondary')
-  }
-
-  // 使用节流优化滚动事件，避免强制重排
-  throttledHandleScroll = rafThrottle(handleScrollInternal)
-  window.addEventListener('scroll', throttledHandleScroll, { passive: true })
-  window.addEventListener('resize', updateWindowHeight, { passive: true })
-  document.addEventListener('click', handleClickOutside)
-})
-
-// 组件卸载时移除滚动监听
-onUnmounted(() => {
-  if (throttledHandleScroll) {
-    window.removeEventListener('scroll', throttledHandleScroll)
-  }
-  window.removeEventListener('resize', updateWindowHeight)
-  document.removeEventListener('click', handleClickOutside)
-  activeFilterDropdown.value = null
-})
-
-// 处理学校类型切换
-const handleTypeChange = async (type: 'primary' | 'secondary') => {
-  await setSchoolType(type)
-}
-
-// 处理学校卡片点击 - 路由跳转（SEO友好）
-const handleSchoolClick = (school: School) => {
-  router.push({
-    name: 'school-detail',
-    params: { type: school.type, id: school.id }
-  })
-}
-
-// 监听路由变化处理弹窗
-watch(() => route.params, async (newParams, oldParams) => {
-  // 检查路由是否是 school-detail
-  if (route.name === 'school-detail') {
-    const { id, type } = newParams
-    
-    // 检查ID是否发生变化
-    if (id && type && (id !== oldParams?.id || type !== oldParams?.type)) {
-      showDetailModal.value = true
-      selectedSchool.value = null // 先清空，显示加载状态（如有）
-      
-      try {
-        const detailData = await schoolStore.fetchSchoolDetail(Number(id), type as any)
-        selectedSchool.value = detailData
-      } catch (error) {
-        console.error('获取学校详情失败:', error)
-      }
-    }
-  } else {
-    // 如果不是详情页路由，关闭弹窗
-    showDetailModal.value = false
-    setTimeout(() => {
-      if (!showDetailModal.value) {
-        selectedSchool.value = null
-      }
-    }, 300)
-  }
-}, { deep: true, immediate: true })
-
-// 处理关闭弹窗
-const handleCloseModal = () => {
-  // 返回列表页（去除URL中的ID）
-  router.push({ name: 'home' })
-  // showDetailModal 会通过 watch 自动更新，但手动设置可以让交互更即时
-  showDetailModal.value = false
-}
-
-// 处理实时搜索输入
-let searchTimeout: ReturnType<typeof setTimeout> | null = null
+// 处理搜索输入（防抖）
 const handleSearchInput = () => {
-  if (searchTimeout) {
-    clearTimeout(searchTimeout)
+  // 清除之前的定时器
+  if (searchTimeout.value) {
+    clearTimeout(searchTimeout.value)
   }
   
-  searchTimeout = setTimeout(async () => {
-    if (searchKeyword.value.trim()) {
-      await searchSchools(searchKeyword.value.trim())
+  // 设置新的定时器，延迟800ms执行搜索
+  searchTimeout.value = setTimeout(async () => {
+    const keyword = searchKeyword.value.trim()
+    if (keyword) {
+      console.log(`🔍 搜索: "${keyword}"`)
+      await schoolStore.searchSchools(keyword)
     } else {
-      await clearSearch()
+      await schoolStore.clearSearch()
     }
   }, 800)
 }
@@ -768,21 +521,126 @@ const handleSearchBlur = () => {
   // 可以在这里添加一些失去焦点状态的逻辑
 }
 
-// 处理清空搜索
+// 清空搜索
 const handleClearSearch = async () => {
-  if (searchTimeout) {
-    clearTimeout(searchTimeout)
-    searchTimeout = null
+  if (searchTimeout.value) {
+    clearTimeout(searchTimeout.value)
+    searchTimeout.value = null
   }
   searchKeyword.value = ''
-  await clearSearch()
+  await schoolStore.clearSearch()
 }
 
-// 重新加载数据
-const handleRetry = async () => {
-  clearError()
-  await fetchSchools()
+// 选择学校类型
+const selectSchoolType = async (type: 'primary' | 'secondary') => {
+  await schoolStore.setSchoolType(type)
 }
+
+// 切换筛选下拉菜单
+const toggleFilterDropdown = (filterType: string, event?: Event) => {
+  if (event) {
+    event.stopPropagation()
+  }
+  if (activeFilterDropdown.value === filterType) {
+    activeFilterDropdown.value = null
+  } else {
+    activeFilterDropdown.value = filterType
+  }
+}
+
+// 选择筛选条件
+const selectFilter = async (filterType: string, value: string, event?: Event) => {
+  if (event) {
+    event.stopPropagation()
+  }
+  
+  const newFilters: any = {}
+  newFilters[filterType] = value
+  
+  // 关闭下拉菜单
+  activeFilterDropdown.value = null
+  
+  // 应用筛选
+  await schoolStore.setFilters(newFilters)
+}
+
+// 处理学校卡片点击
+const handleSchoolClick = (school: School) => {
+  router.push({
+    name: 'school-detail',
+    params: { type: school.type, id: school.id.toString() }
+  })
+}
+
+// 重试加载
+const handleRetry = async () => {
+  await schoolStore.fetchSchools()
+}
+
+// 无限滚动处理
+const handleScroll = rafThrottle(() => {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+  const windowHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
+  
+  // 当滚动到距离底部200px时加载更多
+  if (scrollTop + windowHeight >= documentHeight - 200) {
+    if (hasMoreData.value && !isLoadingMore.value) {
+      schoolStore.loadMore()
+    }
+  }
+})
+
+// 点击外部关闭下拉菜单
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as HTMLElement
+  if (!target.closest('.filter-select-wrapper')) {
+    activeFilterDropdown.value = null
+  }
+}
+
+// 生命周期
+onMounted(async () => {
+  // 初始化语言
+  languageStore.initLanguage()
+  
+  // 根据路由设置学校类型
+  if (route.name === 'primary') {
+    await schoolStore.setSchoolType('primary')
+  } else if (route.name === 'secondary') {
+    await schoolStore.setSchoolType('secondary')
+  } else {
+    // 默认加载小学数据
+    await schoolStore.setSchoolType('primary')
+  }
+  
+  // 初始化筛选选项（延迟加载）
+  schoolStore.initFilters()
+  
+  // 添加滚动监听
+  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  // 清除搜索定时器
+  if (searchTimeout.value) {
+    clearTimeout(searchTimeout.value)
+  }
+  
+  // 移除事件监听
+  window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('click', handleClickOutside)
+})
+
+// 监听路由变化
+watch(() => route.name, async (newName) => {
+  if (newName === 'primary') {
+    await schoolStore.setSchoolType('primary')
+  } else if (newName === 'secondary') {
+    await schoolStore.setSchoolType('secondary')
+  }
+})
 </script>
 
 <style scoped>

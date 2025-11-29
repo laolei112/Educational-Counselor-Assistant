@@ -19,6 +19,7 @@
 import os
 import sys
 import re
+from pathlib import Path
 import django
 
 # 添加项目路径
@@ -105,10 +106,11 @@ def format_school_name_with_banding(school_name, banding):
     # 移除可能已存在的 banding 信息
     clean_name = re.sub(r'\s*\(Band\s+\d+[A-Z]?\)\s*$', '', school_name, flags=re.IGNORECASE)
     clean_name = re.sub(r'\s*（Band\s+\d+[A-Z]?）\s*$', '', clean_name, flags=re.IGNORECASE)
+    clean_name = re.sub(r'\s*（Band Band\s+\d+[A-Z]?）\s*$', '', clean_name, flags=re.IGNORECASE)
     clean_name = clean_name.strip()
     
     # 添加 banding 信息
-    return f"{clean_name}（Band {banding}）"
+    return f"{clean_name}（{banding}）"
 
 
 def update_secondary_info_with_banding():
@@ -159,13 +161,18 @@ def update_secondary_info_with_banding():
                 updated_names = []
                 for school_name in school_names:
                     # 检查是否已经有 banding 信息
-                    if re.search(r'\(Band\s+\d+[A-Z]?\)|（Band\s+\d+[A-Z]?）', school_name, re.IGNORECASE):
-                        # 已经有 banding 信息，直接使用
-                        updated_names.append(school_name)
-                        continue
+                    # if re.search(r'\(Band\s+\d+[A-Z]?\)|（Band\s+\d+[A-Z]?）', school_name, re.IGNORECASE):
+                    #     # 已经有 banding 信息，直接使用
+                    #     updated_names.append(school_name)
+                    #     continue
                     
                     # 查找 banding 信息
-                    banding = find_secondary_school_banding(school_name)
+                    clean_name = re.sub(r'\s*\(Band\s+\d+[A-Z]?\)\s*$', '', school_name, flags=re.IGNORECASE)
+                    clean_name = re.sub(r'\s*（Band\s+\d+[A-Z]?）\s*$', '', clean_name, flags=re.IGNORECASE)
+                    clean_name = re.sub(r'\s*（Band Band\s+\d+[A-Z]?）\s*$', '', clean_name, flags=re.IGNORECASE)
+                    clean_school_name = clean_name.strip()
+
+                    banding = find_secondary_school_banding(clean_school_name)
                     if banding:
                         # 添加 banding 信息
                         formatted_name = format_school_name_with_banding(school_name, banding)

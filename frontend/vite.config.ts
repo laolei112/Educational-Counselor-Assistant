@@ -14,7 +14,14 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 3000
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'https://betterschool.hk',
+        changeOrigin: true,
+        secure: false
+      }
+    }
   },
   build: {
     // 代码混淆和压缩配置
