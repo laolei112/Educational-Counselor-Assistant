@@ -351,7 +351,7 @@ export const useLanguageStore = defineStore('language', () => {
         'zh-TW': '電話'
       },
       'footer.copyright.company': {
-        'zh-CN': 'BetterSchool 香港升学助手',
+        'zh-CN': 'BetterSchool 香港好升学',
         'zh-TW': 'BetterSchool 香港升學助手'
       },
       'footer.copyright.rights': {

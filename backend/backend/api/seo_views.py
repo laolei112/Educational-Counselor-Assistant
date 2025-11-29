@@ -104,21 +104,21 @@ def seo_school_list_view(request, school_type=None):
     """
     # 1. Prepare SEO Data
     if school_type == 'primary':
-        title = "全港小学排名及大全 - BetterSchool 香港升学助手"
+        title = "全港小学排名及大全 - BetterSchool 香港好升学"
         description = "BetterSchool 提供全港小学排名、学校分区、校网、类别及学费等详细资讯，助家长为子女选择最合适的小学。"
         url = "https://betterschool.hk/primary"
         h1_text = "全港小学排名及大全"
     elif school_type == 'secondary':
-        title = "全港中学排名及大全 - BetterSchool 香港升学助手"
+        title = "全港中学排名及大全 - BetterSchool 香港好升学"
         description = "BetterSchool 提供全港中学排名、Banding、分区、校网及DSE成绩等详细资讯，助家长为子女规划升学之路。"
         url = "https://betterschool.hk/secondary"
         h1_text = "全港中学排名及大全"
     else:
         # Home or unknown
-        title = "BetterSchool - 香港升学助手 | 全港中小学排名及升学资讯"
-        description = "BetterSchool 是您的香港升学助手，提供全港中小学排名、详细学校资料、升学攻略及校网分析，助您做出明智的升学决定。"
+        title = "BetterSchool - 香港好升学 | 全港中小学排名及升学资讯"
+        description = "BetterSchool 是您的香港好升学，提供全港中小学排名、详细学校资料、升学攻略及校网分析，助您做出明智的升学决定。"
         url = "https://betterschool.hk/"
-        h1_text = "香港升学助手 - BetterSchool"
+        h1_text = "香港好升学 - BetterSchool"
 
     image_url = "https://betterschool.hk/favicon.jpg"
 
@@ -198,7 +198,7 @@ def seo_school_detail_view(request, school_type, school_id):
         pass
 
     # 2. Prepare SEO Data
-    title = "BetterSchool - 香港升学助手"
+    title = "BetterSchool - 香港好升学"
     description = "提供香港中小学详细信息、升学指导、学校对比等服务，帮助家长为孩子选择最合适的学校。"
     image_url = "https://betterschool.hk/favicon.jpg" # Default image
     url = f"https://betterschool.hk/school/{school_type}/{school_id}"
@@ -212,7 +212,7 @@ def seo_school_detail_view(request, school_type, school_id):
         gender = getattr(school, 'student_gender', '') or ""
         tuition = getattr(school, 'tuition', '') or ""
         
-        title = f"{name} - BetterSchool 香港升学助手"
+        title = f"{name} - BetterSchool 香港好升学"
         
         # Construct a rich description
         desc_parts = []

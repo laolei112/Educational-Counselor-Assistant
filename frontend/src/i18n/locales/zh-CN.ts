@@ -218,7 +218,7 @@ export default {
       phone: '电话'
     },
     copyright: {
-      company: 'BetterSchool 香港升学助手',
+      company: 'BetterSchool 香港好升学',
       rights: '版权所有',
       icp: '网站备案号：待备案'
     },

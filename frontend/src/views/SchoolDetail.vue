@@ -518,7 +518,7 @@ const fetchDetail = async () => {
     // 更新标题
     if (school.value) {
       const name = convertIfNeeded(school.value.name)
-      document.title = `${name} - BetterSchool 香港升学助手`
+      document.title = `${name} - BetterSchool`
     }
   } catch (error) {
     console.error('获取学校详情失败:', error)
