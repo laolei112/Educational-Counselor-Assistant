@@ -50,17 +50,9 @@ export function initAntiCopy() {
        const clipboardData = e.clipboardData;
        if (clipboardData) {
          e.preventDefault();
-         const text = selection.toString() + '\n\n本文来自[香港升学助手]，严禁转载。';
+         const text = selection.toString();
          clipboardData.setData('text/plain', text);
        }
-    }
-  });
-  
-  // 4. 禁用 F12 (可选，防君子不防小人)
-  document.addEventListener('keydown', (e) => {
-    // F12
-    if (e.key === 'F12') {
-       // e.preventDefault(); // 慎用，可能影响用户正常操作
     }
   });
 }

@@ -5,53 +5,40 @@
     <div class="header-section">
       <div class="header-content">
         <a href="/" class="header-logo">
-          <span class="header-icon">🎓</span>
-          <h1 class="header-title">BetterSchool</h1>
+          <img src="/logo.jpg" alt="BetterSchool" class="header-icon" />
         </a>
-        <div class="header-actions">
-          <a href="/" class="header-action-btn">
-            <span>🏠 首页</span>
-          </a>
-          <a :href="`/${school?.type || 'primary'}`" class="header-action-btn">
-            <span>📋 {{ school?.type === 'secondary' ? '中学' : '小学' }}列表</span>
-          </a>
-        </div>
+        <!-- 分享按钮 -->
+        <button class="header-share-btn" @click="handleShare" :title="convertIfNeeded('分享此学校')">
+          <img src="/images/share.png" alt="分享" class="share-icon" />
+        </button>
       </div>
     </div>
 
     <div class="container">
       <!-- 导航面包屑 -->
       <nav class="breadcrumb">
-        <a href="/" class="nav-link">首页</a>
+        <a href="/" class="nav-link">{{ convertIfNeeded('首页') }}</a>
         <span class="separator">/</span>
-        <a :href="`/${school?.type || 'primary'}`" class="nav-link">{{ school?.type === 'secondary' ? '中学' : '小学' }}列表</a>
+        <a :href="`/${school?.type || 'primary'}`" class="nav-link">{{ school?.type === 'secondary' ? convertIfNeeded('中学') : convertIfNeeded('小学') }}{{ convertIfNeeded('列表') }}</a>
         <span class="separator">/</span>
-        <span class="current">{{ displayName }}</span>
+        <span class="current">{{ convertIfNeeded(displayName) }}</span>
       </nav>
-
-      <!-- 页面顶部控制栏 -->
-      <div class="page-controls">
-        <!-- 分享按钮 -->
-        <button class="share-btn" @click="handleShare" title="分享此学校">
-          <span>📤 分享</span>
-        </button>
-      </div>
 
       <!-- 复制提示 Toast -->
       <div v-if="showCopyToast" class="toast-message">
-        📋 链接已复制
+        📋 {{ convertIfNeeded('链接已复制') }}
       </div>
 
       <!-- 加载中状态 -->
       <div v-if="loading" class="loading-state">
         <div class="spinner"></div>
-        <p>加载中...</p>
+        <p>{{ convertIfNeeded('加载中...') }}</p>
       </div>
 
       <!-- 错误状态 -->
       <div v-else-if="!school" class="error-state">
-        <p>未找到学校信息</p>
-        <a href="/" class="back-link">返回首页</a>
+        <p>{{ convertIfNeeded('未找到学校信息') }}</p>
+        <a href="/" class="back-link">{{ convertIfNeeded('返回首页') }}</a>
       </div>
 
       <!-- 学校名称和状态 -->
@@ -73,10 +60,10 @@
       <div v-if="school" class="content">
         <!-- 基本信息部分 -->
         <section class="basic-info">
-          <h3>📋 基本信息</h3>
+          <h3>📋 {{ convertIfNeeded('基本信息') }}</h3>
           <div class="info-grid">
             <div class="info-item">
-              <label>学校规模</label>
+              <label>{{ convertIfNeeded('学校规模') }}</label>
               <div v-if="school.schoolScale">
                 {{ school.schoolScale.classes }}班
               </div>
@@ -84,65 +71,65 @@
             </div>
             <div class="info-item">
               <label>
-                教学语言
+                {{ convertIfNeeded('教学语言') }}
                 <span class="info-icon" @click="showLanguageInfo = !showLanguageInfo">ℹ️</span>
               </label>
               <div class="teaching-language-wrapper">
                 <span class="language-text">
-                  {{ teachingLanguageText }}
+                  {{ convertIfNeeded(teachingLanguageText) }}
                 </span>
               </div>
               <!-- 教学语言说明弹窗 -->
               <div v-if="showLanguageInfo" class="language-info-popup" @click.stop>
                 <div class="popup-header">
-                  <span>教学语言分类标准</span>
+                  <span>{{ convertIfNeeded('教学语言分类标准') }}</span>
                   <button class="popup-close" @click="showLanguageInfo = false">✕</button>
                 </div>
                 <div class="popup-content">
                   <table class="language-table">
                     <thead>
                       <tr>
-                        <th>分类</th>
-                        <th>英文授课占比</th>
-                        <th>说明</th>
+                        <th>{{ convertIfNeeded('分类') }}</th>
+                        <th>{{ convertIfNeeded('英文授课占比') }}</th>
+                        <th>{{ convertIfNeeded('说明') }}</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td class="category">英文</td>
+                        <td class="category">{{ convertIfNeeded('英文') }}</td>
                         <td class="ratio">≥ 80%</td>
-                        <td class="desc">绝大部分科目使用英文授课</td>
+                        <td class="desc">{{ convertIfNeeded('绝大部分科目使用英文授课') }}</td>
                       </tr>
                       <tr>
-                        <td class="category">主要英文</td>
+                        <td class="category">{{ convertIfNeeded('主要英文') }}</td>
                         <td class="ratio">60% - 79%</td>
-                        <td class="desc">多数科目使用英文授课</td>
+                        <td class="desc">{{ convertIfNeeded('多数科目使用英文授课') }}</td>
                       </tr>
                       <tr class="highlight">
-                        <td class="category">中英文并重</td>
+                        <td class="category">{{ convertIfNeeded('中英文并重') }}</td>
                         <td class="ratio">40% - 59%</td>
-                        <td class="desc">中英文授课科目数量接近</td>
+                        <td class="desc">{{ convertIfNeeded('中英文授课科目数量接近') }}</td>
                       </tr>
                       <tr>
-                        <td class="category">主要中文</td>
+                        <td class="category">{{ convertIfNeeded('主要中文') }}</td>
                         <td class="ratio">20% - 39%</td>
-                        <td class="desc">多数科目使用中文授课</td>
+                        <td class="desc">{{ convertIfNeeded('多数科目使用中文授课') }}</td>
                       </tr>
                       <tr>
-                        <td class="category">中文</td>
+                        <td class="category">{{ convertIfNeeded('中文') }}</td>
                         <td class="ratio">< 20%</td>
-                        <td class="desc">绝大部分科目使用中文授课</td>
+                        <td class="desc">{{ convertIfNeeded('绝大部分科目使用中文授课') }}</td>
                       </tr>
                     </tbody>
                   </table>
                   <div class="popup-note">
-                    注：基于中四至中六 DSE 科目统计
+                    {{ convertIfNeeded('注：基于中四至中六 DSE 科目统计') }}
                   </div>
                 </div>
               </div>
             </div>
             <div class="info-item">
-              <label>学费</label>
+              <label>{{ convertIfNeeded('学费') }}</label>
               <div>{{ formatTuition(school.tuition) }}</div>
             </div>
             <div class="info-item">
@@ -150,11 +137,11 @@
               <div>{{ curriculumTypesText }}</div>
             </div>
             <div v-if="school.religion" class="info-item">
-              <label>宗教</label>
+              <label>{{ convertIfNeeded('宗教') }}</label>
               <div>{{ religionText }}</div>
             </div>
             <div class="info-item">
-              <label>性别类型</label>
+              <label>{{ convertIfNeeded('性别类型') }}</label>
               <div>{{ getGenderLabel(school.gender) }}</div>
             </div>
           </div>
@@ -163,24 +150,24 @@
 
         <!-- 学校特色部分 -->
         <section v-if="school.features && school.features.length" class="features">
-          <h3>❤️ 学校特色</h3>
+          <h3>❤️ {{ convertIfNeeded('学校特色') }}</h3>
           <ul class="features-list">
             <li v-for="(feature, idx) in featuresTexts" :key="idx">
-              • {{ feature }}
+              • {{ convertIfNeeded(feature) }}
             </li>
           </ul>
         </section>
 
         <!-- 教学特色部分（小学特有） -->
         <section v-if="school.type === 'primary' && hasClassTeachingInfo" class="class-teaching-info">
-          <h3>🎓 教学特色</h3>
+          <h3>🎓 {{ convertIfNeeded('教学特色') }}</h3>
           <div class="teaching-info-content">
             <div v-if="classTeachingMode" class="info-item">
-              <label>班级教学模式：</label>
+              <label>{{ convertIfNeeded('班级教学模式') }}：</label>
               <div class="info-value">{{ classTeachingMode }}</div>
             </div>
             <div v-if="classArrangement" class="info-item">
-              <label>分班安排：</label>
+              <label>{{ convertIfNeeded('分班安排') }}：</label>
               <div class="info-value">{{ classArrangement }}</div>
             </div>
           </div>
@@ -190,7 +177,7 @@
 
         <!-- 入学信息部分（中学特有） -->
         <section class="admission-info">
-          <h3>📝 入学信息</h3>
+          <h3>📝 {{ convertIfNeeded('入学信息') }}</h3>
           <!-- 申请详情说明 -->
           <div v-if="school.admissionInfo" class="application-details">
             <div class="details-text" v-html="extractAdmissionDetails()"></div>
@@ -222,7 +209,7 @@
                   class="card-link"
                   @click.stop
                 >
-                  🔗 查看详情 ↗
+                  🔗 {{ convertIfNeeded('查看详情') }} ↗
                 </a>
               </div>
             </div>
@@ -236,7 +223,7 @@
                 {{ isCardOpen(school.transferInfo.插班, true) ? 'OPEN' : 'CLOSED' }}
               </div>
               <div class="card-content">
-                <div class="card-grade">插班申请</div>
+                <div class="card-grade">{{ convertIfNeeded('插班申请') }}</div>
                 <div class="card-period">
                   {{ formatTransferDateRange() }}
                 </div>
@@ -248,7 +235,7 @@
                   class="card-link"
                   @click.stop
                 >
-                  🔗 查看详情 ↗
+                  🔗 {{ convertIfNeeded('查看详情') }} ↗
                 </a>
               </div>
             </div>
@@ -268,7 +255,7 @@
                 {{ isCardOpenForP1(school.transferInfo.小一) ? 'OPEN' : 'CLOSED' }}
               </div>
               <div class="card-content">
-                <div class="card-grade">小一申请</div>
+                <div class="card-grade">{{ convertIfNeeded('小一申请') }}</div>
                 <div class="card-period">
                   {{ formatDateRangeForP1(school.transferInfo.小一.小一入学申请开始时间, school.transferInfo.小一.小一入学申请截止时间) }}
                 </div>
@@ -280,7 +267,7 @@
                   class="card-link"
                   @click.stop
                 >
-                  🔗 查看详情 ↗
+                  🔗 {{ convertIfNeeded('查看详情') }} ↗
                 </a>
               </div>
             </div>
@@ -294,7 +281,7 @@
                 {{ isCardOpen(school.transferInfo.插班, true) ? 'OPEN' : 'CLOSED' }}
               </div>
               <div class="card-content">
-                <div class="card-grade">插班申请</div>
+                <div class="card-grade">{{ convertIfNeeded('插班申请') }}</div>
                 <div class="card-period">
                   {{ formatTransferDateRange() }}
                 </div>
@@ -306,7 +293,7 @@
                   class="card-link"
                   @click.stop
                 >
-                  🔗 查看详情 ↗
+                  🔗 {{ convertIfNeeded('查看详情') }} ↗
                 </a>
               </div>
             </div>
@@ -422,22 +409,22 @@
 
         <!-- 联络信息部分 -->
         <section v-if="school.contact" class="contact">
-          <h3>📞 联络信息</h3>
+          <h3>📞 {{ convertIfNeeded('联络信息') }}s</h3>
           <div class="contact-info">
             <div v-if="school.contact.address" class="contact-item">
-              <label>地址：</label>
+              <label>{{ convertIfNeeded('地址') }}：</label>
               <span>{{ addressText }}</span>
             </div>
             <div v-if="school.contact.phone" class="contact-item">
-              <label>电话：</label>
+              <label>{{ convertIfNeeded('电话') }}：</label>
               <span>{{ school.contact.phone }}</span>
             </div>
             <div v-if="school.contact.email" class="contact-item">
-              <label>邮箱：</label>
+              <label>{{ convertIfNeeded('邮箱') }}：</label>
               <span>{{ school.contact.email }}</span>
             </div>
             <div v-if="school.contact.website" class="contact-item">
-              <label>网址：</label>
+              <label>{{ convertIfNeeded('网址') }}：</label>
               <a :href="school.contact.website" target="_blank" rel="noopener noreferrer" class="website-link">
                 {{ school.contact.website }}
               </a>
@@ -447,10 +434,10 @@
 
         <!-- 内链推荐模块 -->
         <section v-if="recommendations.related.length || recommendations.popular.length" class="recommendations-section">
-          <h3>🔎 你可能想浏览</h3>
+          <h3>🔎 {{ convertIfNeeded('你可能想浏览') }}</h3>
           
           <div v-if="recommendations.related.length" class="recommendation-group">
-            <h4>同区学校推荐</h4>
+            <h4>{{ convertIfNeeded('同区学校推荐') }}</h4>
             <div class="recommendation-list">
               <div 
                 v-for="recSchool in recommendations.related" 
@@ -467,7 +454,7 @@
           </div>
 
           <div v-if="recommendations.popular.length" class="recommendation-group">
-            <h4>热门学校推荐</h4>
+            <h4>{{ convertIfNeeded('热门学校推荐') }}</h4>
             <div class="recommendation-list">
               <div 
                 v-for="recSchool in recommendations.popular" 
@@ -978,6 +965,7 @@ const formatDateRangeForP1 = (start?: string, end?: string): string => {
   padding: 16px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
+  overflow: visible;
 }
 
 .header-content {
@@ -1003,7 +991,12 @@ const formatDateRangeForP1 = (start?: string, end?: string): string => {
 }
 
 .header-icon {
-  font-size: 24px;
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  display: block;
+  margin-top: -70px;
+  margin-bottom: -70px;
 }
 
 .header-title {
@@ -1013,29 +1006,34 @@ const formatDateRangeForP1 = (start?: string, end?: string): string => {
   color: white;
 }
 
-.header-actions {
-  display: flex;
-  gap: 16px;
-}
-
-.header-action-btn {
+.header-share-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  justify-content: center;
   transition: all 0.2s;
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.header-action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+.header-share-btn:hover {
+  opacity: 0.8;
   transform: translateY(-1px);
+}
+
+/* PC端隐藏分享按钮 */
+@media (min-width: 769px) {
+  .header-share-btn {
+    display: none;
+  }
+}
+
+.share-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: block;
 }
 
 .container {
@@ -1069,32 +1067,6 @@ const formatDateRangeForP1 = (start?: string, end?: string): string => {
   font-weight: 500;
 }
 
-/* 页面顶部控制栏 */
-.page-controls {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 16px;
-}
-
-.share-btn {
-  background: white;
-  border: 1px solid #e5e7eb;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: #4b5563;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.share-btn:hover {
-  background: #f3f4f6;
-  border-color: #d1d5db;
-}
 
 /* 重置样式，使其适应页面布局而非弹窗 */
 .header {
@@ -1248,14 +1220,27 @@ section h3 {
 
   .header-section {
     padding: 12px 0;
+    overflow: visible;
+  }
+
+  .header-content {
+    justify-content: flex-start;
+    padding: 0 16px;
+  }
+
+  .header-logo {
+    margin-right: auto;
+  }
+
+  .header-icon {
+    width: 80px;
+    height: 80px;
+    margin-top: -20px;
+    margin-bottom: -20px;
   }
 
   .header-title {
     font-size: 18px;
-  }
-
-  .header-actions {
-    display: none; /* 移动端暂隐藏顶部导航按钮，依赖面包屑或底部导航 */
   }
 
   .container {
