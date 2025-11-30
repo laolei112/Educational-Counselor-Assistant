@@ -12,10 +12,19 @@ def redirect_view(request):
     return response
 
 
+def redirect_school_list(request, school_type):
+    """重定向 /school/{type}/ 到 /{type}"""
+    if school_type in ['primary', 'secondary']:
+        return redirect(f'/{school_type}')
+    return redirect('/')
+
+
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     re_path(r"^302", redirect_view),
+    # 重定向 /school/{type}/ 到 /{type}（必须在详情页路由之前）
+    re_path(r"^school/(?P<school_type>primary|secondary)/?$", redirect_school_list),
     # SEO-friendly school detail pages (Server-Side Meta Injection)
     re_path(r"^school/(?P<school_type>\w+)/(?P<school_id>\d+)$", seo_views.seo_school_detail_view),
     # SEO-friendly list pages
