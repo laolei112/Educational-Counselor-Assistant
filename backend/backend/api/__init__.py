@@ -6,8 +6,8 @@ from backend.api import signature_views, auth_views, scheduler_views, seo_views
 urls = [
     re_path(r"^schools/", include(schools_urls)),
     
-    # SEO Sitemap
-    path('sitemap.xml', seo_views.sitemap_view, name='sitemap_xml'),
+    # 注意：sitemap.xml 已在 backend/urls.py 中定义为 /sitemap.xml（标准位置）
+    # 不再在 /api/ 路径下提供，以符合 SEO 最佳实践
 
     # Token认证API（推荐使用）
     path('auth/request-token', auth_views.request_dynamic_token, name='request_dynamic_token'),  # 新增：动态反爬Token
