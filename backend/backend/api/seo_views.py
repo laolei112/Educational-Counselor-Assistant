@@ -207,27 +207,64 @@ def seo_school_detail_view(request, school_type, school_id):
         # Basic Info
         # Map model fields to common variables
         name = getattr(school, 'school_name', '')
+        name_english = getattr(school, 'school_name_english', '') or ""
         district = getattr(school, 'district', '') or ""
         category = getattr(school, 'school_category', '') or ""
         gender = getattr(school, 'student_gender', '') or ""
         tuition = getattr(school, 'tuition', '') or ""
+        school_group = getattr(school, 'school_group', '') or ""  # Band 1A, 1B等
         
-        title = f"{name} - BetterSchool 香港好升学"
+        # 构建包含banding的title（SEO优化）
+        title_parts = [name]
         
-        # Construct a rich description
-        desc_parts = []
-        if district: desc_parts.append(district)
-        cat_map = {'elite': '名校联盟', 'traditional': '传统名校', 'direct': '直资', 'government': '官立', 'private': '私立'}
-        desc_parts.append(cat_map.get(category, category))
+        # 添加英文名称（如果有）
+        if name_english:
+            title_parts.append(name_english)
         
+        # 添加banding信息（中学特有，SEO关键）
+        if school_type == 'secondary' and school_group:
+            # 格式化banding：BAND 1A -> Band 1A
+            banding_display = school_group.replace('BAND', 'Band').strip()
+            title_parts.append(banding_display)
+        elif school_type == 'secondary':
+            # 如果没有具体banding，添加通用关键词
+            title_parts.append("Banding")
+        
+        # 添加其他SEO关键词
+        title_parts.append("派位 | 校網 | 排名")
+        
+        title = " | ".join(title_parts)
+        
+        # 构建包含关键词的description（SEO优化）
+        desc_parts = [name]
+        
+        # 添加英文名称
+        if name_english:
+            desc_parts.append(name_english)
+        
+        # 添加banding信息（SEO关键）
+        if school_type == 'secondary' and school_group:
+            banding_display = school_group.replace('BAND', 'Band').strip()
+            desc_parts.append(banding_display)
+        elif school_type == 'secondary':
+            desc_parts.append("Banding")
+        
+        # 添加其他关键信息
+        if district:
+            desc_parts.append(f"{district}區")
+        if category:
+            cat_map = {'elite': '名校联盟', 'traditional': '传统名校', 'direct': '直资', 'government': '官立', 'private': '私立'}
+            desc_parts.append(cat_map.get(category, category))
         if gender:
             gender_map = {'coed': '男女校', 'boys': '男校', 'girls': '女校'}
             desc_parts.append(gender_map.get(gender, gender))
-            
-        if tuition:
-            desc_parts.append(f"学费: {tuition}")
-            
-        description = f"查看{name}的详细资料：{' | '.join(desc_parts)}。提供全面的升学数据、面试题目、入学申请资讯。"
+        
+        # 添加长尾关键词（SEO关键）
+        long_tail_keywords = "派位、校網、校風、排名、入大學、學費、入學申請、面試"
+        if school_type == 'secondary':
+            long_tail_keywords = f"Band、Banding、{long_tail_keywords}"
+        
+        description = "：".join(desc_parts) + f"。{long_tail_keywords}。查看詳細資料、升學數據、面試題目。"
         
     # 3. Read Template
     html_content = get_index_html_content()
@@ -259,6 +296,18 @@ def seo_school_detail_view(request, school_type, school_id):
         }
     }
     if school:
+        # 添加英文名称
+        if name_english:
+            json_ld_data["alternateName"] = name_english
+        
+        # 添加banding信息（中学特有）
+        if school_type == 'secondary' and school_group:
+            json_ld_data["identifier"] = {
+                "@type": "PropertyValue",
+                "name": "School Banding",
+                "value": school_group.replace('BAND', 'Band').strip()
+            }
+        
         if hasattr(school, 'phone') and school.phone:
             json_ld_data["telephone"] = school.phone
         if hasattr(school, 'website') and school.website:
@@ -301,16 +350,54 @@ def seo_school_detail_view(request, school_type, school_id):
         if feats:
             features_html = "<ul>" + "".join([f"<li>{f}</li>" for f in feats]) + "</ul>"
             
+    # 构建包含更多关键词的隐藏SEO内容
+    banding_info = ""
+    school_group_val = ""
+    if school and school_type == 'secondary':
+        school_group_val = getattr(school, 'school_group', '') or ""
+        if school_group_val:
+            banding_display = school_group_val.replace('BAND', 'Band').strip()
+            banding_info = f'<h2>{name} Banding</h2><h2>{name} Band</h2><p>{name} {banding_display}</p>'
+        else:
+            banding_info = f'<h2>{name} Banding</h2><h2>{name} Band</h2>'
+    
+    # 构建长尾关键词段落
+    long_tail_text = ""
+    if school and name:
+        keywords_list = [
+            f"{name} 派位",
+            f"{name} 校網",
+            f"{name} 校風",
+            f"{name} 排名",
+            f"{name} 入大學",
+            f"{name} 學費",
+            f"{name} 入學申請",
+            f"{name} 面試"
+        ]
+        if school_type == 'secondary':
+            keywords_list.insert(0, f"{name} Banding")
+            keywords_list.insert(1, f"{name} Band")
+        long_tail_text = f'<p>{"、".join(keywords_list)}</p>'
+    
+    # 构建Band信息（如果有）
+    band_dt_dd = ""
+    if school and school_type == 'secondary':
+        band_value = school_group_val if school_group_val else "未分类"
+        band_dt_dd = f'<dt>Band</dt><dd>{band_value}</dd>'
+    
     body_content = f"""
     <div style="position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
         <h1>{name if school else title}</h1>
+        {banding_info}
         <p>{description}</p>
         <dl>
             <dt>区域</dt><dd>{district if school else ''}</dd>
             <dt>类别</dt><dd>{category if school else ''}</dd>
+            {band_dt_dd}
             <dt>学费</dt><dd>{tuition if school else ''}</dd>
             <dt>地址</dt><dd>{getattr(school, 'address', '') if school else ''}</dd>
         </dl>
+        {long_tail_text}
         {features_html}
         <a href="{url}">查看详情</a>
     </div>

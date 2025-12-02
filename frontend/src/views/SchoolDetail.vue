@@ -44,6 +44,13 @@
       <!-- 学校名称和状态 -->
       <div v-else class="header">
         <h1 class="school-name">{{ displayName }}</h1>
+        
+        <!-- Banding信息（中学特有，SEO关键） -->
+        <div v-if="school.type === 'secondary' && school.schoolGroup" class="banding-badge">
+          <span class="banding-label">Band</span>
+          <span class="banding-value">{{ school.schoolGroup.replace('BAND', 'Band').trim() }}</span>
+        </div>
+        
         <div class="school-meta">
           <span class="district">{{ districtText }}</span>
           <span class="separator">|</span>
@@ -1200,6 +1207,30 @@ const formatDateRangeForP1 = (start?: string, end?: string): string => {
   font-weight: 700;
   color: #2c3e50;
   margin: 0 0 8px 0;
+}
+
+/* Banding Badge (SEO关键元素) */
+.banding-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.banding-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.banding-value {
+  font-weight: 600;
 }
 
 .school-meta {
