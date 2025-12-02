@@ -425,7 +425,7 @@
 
         <!-- 联络信息部分 -->
         <section v-if="school.contact" class="contact">
-          <h3>📞 {{ convertIfNeeded('联络信息') }}s</h3>
+          <h3>📞 {{ convertIfNeeded('联络信息') }}</h3>
           <div class="contact-info">
             <div v-if="school.contact.address" class="contact-item">
               <label>{{ convertIfNeeded('地址') }}：</label>
