@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-11-24T23:58:57.803872",
-  "total_schools": 279,
+  "generated_at": "2025-12-03T00:31:15.828694",
+  "total_schools": 291,
   "schools": [
     {
       "primary_school": "寶血會思源學校",
@@ -530,6 +530,170 @@
         }
       },
       "district": "中西区"
+    },
+    {
+      "primary_school": "嘉諾撒小學（新蒲崗）",
+      "total_students": 70,
+      "school_total_from_excel": 144,
+      "band1_students": 69,
+      "band1_rate": 98.57,
+      "band_distribution": {
+        "Band 1A": 14,
+        "Band 1B": 36,
+        "Band 1C": 19,
+        "Band 2": 1
+      },
+      "secondary_schools": {
+        "中華基督教會協和書院": 14,
+        "德愛中學": 14,
+        "保良局第一張永慶中學": 8,
+        "保良局何蔭棠中學": 8,
+        "可立中學(嗇色園主辦)": 5,
+        "東華三院黃笏南中學": 1,
+        "聖言中學": 1,
+        "迦密中學": 1,
+        "基督教中國佈道會聖道迦南書院": 1,
+        "香港神託會培基書院": 1,
+        "播道書院": 1,
+        "匯基書院(東九龍)": 1,
+        "協恩中學": 1,
+        "德望學校": 1,
+        "保良局羅傑承(一九八三)中學": 1,
+        "基督教宣道會宣基中學": 1,
+        "荃灣官立中學": 1,
+        "聖芳濟書院": 1,
+        "觀塘瑪利諾書院": 1,
+        "五旬節林漢光中學": 1,
+        "嘉諾撒聖家書院": 1,
+        "九龍真光中學": 1,
+        "天主教郭得勝中學": 1,
+        "寶血會上智英文書院": 1,
+        "伊利沙伯中學": 1,
+        "華仁書院(九龍)": 1
+      },
+      "unmatched_schools": [],
+      "band1_rate_null": false,
+      "yearly_stats": {
+        "2025": {
+          "total": 144,
+          "band1": 69,
+          "rate": 47.92,
+          "schools": {
+            "保良局第一張永慶中學": {
+              "count": 8,
+              "band": "Band 1A"
+            },
+            "聖言中學": {
+              "count": 1,
+              "band": "Band 1A"
+            },
+            "迦密中學": {
+              "count": 1,
+              "band": "Band 1A"
+            },
+            "協恩中學": {
+              "count": 1,
+              "band": "Band 1A"
+            },
+            "德望學校": {
+              "count": 1,
+              "band": "Band 1A"
+            },
+            "荃灣官立中學": {
+              "count": 1,
+              "band": "Band 1A"
+            },
+            "寶血會上智英文書院": {
+              "count": 1,
+              "band": "Band 1A"
+            },
+            "中華基督教會協和書院": {
+              "count": 14,
+              "band": "Band 1B"
+            },
+            "保良局何蔭棠中學": {
+              "count": 8,
+              "band": "Band 1B"
+            },
+            "東華三院黃笏南中學": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "香港神託會培基書院": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "播道書院": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "匯基書院(東九龍)": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "保良局羅傑承(一九八三)中學": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "基督教宣道會宣基中學": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "聖芳濟書院": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "觀塘瑪利諾書院": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "五旬節林漢光中學": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "嘉諾撒聖家書院": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "九龍真光中學": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "天主教郭得勝中學": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "伊利沙伯中學": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "華仁書院(九龍)": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "德愛中學": {
+              "count": 14,
+              "band": "Band 1C"
+            },
+            "可立中學(嗇色園主辦)": {
+              "count": 5,
+              "band": "Band 1C"
+            },
+            "基督教中國佈道會聖道迦南書院": {
+              "count": 1,
+              "band": "Band 2"
+            }
+          },
+          "band_dist": {
+            "Band 1A": 14,
+            "Band 1B": 36,
+            "Band 1C": 19,
+            "Band 2": 1
+          },
+          "unmatched": []
+        }
+      },
+      "district": "黄大仙区"
     },
     {
       "primary_school": "聖公會基榮小學",
@@ -1238,9 +1402,9 @@
         "聖母書院": 1
       },
       "unmatched_schools": [
-        "國際基督教優質音樂中學",
         "宣道國際學校",
-        "啟思中學"
+        "啟思中學",
+        "國際基督教優質音樂中學"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -2000,8 +2164,8 @@
         "聖羅撒書院": 1
       },
       "unmatched_schools": [
-        "NORD ANGLIA INTERNATIONAL SCHOOL",
-        "HKGUA COLLEGE"
+        "HKGUA COLLEGE",
+        "NORD ANGLIA INTERNATIONAL SCHOOL"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -3263,9 +3427,9 @@
         "聖羅撒書院": 1
       },
       "unmatched_schools": [
-        "啓思中學",
         "其他 (直資/國際/海外學校)",
-        "啟思中學"
+        "啟思中學",
+        "啓思中學"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -6797,9 +6961,9 @@
         "地利亞修女紀念學校(百老匯)": 1
       },
       "unmatched_schools": [
-        "啓思中學",
+        "啟思中學",
         "弘爵國際學校",
-        "啟思中學"
+        "啓思中學"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -7260,8 +7424,8 @@
       },
       "unmatched_schools": [
         "聖道百卉書院",
-        "American School Hong Kong",
-        "國際基督教優質音樂中學暨小學"
+        "國際基督教優質音樂中學暨小學",
+        "American School Hong Kong"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -8505,9 +8669,9 @@
         "聖公會聖三一堂中學": 1
       },
       "unmatched_schools": [
-        "啓思中學",
         "培僑中學​​",
-        "玫瑰崗中學"
+        "玫瑰崗中學",
+        "啓思中學"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -13596,11 +13760,11 @@
         "港大同學會書院": 1
       },
       "unmatched_schools": [
-        "其他",
         "耀中国际学校",
         "其他及海外升學",
+        "啟思中學",
         "香港道尔顿学校",
-        "啟思中學"
+        "其他"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -16719,8 +16883,8 @@
         "地利亞修女紀念學校(協和二中)": 1
       },
       "unmatched_schools": [
-        "佛教志蓮中學",
-        "香港兆基創意書院"
+        "香港兆基創意書院",
+        "佛教志蓮中學"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -17686,12 +17850,12 @@
         "潔心林炳炎中學": 1
       },
       "unmatched_schools": [
+        "美國國際學校",
         "大光德萃書院",
-        "國際基督教優質音樂中學暨小學",
         "耀中國際學校",
         "宣道國際學校",
-        "韓國國際學校",
-        "美國國際學校"
+        "國際基督教優質音樂中學暨小學",
+        "韓國國際學校"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -20238,8 +20402,8 @@
         "迦密唐賓南紀念中學": 1
       },
       "unmatched_schools": [
-        "葛約伯類書院",
-        "香港兆基創意書院"
+        "香港兆基創意書院",
+        "葛約伯類書院"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -30136,10 +30300,10 @@
         "仁濟醫院王華湘中學": 1
       },
       "unmatched_schools": [
-        "宣基中學",
-        "NAIS諾德安達國際學校",
+        "香港兆基創意書院",
         "猶太教國際學校",
-        "香港兆基創意書院"
+        "宣基中學",
+        "NAIS諾德安達國際學校"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -30997,6 +31161,225 @@
         }
       },
       "district": "荃湾区"
+    },
+    {
+      "primary_school": "九龍城浸信會禧年小學",
+      "total_students": 86,
+      "school_total_from_excel": 96,
+      "band1_students": 37,
+      "band1_rate": 43.02,
+      "band_distribution": {
+        "Band 1A": 9,
+        "Band 1B": 25,
+        "Band 2B": 8,
+        "未知": 3,
+        "Band 2": 5,
+        "Band 1C": 3,
+        "Band 2C": 14,
+        "Band 2A": 7,
+        "Band 3A": 7,
+        "Band 3": 3,
+        "Band 3B": 2
+      },
+      "secondary_schools": {
+        "香港中國婦女會馮堯敬紀念中學": 7,
+        "沙田官立中學": 6,
+        "香港中文大學校友會聯會陳震夏中學": 6,
+        "天主教郭得勝中學": 5,
+        "馬鞍山崇真中學": 5,
+        "五育中學": 5,
+        "香港神託會培基書院": 4,
+        "聖公會曾肇添中學": 4,
+        "沙田培英中學": 4,
+        "保良局胡忠中學": 4,
+        "羅定邦中學": 3,
+        "浸信會呂明才中學": 3,
+        "聖母無玷聖心書院": 3,
+        "聖羅撒書院": 3,
+        "台山商會中學": 3,
+        "沙田循道衛理中學": 2,
+        "賽馬會體藝中學": 2,
+        "潮州會館中學": 2,
+        "拔萃女書院": 1,
+        "匯基書院(東九龍)": 1,
+        "大光德萃書院": 1,
+        "基督教中國佈道會聖道迦南書院": 1,
+        "沙田崇真中學": 1,
+        "沙田蘇浙公學": 1,
+        "五旬節林漢光中學": 1,
+        "香港九龍塘基督教中華宣道會鄭榮之中學": 1,
+        "青年會書院": 1,
+        "梁文燕紀念中學(沙田)": 1,
+        "馬鞍山聖若瑟中學": 1,
+        "曾璧山(崇蘭)中學": 1,
+        "梁式芝書院": 1,
+        "南屯門官立中學": 1,
+        "中華基督教會譚李麗芬紀念中學": 1
+      },
+      "unmatched_schools": [
+        "沙田循道衛理中學",
+        "大光德萃書院"
+      ],
+      "band1_rate_null": false,
+      "yearly_stats": {
+        "2025": {
+          "total": 96,
+          "band1": 37,
+          "rate": 38.54,
+          "schools": {
+            "拔萃女書院": {
+              "count": 1,
+              "band": "Band 1A"
+            },
+            "聖公會曾肇添中學": {
+              "count": 4,
+              "band": "Band 1A"
+            },
+            "浸信會呂明才中學": {
+              "count": 3,
+              "band": "Band 1A"
+            },
+            "沙田崇真中學": {
+              "count": 1,
+              "band": "Band 1A"
+            },
+            "匯基書院(東九龍)": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "香港神託會培基書院": {
+              "count": 4,
+              "band": "Band 1B"
+            },
+            "沙田官立中學": {
+              "count": 6,
+              "band": "Band 1B"
+            },
+            "天主教郭得勝中學": {
+              "count": 5,
+              "band": "Band 1B"
+            },
+            "沙田培英中學": {
+              "count": 4,
+              "band": "Band 1B"
+            },
+            "聖羅撒書院": {
+              "count": 3,
+              "band": "Band 1B"
+            },
+            "沙田蘇浙公學": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "五旬節林漢光中學": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "賽馬會體藝中學": {
+              "count": 2,
+              "band": "Band 1C"
+            },
+            "香港九龍塘基督教中華宣道會鄭榮之中學": {
+              "count": 1,
+              "band": "Band 1C"
+            },
+            "馬鞍山崇真中學": {
+              "count": 5,
+              "band": "Band 2A"
+            },
+            "馬鞍山聖若瑟中學": {
+              "count": 1,
+              "band": "Band 2A"
+            },
+            "梁式芝書院": {
+              "count": 1,
+              "band": "Band 2A"
+            },
+            "羅定邦中學": {
+              "count": 3,
+              "band": "Band 2B"
+            },
+            "保良局胡忠中學": {
+              "count": 4,
+              "band": "Band 2B"
+            },
+            "青年會書院": {
+              "count": 1,
+              "band": "Band 2B"
+            },
+            "香港中文大學校友會聯會陳震夏中學": {
+              "count": 6,
+              "band": "Band 2C"
+            },
+            "梁文燕紀念中學(沙田)": {
+              "count": 1,
+              "band": "Band 2C"
+            },
+            "香港中國婦女會馮堯敬紀念中學": {
+              "count": 7,
+              "band": "Band 2C"
+            },
+            "基督教中國佈道會聖道迦南書院": {
+              "count": 1,
+              "band": "Band 2"
+            },
+            "聖母無玷聖心書院": {
+              "count": 3,
+              "band": "Band 2"
+            },
+            "南屯門官立中學": {
+              "count": 1,
+              "band": "Band 2"
+            },
+            "五育中學": {
+              "count": 5,
+              "band": "Band 3A"
+            },
+            "潮州會館中學": {
+              "count": 2,
+              "band": "Band 3A"
+            },
+            "曾璧山(崇蘭)中學": {
+              "count": 1,
+              "band": "Band 3B"
+            },
+            "中華基督教會譚李麗芬紀念中學": {
+              "count": 1,
+              "band": "Band 3B"
+            },
+            "台山商會中學": {
+              "count": 3,
+              "band": "Band 3"
+            },
+            "大光德萃書院": {
+              "count": 1,
+              "band": "未知"
+            },
+            "沙田循道衛理中學": {
+              "count": 2,
+              "band": "未知"
+            }
+          },
+          "band_dist": {
+            "Band 1A": 9,
+            "Band 1B": 25,
+            "Band 2B": 8,
+            "未知": 3,
+            "Band 2": 5,
+            "Band 1C": 3,
+            "Band 2C": 14,
+            "Band 2A": 7,
+            "Band 3A": 7,
+            "Band 3": 3,
+            "Band 3B": 2
+          },
+          "unmatched": [
+            "大光德萃書院",
+            "沙田循道衛理中學"
+          ]
+        }
+      },
+      "district": "沙田区"
     },
     {
       "primary_school": "路德會聖十架學校",
@@ -36515,9 +36898,9 @@
         "衞理中學​​": 0
       },
       "unmatched_schools": [
+        "衞理中學​​",
         "衛理中學​​",
         "顯理中學​​",
-        "衞理中學​​",
         "慈幼中學​​"
       ],
       "band1_rate_null": false,
@@ -37202,6 +37585,170 @@
         }
       },
       "district": "荃湾区"
+    },
+    {
+      "primary_school": "東華三院李賜豪小學",
+      "total_students": 60,
+      "school_total_from_excel": 72,
+      "band1_students": 21,
+      "band1_rate": 35.0,
+      "band_distribution": {
+        "Band 1A": 1,
+        "Band 1B": 3,
+        "Band 1C": 17,
+        "Band 2A": 3,
+        "Band 2B": 12,
+        "Band 2C": 6,
+        "Band 2": 1,
+        "Band 3A": 16,
+        "Band 3C": 1
+      },
+      "secondary_schools": {
+        "香港鄧鏡波書院": 9,
+        "嘉諾撒聖方濟各書院": 7,
+        "聖公會鄧肇堅中學": 7,
+        "東華三院李潤田紀念中學": 6,
+        "鄧肇堅維多利亞官立中學": 6,
+        "佛教黃鳳翎中學": 4,
+        "鄧鏡波學校": 3,
+        "聖保祿中學": 2,
+        "皇仁書院": 1,
+        "香港華仁書院": 1,
+        "嘉諾撒書院": 1,
+        "聖公會呂明才中學": 1,
+        "可立中學 (嗇色園主辦)": 1,
+        "將軍澳官立中學": 1,
+        "衞理中學": 1,
+        "金文泰中學": 1,
+        "保良局甲子何玉清中學": 1,
+        "何文田官立中學": 1,
+        "慈幼英文學校": 1,
+        "五邑司徒浩中學": 1,
+        "嘉諾撒培德書院": 1,
+        "培英中學": 1,
+        "炮台山循道衞理中學": 1,
+        "香港航海學校": 1
+      },
+      "unmatched_schools": [],
+      "band1_rate_null": false,
+      "yearly_stats": {
+        "2025": {
+          "total": 72,
+          "band1": 21,
+          "rate": 29.17,
+          "schools": {
+            "皇仁書院": {
+              "count": 1,
+              "band": "Band 1A"
+            },
+            "香港華仁書院": {
+              "count": 1,
+              "band": "Band 1B"
+            },
+            "聖保祿中學": {
+              "count": 2,
+              "band": "Band 1B"
+            },
+            "嘉諾撒聖方濟各書院": {
+              "count": 7,
+              "band": "Band 1C"
+            },
+            "聖公會鄧肇堅中學": {
+              "count": 7,
+              "band": "Band 1C"
+            },
+            "嘉諾撒書院": {
+              "count": 1,
+              "band": "Band 1C"
+            },
+            "聖公會呂明才中學": {
+              "count": 1,
+              "band": "Band 1C"
+            },
+            "可立中學 (嗇色園主辦)": {
+              "count": 1,
+              "band": "Band 1C"
+            },
+            "將軍澳官立中學": {
+              "count": 1,
+              "band": "Band 2A"
+            },
+            "衞理中學": {
+              "count": 1,
+              "band": "Band 2A"
+            },
+            "炮台山循道衞理中學": {
+              "count": 1,
+              "band": "Band 2A"
+            },
+            "香港鄧鏡波書院": {
+              "count": 9,
+              "band": "Band 2B"
+            },
+            "金文泰中學": {
+              "count": 1,
+              "band": "Band 2B"
+            },
+            "何文田官立中學": {
+              "count": 1,
+              "band": "Band 2B"
+            },
+            "慈幼英文學校": {
+              "count": 1,
+              "band": "Band 2B"
+            },
+            "鄧鏡波學校": {
+              "count": 3,
+              "band": "Band 2C"
+            },
+            "五邑司徒浩中學": {
+              "count": 1,
+              "band": "Band 2C"
+            },
+            "嘉諾撒培德書院": {
+              "count": 1,
+              "band": "Band 2C"
+            },
+            "培英中學": {
+              "count": 1,
+              "band": "Band 2C"
+            },
+            "保良局甲子何玉清中學": {
+              "count": 1,
+              "band": "Band 2"
+            },
+            "東華三院李潤田紀念中學": {
+              "count": 6,
+              "band": "Band 3A"
+            },
+            "佛教黃鳳翎中學": {
+              "count": 4,
+              "band": "Band 3A"
+            },
+            "鄧肇堅維多利亞官立中學": {
+              "count": 6,
+              "band": "Band 3A"
+            },
+            "香港航海學校": {
+              "count": 1,
+              "band": "Band 3C"
+            }
+          },
+          "band_dist": {
+            "Band 1A": 1,
+            "Band 1B": 3,
+            "Band 1C": 17,
+            "Band 2A": 3,
+            "Band 2B": 12,
+            "Band 2C": 6,
+            "Band 2": 1,
+            "Band 3A": 16,
+            "Band 3C": 1
+          },
+          "unmatched": []
+        }
+      },
+      "district": "灣仔区"
     },
     {
       "primary_school": "祖堯天主教小學",
@@ -41652,10 +42199,10 @@
         "佛教筏可紀念中學": 1
       },
       "unmatched_schools": [
-        "中華基督教會公理書院",
-        "深圳市寶安區中英公學",
         "香港美國學校",
-        "香港教育工作者聯會黃楚標中學"
+        "中華基督教會公理書院",
+        "香港教育工作者聯會黃楚標中學",
+        "深圳市寶安區中英公學"
       ],
       "band1_rate_null": false,
       "yearly_stats": {
@@ -43807,9 +44354,9 @@
         "裘锦秋中学(葵涌)": 0
       },
       "unmatched_schools": [
-        "圣公会梁季彝中学",
         "香港兆基创意书院",
-        "黄色园主办可艺中学"
+        "黄色园主办可艺中学",
+        "圣公会梁季彝中学"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
@@ -43950,10 +44497,10 @@
         "天主教慈幼會伍少梅中學": 0
       },
       "unmatched_schools": [
-        "明愛聖約瑟中學",
+        "荃灣聖方濟中學",
         "葵涌裘錦秋中學",
         "保良局羅傑承 (一九八三) 中學",
-        "荃灣聖方濟中學"
+        "明愛聖約瑟中學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -44180,10 +44727,10 @@
         "保良局馬錦明中學": 0
       },
       "unmatched_schools": [
-        "國際基督教優質音樂中學",
-        "地利亞修女紀念學校 (吉利徑)",
         "裘錦秋中學 (葵涌)",
-        "地利亞修女紀念學校 (百老匯)"
+        "地利亞修女紀念學校 (百老匯)",
+        "國際基督教優質音樂中學",
+        "地利亞修女紀念學校 (吉利徑)"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -44582,10 +45129,10 @@
         "佛教志蓮中學": 0
       },
       "unmatched_schools": [
+        "彩虹天主教英文中學",
         "佛教志蓮中學",
-        "九龍塘學校 (中學部)",
         "梁文燕紀念中學 (沙田)",
-        "彩虹天主教英文中學"
+        "九龍塘學校 (中學部)"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
@@ -45085,50 +45632,212 @@
       "district": "黄大仙区"
     },
     {
-      "primary_school": "九龍城浸信會禧年小學",
+      "primary_school": "中華基督教會灣仔堂基道小學（九龍城）",
       "total_students": 0,
-      "school_total_from_excel": 96,
+      "school_total_from_excel": 72,
       "band1_students": 0,
       "band1_rate": 0,
       "band_distribution": {
-        "未知": 0,
-        "Band 1A": 0,
         "Band 1B": 0,
-        "Band 2A": 0,
-        "Band 2": 0,
-        "Band 2B": 0,
+        "Band 1A": 0,
+        "未知": 0,
         "Band 1C": 0,
-        "Band 2C": 0
+        "Band 2C": 0,
+        "Band 2B": 0
       },
       "secondary_schools": {
-        "香港耀中國際學校": 0,
-        "協同國際學校": 0,
-        "沙田崇真中學": 0,
-        "聖公會林裘謀中學": 0,
-        "沙田培英中學": 0,
-        "沙田循道衛理中學": 0,
-        "沙田官立中學": 0,
+        "拔萃男書院": 0,
+        "喇沙書院": 0,
+        "德望學校": 0,
+        "聖保羅書院": 0,
+        "華仁書院 (九龍)": 0,
+        "香港真光中學": 0,
+        "迦密中學": 0,
+        "華英中學": 0,
+        "旅港開平商會中學": 0,
+        "中華基督教會協和中學": 0,
+        "民生書院": 0,
+        "何明華會督銀禧中學": 0,
+        "基督教女青年會丘佐榮中學": 0,
         "東華三院黃笏南中學": 0,
-        "中華基督教會全完中學": 0,
-        "聖母無玷聖心書院": 0,
-        "五旬節林漢光中學": 0,
-        "馬鞍山崇真中學": 0,
-        "保良局胡忠中學": 0,
-        "基督書院": 0,
-        "香港九龍塘基督教中華宣道會鄭榮之中學": 0,
-        "東華三院馮黃鳳亭中學": 0,
-        "馬鞍山聖若瑟中學": 0,
-        "香港中文大學校友會聯會陳震夏中學": 0,
-        "迦密聖道中學": 0
+        "滙基書院 (東九龍)": 0,
+        "九龍真光中學": 0,
+        "沙田崇真中學": 0,
+        "聖士提反書院": 0,
+        "荃灣官立中學": 0,
+        "聖羅撒書院": 0,
+        "保良局顏寶鈴書院": 0,
+        "陳瑞祺 (喇沙) 書院": 0,
+        "文理書院 (九龍)": 0,
+        "香港培道中學": 0,
+        "香港神託會培基書院": 0,
+        "順德聯誼總會胡兆熾中學": 0,
+        "優才 (楊殷有娣) 書院": 0,
+        "基督教崇真中學": 0,
+        "羅氏基金中學": 0,
+        "羅定邦中學": 0,
+        "培僑書院": 0,
+        "中華基督教會基道中學": 0
       },
       "unmatched_schools": [
-        "協同國際學校",
-        "沙田循道衛理中學",
-        "香港耀中國際學校"
+        "陳瑞祺 (喇沙) 書院",
+        "華仁書院 (九龍)",
+        "文理書院 (九龍)",
+        "優才 (楊殷有娣) 書院"
       ],
       "band1_rate_null": true,
-      "yearly_stats": {},
-      "district": "沙田区"
+      "yearly_stats": {
+        "2025": {
+          "total": 72,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "喇沙書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "德望學校": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖保羅書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "迦密中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "華英中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "旅港開平商會中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "沙田崇真中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "荃灣官立中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "培僑書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "拔萃男書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港真光中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "中華基督教會協和中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "民生書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "何明華會督銀禧中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "東華三院黃笏南中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "九龍真光中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖士提反書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖羅撒書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "保良局顏寶鈴書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港培道中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港神託會培基書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "基督教崇真中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "基督教女青年會丘佐榮中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "羅氏基金中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "順德聯誼總會胡兆熾中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "羅定邦中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "滙基書院 (東九龍)": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "中華基督教會基道中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "華仁書院 (九龍)": {
+              "count": "未知",
+              "band": "未知"
+            },
+            "陳瑞祺 (喇沙) 書院": {
+              "count": "未知",
+              "band": "未知"
+            },
+            "文理書院 (九龍)": {
+              "count": "未知",
+              "band": "未知"
+            },
+            "優才 (楊殷有娣) 書院": {
+              "count": "未知",
+              "band": "未知"
+            }
+          },
+          "band_dist": {
+            "Band 1B": 0,
+            "Band 1A": 0,
+            "未知": 0,
+            "Band 1C": 0,
+            "Band 2C": 0,
+            "Band 2B": 0
+          },
+          "unmatched": [
+            "華仁書院 (九龍)",
+            "陳瑞祺 (喇沙) 書院",
+            "文理書院 (九龍)",
+            "優才 (楊殷有娣) 書院"
+          ]
+        }
+      },
+      "district": "九龙城区"
     },
     {
       "primary_school": "九龍城浸信會禧年（恩平）小學",
@@ -45168,8 +45877,8 @@
         "迦密聖道中學": 0
       },
       "unmatched_schools": [
-        "協同國際學校",
         "沙田循道衛理中學",
+        "協同國際學校",
         "香港耀中國際學校"
       ],
       "band1_rate_null": true,
@@ -45224,8 +45933,8 @@
       },
       "unmatched_schools": [
         "九龙塘中学",
-        "香港兆基创意书院",
-        "旅港开平商会学校"
+        "旅港开平商会学校",
+        "香港兆基创意书院"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -45962,12 +46671,12 @@
         "慕光英文書院": 0
       },
       "unmatched_schools": [
-        "九龍真光書院",
-        "瑪利諾修院學校 (中學部)",
-        "西貢崇真天主教學校 (中學部)",
         "保良局唐乃勤書院",
+        "西貢崇真天主教學校 (中學部)",
+        "聖公會梁季彝中學",
         "華仁書院 (九龍)",
-        "聖公會梁季彝中學"
+        "九龍真光書院",
+        "瑪利諾修院學校 (中學部)"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -46444,6 +47153,94 @@
       "district": "观塘区"
     },
     {
+      "primary_school": "佛教黃焯菴小學",
+      "total_students": 0,
+      "school_total_from_excel": 24,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 1B": 0,
+        "Band 1C": 0,
+        "Band 2B": 0,
+        "Band 2A": 0,
+        "Band 2": 0,
+        "Band 3A": 0
+      },
+      "secondary_schools": {
+        "中華基金中學": 0,
+        "聖保祿中學": 0,
+        "聖公會鄧肇堅中學": 0,
+        "嘉諾撒聖方濟各書院": 0,
+        "金文泰中學": 0,
+        "顯理中學": 0,
+        "寶血女子中學": 0,
+        "香港鄧鏡波書院": 0,
+        "福建中學 (小西灣)": 0,
+        "寶血女子佛教黃鳳翎中學": 0
+      },
+      "unmatched_schools": [],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 24,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "中華基金中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖保祿中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "福建中學 (小西灣)": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖公會鄧肇堅中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "嘉諾撒聖方濟各書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "顯理中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "金文泰中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "香港鄧鏡波書院": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "寶血女子中學": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "寶血女子佛教黃鳳翎中學": {
+              "count": "未知",
+              "band": "Band 3A"
+            }
+          },
+          "band_dist": {
+            "Band 1B": 0,
+            "Band 1C": 0,
+            "Band 2B": 0,
+            "Band 2A": 0,
+            "Band 2": 0,
+            "Band 3A": 0
+          },
+          "unmatched": []
+        }
+      },
+      "district": "灣仔区"
+    },
+    {
       "primary_school": "保良局王賜豪（田心穀）小學",
       "total_students": 0,
       "school_total_from_excel": 96,
@@ -46491,9 +47288,9 @@
         "樂善堂楊葛小琳中學": 0
       },
       "unmatched_schools": [
+        "香港兆基創意書院",
         "沙田循道衛理中學",
-        "培基書院",
-        "香港兆基創意書院"
+        "培基書院"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
@@ -46618,9 +47415,9 @@
         "佛教葉紀南紀念中學": 0
       },
       "unmatched_schools": [
-        "保良局羅傑承 (一九八三) 中學",
         "彩虹天主教英文中學",
-        "可風中學 (嗇色園主辦)"
+        "可風中學 (嗇色園主辦)",
+        "保良局羅傑承 (一九八三) 中學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -46805,8 +47602,8 @@
         "香港中文大學校友會聯會陳震夏中學": 0
       },
       "unmatched_schools": [
-        "基智中學",
-        "沙田循道衛理中學"
+        "沙田循道衛理中學",
+        "基智中學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
@@ -46840,8 +47637,8 @@
         "保良局羅傑承 (一九八三) 中學": 0
       },
       "unmatched_schools": [
-        "保良局羅傑承 (一九八三) 中學",
-        "可風中學 (嗇色園主辦)"
+        "可風中學 (嗇色園主辦)",
+        "保良局羅傑承 (一九八三) 中學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -47066,170 +47863,6 @@
       "unmatched_schools": [],
       "band1_rate_null": true,
       "yearly_stats": {},
-      "district": "黄大仙区"
-    },
-    {
-      "primary_school": "嘉諾撒小學（新蒲崗）",
-      "total_students": 0,
-      "school_total_from_excel": 144,
-      "band1_students": 0,
-      "band1_rate": 0,
-      "band_distribution": {
-        "Band 1A": 0,
-        "Band 1B": 0,
-        "Band 1C": 0,
-        "Band 2": 0
-      },
-      "secondary_schools": {
-        "保良局第一張永慶中學": 0,
-        "中華基督教會協和書院": 0,
-        "保良局何蔭棠中學": 0,
-        "德愛中學": 0,
-        "可立中學 (嗇色園主辦)": 0,
-        "東華三院黃笏南中學": 0,
-        "聖言中學": 0,
-        "迦密中學": 0,
-        "基督教中國佈道會聖道迦南書院": 0,
-        "華仁書院（九龍）": 0,
-        "伊利沙伯中學": 0,
-        "寶血會上智英文書院": 0,
-        "天主教郭得勝中學": 0,
-        "九龍真光中學": 0,
-        "嘉諾撒聖家書院": 0,
-        "五旬節林漢光中學": 0,
-        "觀塘瑪利諾書院": 0,
-        "聖芳濟書院": 0,
-        "荃灣官立中學": 0,
-        "基督教宣道會宣基中學": 0,
-        "保良局羅傑承（一九八三）中學": 0,
-        "協恩中學": 0,
-        "德望學校": 0,
-        "匯基書院（東九龍）": 0,
-        "香港神託會培基書院": 0,
-        "播道書院": 0
-      },
-      "unmatched_schools": [],
-      "band1_rate_null": true,
-      "yearly_stats": {
-        "2025": {
-          "total": 144,
-          "band1": 0,
-          "rate": 0.0,
-          "schools": {
-            "保良局第一張永慶中學": {
-              "count": "未知",
-              "band": "Band 1A"
-            },
-            "聖言中學": {
-              "count": "未知",
-              "band": "Band 1A"
-            },
-            "迦密中學": {
-              "count": "未知",
-              "band": "Band 1A"
-            },
-            "寶血會上智英文書院": {
-              "count": "未知",
-              "band": "Band 1A"
-            },
-            "荃灣官立中學": {
-              "count": "未知",
-              "band": "Band 1A"
-            },
-            "協恩中學": {
-              "count": "未知",
-              "band": "Band 1A"
-            },
-            "德望學校": {
-              "count": "未知",
-              "band": "Band 1A"
-            },
-            "中華基督教會協和書院": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "保良局何蔭棠中學": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "東華三院黃笏南中學": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "華仁書院（九龍）": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "伊利沙伯中學": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "天主教郭得勝中學": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "九龍真光中學": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "嘉諾撒聖家書院": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "五旬節林漢光中學": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "觀塘瑪利諾書院": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "聖芳濟書院": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "基督教宣道會宣基中學": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "保良局羅傑承（一九八三）中學": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "匯基書院（東九龍）": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "香港神託會培基書院": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "播道書院": {
-              "count": "未知",
-              "band": "Band 1B"
-            },
-            "德愛中學": {
-              "count": "未知",
-              "band": "Band 1C"
-            },
-            "可立中學 (嗇色園主辦)": {
-              "count": "未知",
-              "band": "Band 1C"
-            },
-            "基督教中國佈道會聖道迦南書院": {
-              "count": "未知",
-              "band": "Band 2"
-            }
-          },
-          "band_dist": {
-            "Band 1A": 0,
-            "Band 1B": 0,
-            "Band 1C": 0,
-            "Band 2": 0
-          },
-          "unmatched": []
-        }
-      },
       "district": "黄大仙区"
     },
     {
@@ -47808,18 +48441,18 @@
       "band1_rate": 0,
       "band_distribution": {
         "Band 1B": 0,
-        "未知": 0,
         "Band 1A": 0,
         "Band 1C": 0,
         "Band 2": 0,
         "Band 2A": 0,
+        "未知": 0,
         "Band 3A": 0,
         "Band 2C": 0,
         "Band 2B": 0
       },
       "secondary_schools": {
         "香港華仁書院": 0,
-        "華仁書院 (九龍)": 0,
+        "華仁書院(九龍)": 0,
         "保良局第一張永慶中學": 0,
         "保良局何蔭棠中學": 0,
         "中華基督教會協和書院": 0,
@@ -47848,11 +48481,144 @@
         "順德聯誼總會鄭裕彤中學": 0
       },
       "unmatched_schools": [
-        "華仁書院 (九龍)",
         "九龍文理書院"
       ],
       "band1_rate_null": true,
-      "yearly_stats": {},
+      "yearly_stats": {
+        "2025": {
+          "total": 96,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "保良局第一張永慶中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "香港華仁書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "華仁書院(九龍)": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "保良局何蔭棠中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "中華基督教會協和書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "東華三院黃笏南中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港培道中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "嘉諾撒聖家書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "順利天主教中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "天主教郭得勝中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "何明華會督銀禧中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "德愛中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖文德書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "可立中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "宣道會鄭榮之中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "寧波公學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "觀塘官立中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "東華三院張明添中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "香港神託會培敦中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "聖公會基孝中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "佛教覺光法師中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "佛教孔仙洲紀念中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "鄧鏡波學校": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "五旬節聖潔會永光書院": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "聖母書院": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "順德聯誼總會鄭裕彤中學": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "天主教伍華中學": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "九龍文理書院": {
+              "count": "未知",
+              "band": "未知"
+            }
+          },
+          "band_dist": {
+            "Band 1B": 0,
+            "Band 1A": 0,
+            "Band 1C": 0,
+            "Band 2": 0,
+            "Band 2A": 0,
+            "未知": 0,
+            "Band 3A": 0,
+            "Band 2C": 0,
+            "Band 2B": 0
+          },
+          "unmatched": [
+            "九龍文理書院"
+          ]
+        }
+      },
       "district": "黄大仙区"
     },
     {
@@ -47916,8 +48682,8 @@
         "佛教志蓮中學": 0
       },
       "unmatched_schools": [
-        "佛教志蓮中學",
         "西貢崇眞天主教學校 (中學部)",
+        "佛教志蓮中學",
         "聖公會梁季彝中學"
       ],
       "band1_rate_null": true,
@@ -48149,6 +48915,132 @@
       "district": "黄大仙区"
     },
     {
+      "primary_school": "天主教明德學校",
+      "total_students": 0,
+      "school_total_from_excel": 96,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 1A": 0,
+        "Band 1B": 0,
+        "Band 1C": 0,
+        "Band 2B": 0,
+        "Band 2A": 0
+      },
+      "secondary_schools": {
+        "皇仁書院": 0,
+        "英皇書院": 0,
+        "香港華仁書院": 0,
+        "英華女學校": 0,
+        "瑪利曼中學": 0,
+        "高主教書院": 0,
+        "聖保祿中學": 0,
+        "張祝珊英文中學": 0,
+        "聖馬可中學": 0,
+        "香港中國婦女會中學": 0,
+        "港島民生書院": 0,
+        "中華基金中學": 0,
+        "筲箕灣官立中學": 0,
+        "嘉諾撒書院": 0,
+        "金文泰中學": 0,
+        "衞理中學": 0,
+        "顯理中學": 0,
+        "中華傳道會劉永生中學": 0
+      },
+      "unmatched_schools": [],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 96,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "皇仁書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "英皇書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "英華女學校": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "張祝珊英文中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖馬可中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "香港中國婦女會中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "香港華仁書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "瑪利曼中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "高主教書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖保祿中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "港島民生書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "中華基金中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "筲箕灣官立中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "嘉諾撒書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "衞理中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "顯理中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "中華傳道會劉永生中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "金文泰中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            }
+          },
+          "band_dist": {
+            "Band 1A": 0,
+            "Band 1B": 0,
+            "Band 1C": 0,
+            "Band 2B": 0,
+            "Band 2A": 0
+          },
+          "unmatched": []
+        }
+      },
+      "district": "东区"
+    },
+    {
       "primary_school": "天主教柏德學校",
       "total_students": 0,
       "school_total_from_excel": 120,
@@ -48327,6 +49219,160 @@
       "district": "沙田区"
     },
     {
+      "primary_school": "天主教領島學校",
+      "total_students": 0,
+      "school_total_from_excel": 96,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 1B": 0,
+        "Band 1A": 0,
+        "Band 1C": 0,
+        "Band 2B": 0,
+        "Band 2": 0,
+        "Band 2C": 0,
+        "Band 3": 0,
+        "Band 3A": 0,
+        "Band 3C": 0
+      },
+      "secondary_schools": {
+        "瑪利曼中學": 0,
+        "東華三院黃笏南中學": 0,
+        "天主教郭得勝中學": 0,
+        "華英中學": 0,
+        "旅港開平商會中學": 0,
+        "香港培道中學": 0,
+        "基督教女青年會丘佐榮中學": 0,
+        "何文田官立中學": 0,
+        "順德聯誼總會胡兆熾中學": 0,
+        "五旬節中學": 0,
+        "鳳溪第一中學": 0,
+        "聖公會聖三一堂中學": 0,
+        "德蘭中學": 0,
+        "鄧鏡波學校": 0,
+        "余振強紀念中學": 0,
+        "新亞中學": 0,
+        "創知中學": 0,
+        "保良局唐乃勤初中書院": 0,
+        "彩虹邨天主教英文中學": 0,
+        "聖公會蔡功譜中學": 0,
+        "獻主會聖母院書院": 0,
+        "官立嘉道理爵士中學(西九龍)": 0
+      },
+      "unmatched_schools": [],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 96,
+          "band1": 0,
+          "rate": 30.0,
+          "schools": {
+            "華英中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "旅港開平商會中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "瑪利曼中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "東華三院黃笏南中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "天主教郭得勝中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港培道中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "基督教女青年會丘佐榮中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "何文田官立中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "順德聯誼總會胡兆熾中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "五旬節中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "德蘭中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "鄧鏡波學校": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "余振強紀念中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "新亞中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "創知中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "彩虹邨天主教英文中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "鳳溪第一中學": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "聖公會聖三一堂中學": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "保良局唐乃勤初中書院": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "獻主會聖母院書院": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "官立嘉道理爵士中學(西九龍)": {
+              "count": "未知",
+              "band": "Band 3C"
+            },
+            "聖公會蔡功譜中學": {
+              "count": "未知",
+              "band": "Band 3"
+            }
+          },
+          "band_dist": {
+            "Band 1B": 0,
+            "Band 1A": 0,
+            "Band 1C": 0,
+            "Band 2B": 0,
+            "Band 2": 0,
+            "Band 2C": 0,
+            "Band 3": 0,
+            "Band 3A": 0,
+            "Band 3C": 0
+          },
+          "unmatched": []
+        }
+      },
+      "district": "九龙城区"
+    },
+    {
       "primary_school": "天佑小學",
       "total_students": 0,
       "school_total_from_excel": 48,
@@ -48432,6 +49478,126 @@
         }
       },
       "district": "荃湾区"
+    },
+    {
+      "primary_school": "太古小學",
+      "total_students": 0,
+      "school_total_from_excel": 120,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 1A": 0,
+        "Band 1B": 0,
+        "Band 1C": 0,
+        "未知": 0
+      },
+      "secondary_schools": {
+        "庇理羅士女子中學": 0,
+        "沙田蘇浙公學": 0,
+        "張祝珊英文中學": 0,
+        "港島民生書院": 0,
+        "嘉諾撒書院": 0,
+        "筲箕灣官立中學": 0,
+        "聖保羅書院": 0,
+        "聖類斯書院": 0,
+        "聖馬可中學": 0,
+        "聖保祿中學": 0,
+        "香港華人基督教聯會真道書院": 0,
+        "中華基金中學": 0,
+        "英華女學校": 0,
+        "英皇書院": 0,
+        "優才 (楊殷有娣) 書院": 0,
+        "香港中國婦女會中學": 0
+      },
+      "unmatched_schools": [
+        "聖類斯書院",
+        "優才 (楊殷有娣) 書院"
+      ],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 120,
+          "band1": 0,
+          "rate": 50.0,
+          "schools": {
+            "庇理羅士女子中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "張祝珊英文中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖保羅書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖馬可中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "英華女學校": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "英皇書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "香港中國婦女會中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "沙田蘇浙公學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "港島民生書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖保祿中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "中華基金中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "嘉諾撒書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "筲箕灣官立中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "香港華人基督教聯會真道書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖類斯書院": {
+              "count": "未知",
+              "band": "未知"
+            },
+            "優才 (楊殷有娣) 書院": {
+              "count": "未知",
+              "band": "未知"
+            }
+          },
+          "band_dist": {
+            "Band 1A": 0,
+            "Band 1B": 0,
+            "Band 1C": 0,
+            "未知": 0
+          },
+          "unmatched": [
+            "聖類斯書院",
+            "優才 (楊殷有娣) 書院"
+          ]
+        }
+      },
+      "district": "东区"
     },
     {
       "primary_school": "寶血會嘉靈學校",
@@ -48659,8 +49825,8 @@
         "啓思中學": 0
       },
       "unmatched_schools": [
-        "啓思中學",
-        "九龍塘學校 (中學部)"
+        "九龍塘學校 (中學部)",
+        "啓思中學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
@@ -48811,8 +49977,8 @@
         "靈糧堂劉梅軒中學": 0
       },
       "unmatched_schools": [
-        "保良局蔡繼有學校",
-        "沙田循道衛理中學"
+        "沙田循道衛理中學",
+        "保良局蔡繼有學校"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
@@ -49249,10 +50415,10 @@
         "匯基書院 (東九龍)": 0
       },
       "unmatched_schools": [
-        "中華基督教協和書院",
-        "瑪利諾修院學校 (中學部)",
         "文理書院 (九龍)",
-        "培敦中學"
+        "瑪利諾修院學校 (中學部)",
+        "培敦中學",
+        "中華基督教協和書院"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
@@ -49333,6 +50499,111 @@
       "district": "黄大仙区"
     },
     {
+      "primary_school": "救世軍韋理夫人紀念學校",
+      "total_students": 0,
+      "school_total_from_excel": 96,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 1A": 0,
+        "Band 1B": 0,
+        "Band 1C": 0,
+        "Band 2A": 0,
+        "Band 2C": 0,
+        "Band 3": 0,
+        "Band 3A": 0
+      },
+      "secondary_schools": {
+        "張祝珊英文中學": 0,
+        "香港中國婦女會中學": 0,
+        "港島民生書院": 0,
+        "筲箕灣官立中學": 0,
+        "中華基金中學": 0,
+        "嘉諾撒書院": 0,
+        "衞理中學": 0,
+        "顯理中學": 0,
+        "漢華中學": 0,
+        "中華傳道會劉永生中學": 0,
+        "福建中學 (小西灣)": 0,
+        "嶺南衡怡紀念中學": 0,
+        "嶺南中學": 0
+      },
+      "unmatched_schools": [],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 96,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "張祝珊英文中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "香港中國婦女會中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "港島民生書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "中華基金中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "福建中學 (小西灣)": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "筲箕灣官立中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "嘉諾撒書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "衞理中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "顯理中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "中華傳道會劉永生中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "漢華中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "嶺南中學": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "嶺南衡怡紀念中學": {
+              "count": "未知",
+              "band": "Band 3"
+            }
+          },
+          "band_dist": {
+            "Band 1A": 0,
+            "Band 1B": 0,
+            "Band 1C": 0,
+            "Band 2A": 0,
+            "Band 2C": 0,
+            "Band 3": 0,
+            "Band 3A": 0
+          },
+          "unmatched": []
+        }
+      },
+      "district": "东区"
+    },
+    {
       "primary_school": "救恩學校",
       "total_students": 0,
       "school_total_from_excel": 48,
@@ -49387,12 +50658,12 @@
         "聖士提反堂中學": 0
       },
       "unmatched_schools": [
-        "國際基督教優質音樂中學暨小學",
-        "衛理中學",
-        "基督教廉縈傳庇青年會丘佐榮中學",
-        "國際學校",
         "海外升學",
-        "啟思中學"
+        "啟思中學",
+        "基督教廉縈傳庇青年會丘佐榮中學",
+        "衛理中學",
+        "國際學校",
+        "國際基督教優質音樂中學暨小學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -49679,36 +50950,36 @@
         "SKH LI PING SECONDARY SCHOOL": 0
       },
       "unmatched_schools": [
-        "CHINA HOLINESS COLLEGE",
-        "DELIA MEMORIAL SCHOOL (BROADWAY)",
+        "SKH ST MARY’S CHURCH MOK HING YIU COLLEGE",
+        "MARYKNOLL FATHERS' SCHOOL",
+        "SALESIANS OF DB NG SIU MUI SEC SCH",
+        "YU CHUN KEUNG MEMORIAL COLLEGE NO.2",
+        "QESOSA TONG KWOK WAH SECONDARY SCHOOL",
+        "BUDDHIST FAT HO MEMORIAL COLLEGE",
+        "WAH YAN COLLEGE, KOWLOON",
+        "PO LEUNG KUK NGAN PO LING COLLEGE",
+        "ST. MARGARET’S CO-EDUCATIONAL ENGLISH SECONDARY & PRIMARY SCHOOL",
         "HOLY TRINITY COLLEGE",
-        "ST FRANCIS XAVIER'S COLLEGE",
-        "HKSYC&IA WONG TAI SHAN MEMORIAL COLLEGE",
+        "DELIA MEMORIAL SCHOOL (BROADWAY)",
+        "DELIA MEMORIAL SCHOOL (GLEE PATH)",
+        "SKH LI PING SECONDARY SCHOOL",
+        "TAK NGA SECONDARY SCHOOL",
+        "CCC MING YIN COLLEGE",
+        "ISLAMIC KASIM TUET MEMORIAL COLLEGE",
+        "WAI KIU COLLEGE",
+        "BISHOP HALL JUBILEE SCHOOL",
+        "HKMA DAVID LI KWOK PO COLLEGE",
+        "CHINA HOLINESS COLLEGE",
+        "OUR LADY OF THE ROSARY COLLEGE",
         "SIR ELLIS KADOORIE SEC SCH (WEST KLN)",
         "CHEUNG SHA WAN CATHOLIC SECONDARY SCHOOL",
         "DELIA MEMORIAL SCHOOL (HIP WO)",
-        "WAH YAN COLLEGE HONG KONG",
-        "NEWMAN CATHOLIC COLLEGE",
-        "BUDDHIST FAT HO MEMORIAL COLLEGE",
-        "MARYKNOLL FATHERS' SCHOOL",
         "TAI PO SAM YUK ECONDARY SCHOOL",
-        "OUR LADY OF THE ROSARY COLLEGE",
-        "BISHOP HALL JUBILEE SCHOOL",
-        "HKMA DAVID LI KWOK PO COLLEGE",
-        "CCC MING YIN COLLEGE",
-        "PO LEUNG KUK NGAN PO LING COLLEGE",
-        "QESOSA TONG KWOK WAH SECONDARY SCHOOL",
-        "ISLAMIC KASIM TUET MEMORIAL COLLEGE",
-        "DELIA MEMORIAL SCHOOL (GLEE PATH)",
-        "YU CHUN KEUNG MEMORIAL COLLEGE NO.2",
+        "HKSYC&IA WONG TAI SHAN MEMORIAL COLLEGE",
+        "ST FRANCIS XAVIER'S COLLEGE",
+        "NEWMAN CATHOLIC COLLEGE",
         "PLK TONG NAI KAN JUNIOR SEC COLLEGE",
-        "SALESIANS OF DB NG SIU MUI SEC SCH",
-        "WAH YAN COLLEGE, KOWLOON",
-        "WAI KIU COLLEGE",
-        "SKH ST MARY’S CHURCH MOK HING YIU COLLEGE",
-        "TAK NGA SECONDARY SCHOOL",
-        "ST. MARGARET’S CO-EDUCATIONAL ENGLISH SECONDARY & PRIMARY SCHOOL",
-        "SKH LI PING SECONDARY SCHOOL"
+        "WAH YAN COLLEGE HONG KONG"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
@@ -49794,9 +51065,9 @@
         "東華三院馮黃鳳亭中學": 0
       },
       "unmatched_schools": [
-        "東華三院伍若瑜紀念中學",
+        "葵涌蘇浙中學",
         "保良局羅傑承 (一九八三) 中學",
-        "葵涌蘇浙中學"
+        "東華三院伍若瑜紀念中學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
@@ -50065,9 +51336,9 @@
         "保良局羅傑承 (一九八三) 中學": 0
       },
       "unmatched_schools": [
+        "可風中學 (嗇色園主辦)",
         "保良局羅傑承 (一九八三) 中學",
-        "華仁書院 (九龍)",
-        "可風中學 (嗇色園主辦)"
+        "華仁書院 (九龍)"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -50627,7 +51898,118 @@
         "中華基督教會銘賢學校"
       ],
       "band1_rate_null": true,
-      "yearly_stats": {},
+      "yearly_stats": {
+        "2025": {
+          "total": 96,
+          "band1": 0,
+          "rate": 80.0,
+          "schools": {
+            "寶血會上智英文書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "港大同學會書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "英華書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖保禄學校": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "荃灣官立中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "浸信會呂明才中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖母玫瑰書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "基督教崇真中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "九龍真光中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港培道中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "華仁書院(九龍)": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "真光女書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "風采中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "東華三院黄笏南中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "何明華會督銀禧中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港管理專業協會李國寶中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖方濟書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "德雅中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖文德書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "瑪利諾神父教會學校": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "長沙灣天主教英文中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "西貢崇真天主教學校(中學部)": {
+              "count": "未知",
+              "band": "Band 3"
+            },
+            "中華基督教會銘賢學校": {
+              "count": "未知",
+              "band": "未知"
+            }
+          },
+          "band_dist": {
+            "Band 2A": 0,
+            "Band 1A": 0,
+            "未知": 0,
+            "Band 1C": 0,
+            "Band 1B": 0,
+            "Band 3": 0
+          },
+          "unmatched": [
+            "中華基督教會銘賢學校"
+          ]
+        }
+      },
       "district": "深水埗区"
     },
     {
@@ -50698,8 +52080,8 @@
         "中華傳道會李賢堯紀念中學": 0
       },
       "unmatched_schools": [
-        "保良局羅傑承 (一九八三) 中學",
-        "可風中學 (嗇色園主辦)"
+        "可風中學 (嗇色園主辦)",
+        "保良局羅傑承 (一九八三) 中學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -51216,6 +52598,263 @@
       "district": "观塘区"
     },
     {
+      "primary_school": "聖伯多祿天主教小學",
+      "total_students": 0,
+      "school_total_from_excel": 96,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 2C": 0,
+        "Band 1B": 0,
+        "Band 1C": 0,
+        "Band 2A": 0,
+        "Band 2": 0,
+        "Band 2B": 0,
+        "Band 3": 0,
+        "未知": 0,
+        "Band 3A": 0,
+        "Band 3B": 0
+      },
+      "secondary_schools": {
+        "聖伯多祿中學": 0,
+        "高主教書院": 0,
+        "嘉諾撒聖方濟各書院": 0,
+        "聖類斯中學": 0,
+        "梁式芝書院": 0,
+        "香港真光書院": 0,
+        "香港鄧鏡波書院": 0,
+        "嘉諾撒培德書院": 0,
+        "香港仔工業學校": 0,
+        "炮台山循道衛理中學": 0,
+        "香港華仁書院": 0,
+        "聖公會鄧肇堅中學": 0,
+        "香港真光中學": 0,
+        "長沙灣天主教英文中學": 0,
+        "聖公會呂明才中學": 0,
+        "香港仔浸信會呂明才書院": 0,
+        "迦密唐賓南紀念中學": 0,
+        "新會商會陳白沙紀念中學": 0,
+        "明愛莊月明中學": 0,
+        "中華基金中學": 0,
+        "東華三院陳兆民中學": 0,
+        "屯門官立中學": 0,
+        "廠商會中學": 0,
+        "嘉諾撒聖心書院": 0,
+        "聖保祿中學": 0,
+        "中華基督教青年會中學": 0,
+        "佛教黃鳳翎中學": 0
+      },
+      "unmatched_schools": [
+        "炮台山循道衛理中學"
+      ],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 96,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "高主教書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖類斯中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港華仁書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港真光中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "嘉諾撒聖方濟各書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖公會鄧肇堅中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖公會呂明才中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "梁式芝書院": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "長沙灣天主教英文中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "香港鄧鏡波書院": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "迦密唐賓南紀念中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "聖伯多祿中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "嘉諾撒培德書院": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "新會商會陳白沙紀念中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "香港真光書院": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "香港仔浸信會呂明才書院": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "明愛莊月明中學": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "香港仔工業學校": {
+              "count": "未知",
+              "band": "Band 3"
+            },
+            "炮台山循道衛理中學": {
+              "count": "未知",
+              "band": "未知"
+            }
+          },
+          "band_dist": {
+            "Band 2C": 0,
+            "Band 1B": 0,
+            "Band 1C": 0,
+            "Band 2A": 0,
+            "Band 2": 0,
+            "Band 2B": 0,
+            "Band 3": 0,
+            "未知": 0,
+            "Band 3A": 0
+          },
+          "unmatched": [
+            "炮台山循道衛理中學"
+          ]
+        },
+        "2024": {
+          "total": 96,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "高主教書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "中華基金中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港華仁書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "嘉諾撒聖心書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖保祿中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖類斯中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "嘉諾撒聖方濟各書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "東華三院陳兆民中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "屯門官立中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖公會呂明才中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "中華基督教青年會中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "香港鄧鏡波書院": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "聖伯多祿中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "新會商會陳白沙紀念中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "嘉諾撒培德書院": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "香港真光書院": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "香港仔浸信會呂明才書院": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "佛教黃鳳翎中學": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "廠商會中學": {
+              "count": "未知",
+              "band": "Band 3B"
+            },
+            "香港仔工業學校": {
+              "count": "未知",
+              "band": "Band 3"
+            },
+            "炮台山循道衛理中學": {
+              "count": "未知",
+              "band": "未知"
+            }
+          },
+          "band_dist": {
+            "Band 2C": 0,
+            "Band 1B": 0,
+            "Band 1C": 0,
+            "Band 2": 0,
+            "Band 3A": 0,
+            "Band 3B": 0,
+            "未知": 0,
+            "Band 2B": 0,
+            "Band 3": 0
+          },
+          "unmatched": [
+            "炮台山循道衛理中學"
+          ]
+        }
+      },
+      "district": "南区"
+    },
+    {
       "primary_school": "聖公會九龍灣基樂小學",
       "total_students": 0,
       "school_total_from_excel": 120,
@@ -51629,6 +53268,268 @@
         }
       },
       "district": "观塘区"
+    },
+    {
+      "primary_school": "聖公會奉基千禧小學",
+      "total_students": 0,
+      "school_total_from_excel": 96,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 1A": 0,
+        "Band 1B": 0,
+        "Band 1C": 0,
+        "未知": 0,
+        "Band 2": 0,
+        "Band 2C": 0,
+        "Band 2B": 0,
+        "Band 2A": 0,
+        "Band 3": 0,
+        "Band 3A": 0,
+        "Band 3C": 0
+      },
+      "secondary_schools": {
+        "英皇書院": 0,
+        "瑪利諾修院學校(中學部)": 0,
+        "拔萃男書院": 0,
+        "德望學校": 0,
+        "伊利沙伯中學": 0,
+        "香港培正中學": 0,
+        "迦密中學": 0,
+        "華英中學": 0,
+        "旅港開平商會中學": 0,
+        "東華三院黃笏南中學": 0,
+        "何明華會督銀禧中學": 0,
+        "基督教女青年會丘佐榮中學": 0,
+        "陳瑞祺(喇沙)書院": 0,
+        "九龍真光中學": 0,
+        "聖公會鄧肇堅中學": 0,
+        "香港浸會大學附屬學校王錦輝中小學": 0,
+        "香港耀中國際學校": 0,
+        "基督教中國佈道會聖道迦南書院": 0,
+        "福建中學": 0,
+        "林大輝中學": 0,
+        "德信中學": 0,
+        "香港培道中學": 0,
+        "順德聯誼總會胡兆熾中學": 0,
+        "五旬節中學": 0,
+        "聖母書院": 0,
+        "滙基書院": 0,
+        "保良局胡忠中學": 0,
+        "東華三院張明添中學": 0,
+        "聖伯多祿中學": 0,
+        "將軍澳香島中學": 0,
+        "鄧鏡波學校": 0,
+        "中華基督教會基道中學": 0,
+        "聖公會聖三一堂中學": 0,
+        "聖公會蔡功譜中學": 0,
+        "九龍塘學校(中學部)": 0,
+        "余振強紀念中學": 0,
+        "新亞中學": 0,
+        "創知中學": 0,
+        "中華基督教會燕京書院": 0,
+        "聖公會聖馬利亞堂莫慶堯中學": 0,
+        "潔心林炳炎中學": 0,
+        "官立嘉道理爵士中學(西九龍)": 0
+      },
+      "unmatched_schools": [
+        "香港耀中國際學校"
+      ],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 96,
+          "band1": 0,
+          "rate": 45.0,
+          "schools": {
+            "英皇書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "瑪利諾修院學校(中學部)": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "德望學校": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "迦密中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "華英中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "旅港開平商會中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "拔萃男書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "伊利沙伯中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港培正中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "東華三院黃笏南中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "何明華會督銀禧中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "九龍真光中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港浸會大學附屬學校王錦輝中小學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "福建中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港培道中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "基督教女青年會丘佐榮中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "陳瑞祺(喇沙)書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖公會鄧肇堅中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "東華三院張明添中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "順德聯誼總會胡兆熾中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "五旬節中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "保良局胡忠中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "九龍塘學校(中學部)": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "德信中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "滙基書院": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "聖伯多祿中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "將軍澳香島中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "鄧鏡波學校": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "中華基督教會基道中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "余振強紀念中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "新亞中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "創知中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "基督教中國佈道會聖道迦南書院": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "林大輝中學": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "聖母書院": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "聖公會聖三一堂中學": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "中華基督教會燕京書院": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "潔心林炳炎中學": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "官立嘉道理爵士中學(西九龍)": {
+              "count": "未知",
+              "band": "Band 3C"
+            },
+            "聖公會蔡功譜中學": {
+              "count": "未知",
+              "band": "Band 3"
+            },
+            "聖公會聖馬利亞堂莫慶堯中學": {
+              "count": "未知",
+              "band": "Band 3"
+            },
+            "香港耀中國際學校": {
+              "count": "未知",
+              "band": "未知"
+            }
+          },
+          "band_dist": {
+            "Band 1A": 0,
+            "Band 1B": 0,
+            "Band 1C": 0,
+            "未知": 0,
+            "Band 2": 0,
+            "Band 2C": 0,
+            "Band 2B": 0,
+            "Band 2A": 0,
+            "Band 3": 0,
+            "Band 3A": 0,
+            "Band 3C": 0
+          },
+          "unmatched": [
+            "香港耀中國際學校"
+          ]
+        }
+      },
+      "district": "九龙城区"
     },
     {
       "primary_school": "聖公會聖約翰曾肇添小學",
@@ -52665,8 +54566,8 @@
       },
       "unmatched_schools": [
         "天主教郭德勝中學",
-        "文理書院",
-        "沙田循道衛理中學"
+        "沙田循道衛理中學",
+        "文理書院"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -52863,6 +54764,212 @@
       "district": "深水埗区"
     },
     {
+      "primary_school": "聖母小學",
+      "total_students": 0,
+      "school_total_from_excel": 72,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 2": 0,
+        "Band 1C": 0,
+        "Band 1B": 0,
+        "Band 1A": 0,
+        "Band 2B": 0
+      },
+      "secondary_schools": {
+        "聖母書院": 0,
+        "德愛中學": 0,
+        "九龍真光中學": 0,
+        "藍田聖保祿中學": 0,
+        "保良局第一張永慶中學": 0,
+        "瑪利諾修院學校(中學部)": 0,
+        "香港管理專業協會李國寶中學": 0,
+        "保良局羅氏基金中學": 0,
+        "聖傑靈女子中學": 0,
+        "中華基金中學": 0,
+        "聖保祿中學": 0,
+        "聖羅撒書院": 0,
+        "福建中學": 0,
+        "香島中學": 0,
+        "培僑中學": 0,
+        "協恩中學": 0,
+        "嘉諾撒書院": 0,
+        "保祿六世書院": 0,
+        "香港培道中學": 0,
+        "聖士提反書院": 0,
+        "聖母玫瑰書院": 0,
+        "保良局胡忠中學": 0,
+        "佛教善德英文中學": 0,
+        "庇理羅士女子中學": 0,
+        "仁濟醫院王華湘中學": 0,
+        "天主教母佑會蕭明中學": 0,
+        "基督教中國佈道會聖道迦南書院": 0
+      },
+      "unmatched_schools": [],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 72,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "保良局第一張永慶中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "瑪利諾修院學校(中學部)": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "九龍真光中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "藍田聖保祿中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港管理專業協會李國寶中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖傑靈女子中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "中華基金中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖保祿中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖羅撒書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "福建中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香島中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "德愛中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "保良局羅氏基金中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "培僑中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "聖母書院": {
+              "count": "未知",
+              "band": "Band 2"
+            }
+          },
+          "band_dist": {
+            "Band 2": 0,
+            "Band 1C": 0,
+            "Band 1B": 0,
+            "Band 1A": 0,
+            "Band 2B": 0
+          },
+          "unmatched": []
+        },
+        "2024": {
+          "total": 72,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "協恩中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "佛教善德英文中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "庇理羅士女子中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "福建中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖羅撒書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "保祿六世書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港培道中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖士提反書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖母玫瑰書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖傑靈女子中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "天主教母佑會蕭明中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "德愛中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "嘉諾撒書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "仁濟醫院王華湘中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "保良局胡忠中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "聖母書院": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "基督教中國佈道會聖道迦南書院": {
+              "count": "未知",
+              "band": "Band 2"
+            }
+          },
+          "band_dist": {
+            "Band 2": 0,
+            "Band 1A": 0,
+            "Band 1C": 0,
+            "Band 1B": 0,
+            "Band 2B": 0
+          },
+          "unmatched": []
+        }
+      },
+      "district": "黄大仙区"
+    },
+    {
       "primary_school": "聖母無玷聖心學校",
       "total_students": 0,
       "school_total_from_excel": 96,
@@ -52903,6 +55010,240 @@
       "band1_rate_null": true,
       "yearly_stats": {},
       "district": "沙田区"
+    },
+    {
+      "primary_school": "聖若瑟英文小學",
+      "total_students": 0,
+      "school_total_from_excel": 72,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 2B": 0,
+        "Band 1B": 0,
+        "Band 1A": 0,
+        "Band 1C": 0,
+        "未知": 0
+      },
+      "secondary_schools": {
+        "聖若瑟英文中學": 0,
+        "聖若瑟書院": 0,
+        "皇仁書院": 0,
+        "九龍華仁書院": 0,
+        "聖言中學": 0,
+        "觀塘瑪利諾書院": 0,
+        "聖芳濟書院": 0,
+        "順德聯誼總會李兆基中學": 0,
+        "聖保羅書院": 0,
+        "匯基書院(東九龍)": 0,
+        "優才(楊殷有娣)書院": 0,
+        "保良局顏寶鈴書院": 0,
+        "香港管理專業協會李國寶中學": 0,
+        "福建中學": 0,
+        "香港神託會培基書院": 0,
+        "喇沙書院": 0,
+        "英皇書院": 0,
+        "迦密中學": 0,
+        "順利天主教中學": 0,
+        "沙田培英中學": 0,
+        "賽馬會體藝中學": 0,
+        "聖保羅男女中學": 0,
+        "拔萃男書院": 0,
+        "聖士提反書院": 0,
+        "港大同學會書院": 0,
+        "保良局羅氏基金中學": 0,
+        "啟思中學": 0,
+        "香港浸會大學附屬學校王錦輝中學": 0
+      },
+      "unmatched_schools": [
+        "啟思中學"
+      ],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 72,
+          "band1": 0,
+          "rate": 55.0,
+          "schools": {
+            "皇仁書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖言中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖保羅書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖若瑟書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "九龍華仁書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "觀塘瑪利諾書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖芳濟書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "匯基書院(東九龍)": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "優才(楊殷有娣)書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "保良局顏寶鈴書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港管理專業協會李國寶中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "福建中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港神託會培基書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "順德聯誼總會李兆基中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖若瑟英文中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            }
+          },
+          "band_dist": {
+            "Band 2B": 0,
+            "Band 1B": 0,
+            "Band 1A": 0,
+            "Band 1C": 0
+          },
+          "unmatched": []
+        },
+        "2024": {
+          "total": 72,
+          "band1": 0,
+          "rate": 50.0,
+          "schools": {
+            "喇沙書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "皇仁書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "英皇書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖言中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "迦密中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖保羅男女中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖保羅書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "港大同學會書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖若瑟書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖芳濟書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "觀塘瑪利諾書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "順利天主教中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "沙田培英中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "拔萃男書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖士提反書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "優才(楊殷有娣)書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "保良局顏寶鈴書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "福建中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港浸會大學附屬學校王錦輝中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "賽馬會體藝中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "保良局羅氏基金中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖若瑟英文中學": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "啟思中學": {
+              "count": "未知",
+              "band": "未知"
+            }
+          },
+          "band_dist": {
+            "Band 2B": 0,
+            "Band 1B": 0,
+            "Band 1A": 0,
+            "Band 1C": 0,
+            "未知": 0
+          },
+          "unmatched": [
+            "啟思中學"
+          ]
+        }
+      },
+      "district": "观塘区"
     },
     {
       "primary_school": "聖若翰天主教小學",
@@ -53079,8 +55420,8 @@
         "聖公會李炳中學": 0
       },
       "unmatched_schools": [
-        "保良局羅傑承 (一九八三) 中學",
-        "可風中學 (嗇色園主辦)"
+        "可風中學 (嗇色園主辦)",
+        "保良局羅傑承 (一九八三) 中學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {
@@ -54450,6 +56791,160 @@
       "district": "沙田区"
     },
     {
+      "primary_school": "香港仔聖伯多祿天主教小學",
+      "total_students": 0,
+      "school_total_from_excel": 120,
+      "band1_students": 0,
+      "band1_rate": 0,
+      "band_distribution": {
+        "Band 1B": 0,
+        "Band 1A": 0,
+        "Band 3": 0,
+        "Band 2": 0,
+        "Band 3A": 0,
+        "Band 2C": 0,
+        "Band 1C": 0,
+        "Band 2A": 0,
+        "Band 2B": 0
+      },
+      "secondary_schools": {
+        "聖士提反書院": 0,
+        "嘉諾撒聖心書院": 0,
+        "港大同學會書院": 0,
+        "香港仔工業學校": 0,
+        "香港真光書院": 0,
+        "香港仔浸信會呂明才書院": 0,
+        "嘉諾撒培德書院": 0,
+        "聖伯多祿中學": 0,
+        "聖公會呂明才中學": 0,
+        "聖公會鄧肇堅中學": 0,
+        "香港真光中學": 0,
+        "聖嘉勒女書院": 0,
+        "顯理中學": 0,
+        "聖類斯中學": 0,
+        "聖士提反女子中學": 0,
+        "明愛馬鞍山中學": 0,
+        "長沙灣天主教英文中學": 0,
+        "香港華仁書院": 0,
+        "聖保祿中學": 0,
+        "佛教黃鳳翎中學": 0,
+        "嘉諾撒聖方濟各書院": 0,
+        "香港鄧鏡波書院": 0
+      },
+      "unmatched_schools": [],
+      "band1_rate_null": true,
+      "yearly_stats": {
+        "2025": {
+          "total": 120,
+          "band1": 0,
+          "rate": 0.0,
+          "schools": {
+            "港大同學會書院": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖士提反女子中學": {
+              "count": "未知",
+              "band": "Band 1A"
+            },
+            "聖士提反書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "嘉諾撒聖心書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港真光中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖嘉勒女書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖類斯中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "香港華仁書院": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖保祿中學": {
+              "count": "未知",
+              "band": "Band 1B"
+            },
+            "聖公會呂明才中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "聖公會鄧肇堅中學": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "嘉諾撒聖方濟各書院": {
+              "count": "未知",
+              "band": "Band 1C"
+            },
+            "顯理中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "長沙灣天主教英文中學": {
+              "count": "未知",
+              "band": "Band 2A"
+            },
+            "香港鄧鏡波書院": {
+              "count": "未知",
+              "band": "Band 2B"
+            },
+            "嘉諾撒培德書院": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "聖伯多祿中學": {
+              "count": "未知",
+              "band": "Band 2C"
+            },
+            "香港真光書院": {
+              "count": "未知",
+              "band": "Band 2"
+            },
+            "香港仔浸信會呂明才書院": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "佛教黃鳳翎中學": {
+              "count": "未知",
+              "band": "Band 3A"
+            },
+            "香港仔工業學校": {
+              "count": "未知",
+              "band": "Band 3"
+            },
+            "明愛馬鞍山中學": {
+              "count": "未知",
+              "band": "Band 3"
+            }
+          },
+          "band_dist": {
+            "Band 1B": 0,
+            "Band 1A": 0,
+            "Band 3": 0,
+            "Band 2": 0,
+            "Band 3A": 0,
+            "Band 2C": 0,
+            "Band 1C": 0,
+            "Band 2A": 0,
+            "Band 2B": 0
+          },
+          "unmatched": []
+        }
+      },
+      "district": "南区"
+    },
+    {
       "primary_school": "香港真光中學小學部",
       "total_students": 0,
       "school_total_from_excel": null,
@@ -54536,8 +57031,8 @@
         "香港兆基創意書院": 0
       },
       "unmatched_schools": [
-        "沙田循道衛理中學",
-        "香港兆基創意書院"
+        "香港兆基創意書院",
+        "沙田循道衛理中學"
       ],
       "band1_rate_null": true,
       "yearly_stats": {},
