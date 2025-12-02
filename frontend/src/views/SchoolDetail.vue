@@ -144,6 +144,24 @@
               <label>{{ convertIfNeeded('性别类型') }}</label>
               <div>{{ getGenderLabel(school.gender) }}</div>
             </div>
+            <!-- 关联中学信息（小学特有） -->
+            <div v-if="school.type === 'primary' && hasSecondaryInfo" class="info-item info-item-full">
+              <label>{{ convertIfNeeded('关联中学') }}</label>
+              <div class="secondary-info-text">
+                <div v-if="throughTrainSchools.length > 0" class="secondary-item">
+                  <span class="secondary-type-label">{{ convertIfNeeded('一条龙') }}：</span>
+                  <span class="secondary-schools">{{ throughTrainSchools.map((s: string) => convertIfNeeded(s)).join('、') }}</span>
+                </div>
+                <div v-if="directSchools.length > 0" class="secondary-item">
+                  <span class="secondary-type-label">{{ convertIfNeeded('直属中学') }}：</span>
+                  <span class="secondary-schools">{{ directSchools.map((s: string) => convertIfNeeded(s)).join('、') }}</span>
+                </div>
+                <div v-if="associatedSchools.length > 0" class="secondary-item">
+                  <span class="secondary-type-label">{{ convertIfNeeded('联系中学') }}：</span>
+                  <span class="secondary-schools">{{ associatedSchools.map((s: string) => convertIfNeeded(s)).join('、') }}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -172,8 +190,6 @@
             </div>
           </div>
         </section>
-
-
 
         <!-- 入学信息部分（中学特有） -->
         <section class="admission-info">
@@ -621,6 +637,46 @@ const classArrangement = computed(() => {
   const info = (school.value as any).classTeachingInfo
   if (!info || typeof info !== 'object') return ''
   return convertIfNeeded(info.class_arrangement || '')
+})
+
+// 关联中学相关计算属性
+const hasSecondaryInfo = computed(() => {
+  if (!school.value || school.value.type !== 'primary') return false
+  const info = (school.value as any).secondaryInfo
+  if (!info || typeof info !== 'object') return false
+  const throughTrain = info.through_train
+  const direct = info.direct
+  const associated = info.associated
+  return !!(throughTrain && throughTrain !== '-' && throughTrain.trim()) ||
+         !!(direct && direct !== '-' && direct.trim()) ||
+         !!(associated && associated !== '-' && associated.trim())
+})
+
+const throughTrainSchools = computed(() => {
+  if (!school.value) return []
+  const info = (school.value as any).secondaryInfo
+  if (!info || typeof info !== 'object') return []
+  const throughTrain = info.through_train
+  if (!throughTrain || throughTrain === '-') return []
+  return throughTrain.split('、').filter((s: string) => s && s.trim() && s !== '-')
+})
+
+const directSchools = computed(() => {
+  if (!school.value) return []
+  const info = (school.value as any).secondaryInfo
+  if (!info || typeof info !== 'object') return []
+  const direct = info.direct
+  if (!direct || direct === '-') return []
+  return direct.split('、').filter((s: string) => s && s.trim() && s !== '-')
+})
+
+const associatedSchools = computed(() => {
+  if (!school.value) return []
+  const info = (school.value as any).secondaryInfo
+  if (!info || typeof info !== 'object') return []
+  const associated = info.associated
+  if (!associated || associated === '-') return []
+  return associated.split('、').filter((s: string) => s && s.trim() && s !== '-')
 })
 
 const curriculumTypesText = computed(() => {
@@ -1199,6 +1255,10 @@ section h3 {
   font-weight: 500;
 }
 
+.info-item-full {
+  grid-column: 1 / -1;
+}
+
 .features-list {
   list-style: none;
   padding: 0;
@@ -1478,5 +1538,31 @@ th, td {
   background: #f8f9fa;
   border-radius: 8px;
   border-left: 3px solid #667eea;
+}
+
+/* 关联中学样式（基本信息内） */
+.secondary-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.secondary-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.6;
+}
+
+.secondary-type-label {
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.secondary-schools {
+  color: #2c3e50;
+  flex: 1;
 }
 </style>
