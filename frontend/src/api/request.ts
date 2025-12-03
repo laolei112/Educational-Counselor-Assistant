@@ -75,12 +75,12 @@ async function request<T = any>(
       // 2. 设备指纹
       requestHeaders['X-Device-Id'] = getDeviceFingerprint()
 
-      // 3. 动态反爬 Token
+      // 3. 动态反爬 Token (暂时禁用)
       // 仅对数据接口添加
-      if (path.includes('/schools/') || path.includes('/primary/') || path.includes('/secondary/')) {
-         const dynamicToken = await securityManager.getToken()
-         requestHeaders['X-Request-Token'] = dynamicToken
-      }
+      // if (path.includes('/schools/') || path.includes('/primary/') || path.includes('/secondary/')) {
+      //    const dynamicToken = await securityManager.getToken()
+      //    requestHeaders['X-Request-Token'] = dynamicToken
+      // }
 
     } catch (err) {
       console.error('获取凭证失败:', err)
@@ -107,30 +107,30 @@ async function request<T = any>(
       // 处理 401 JWT 过期 (已移除)
       // if (response.status === 401 && !skipSignature) { ... }
 
-      // 处理 403 动态 Token 过期
-      if (response.status === 403 && errorData.message?.includes('Token')) {
-          console.log('动态Token失效，尝试刷新...')
-          securityManager.clearToken()
-          const newToken = await securityManager.getToken()
-          requestHeaders['X-Request-Token'] = newToken
-          
-          // 重试
-          const retryResponse = await fetch(url, {
-              method,
-              headers: requestHeaders,
-              body: body ? JSON.stringify(body) : undefined,
-              signal: controller.signal
-          })
-          
-          if (retryResponse.ok) {
-             const retryRawData = await retryResponse.json()
-             // 解密重试后的数据
-             if (retryRawData.data && retryRawData.data.encrypted) {
-                 retryRawData.data = securityManager.decryptData(retryRawData.data)
-             }
-             return retryRawData
-          }
-      }
+      // 处理 403 动态 Token 过期 (暂时禁用)
+      // if (response.status === 403 && errorData.message?.includes('Token')) {
+      //     console.log('动态Token失效，尝试刷新...')
+      //     securityManager.clearToken()
+      //     const newToken = await securityManager.getToken()
+      //     requestHeaders['X-Request-Token'] = newToken
+      //     
+      //     // 重试
+      //     const retryResponse = await fetch(url, {
+      //         method,
+      //         headers: requestHeaders,
+      //         body: body ? JSON.stringify(body) : undefined,
+      //         signal: controller.signal
+      //     })
+      //     
+      //     if (retryResponse.ok) {
+      //        const retryRawData = await retryResponse.json()
+      //        // 解密重试后的数据
+      //        if (retryRawData.data && retryRawData.data.encrypted) {
+      //            retryRawData.data = securityManager.decryptData(retryRawData.data)
+      //        }
+      //        return retryRawData
+      //     }
+      // }
       
       throw new HttpError(
         response.status,

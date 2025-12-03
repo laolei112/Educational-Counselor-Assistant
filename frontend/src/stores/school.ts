@@ -453,54 +453,70 @@ export const useSchoolStore = defineStore('school', () => {
    * 加载筛选选项（片区列表等）
    * @param force 是否强制重新加载
    */
+  // 防止并发调用的 Promise
+  let loadingFilterOptionsPromise: Promise<void> | null = null
+
   const loadFilterOptions = async (force: boolean = false) => {
     // 如果已加载且不强制重新加载，则跳过
     if (filterOptionsLoaded.value && !force) {
       return
     }
     
-    try {
-      if (currentType.value === 'primary') {
-        const response = await schoolApi.getPrimaryFilters()
-        if (response.success && response.data) {
-          filterOptions.value.districts = response.data.districts || []
-          filterOptions.value.schoolNets = response.data.schoolNets || []
-          filterOptions.value.categories = response.data.categories || []
-          // 清空中学特有的选项
-          filterOptions.value.bandings = []
-          filterOptionsLoaded.value = true
-        }
-      } else {
-        // 中学筛选选项
-        try {
-          const response = await schoolApi.getSecondaryFilters()
+    // 如果正在加载中，等待现有的加载完成
+    if (loadingFilterOptionsPromise) {
+      return loadingFilterOptionsPromise
+    }
+    
+    // 创建加载 Promise
+    loadingFilterOptionsPromise = (async () => {
+      try {
+        if (currentType.value === 'primary') {
+          const response = await schoolApi.getPrimaryFilters()
           if (response.success && response.data) {
             filterOptions.value.districts = response.data.districts || []
-            filterOptions.value.bandings = response.data.schoolGroups || []
-            // 清空小学特有的选项
-            filterOptions.value.schoolNets = []
-            filterOptions.value.categories = []
+            filterOptions.value.schoolNets = response.data.schoolNets || []
+            filterOptions.value.categories = response.data.categories || []
+            // 清空中学特有的选项
+            filterOptions.value.bandings = []
             filterOptionsLoaded.value = true
-          } else {
-            console.warn('中学筛选选项API返回失败:', response)
+          }
+        } else {
+          // 中学筛选选项
+          try {
+            const response = await schoolApi.getSecondaryFilters()
+            if (response.success && response.data) {
+              filterOptions.value.districts = response.data.districts || []
+              filterOptions.value.bandings = response.data.schoolGroups || []
+              // 清空小学特有的选项
+              filterOptions.value.schoolNets = []
+              filterOptions.value.categories = []
+              filterOptionsLoaded.value = true
+            } else {
+              console.warn('中学筛选选项API返回失败:', response)
+              filterOptions.value.districts = []
+              filterOptions.value.bandings = []
+            }
+          } catch (err) {
+            console.error('加载中学筛选选项失败:', err)
+            // 如果接口不存在，暂时使用空数组
             filterOptions.value.districts = []
             filterOptions.value.bandings = []
           }
-        } catch (err) {
-          console.error('加载中学筛选选项失败:', err)
-          // 如果接口不存在，暂时使用空数组
-          filterOptions.value.districts = []
-          filterOptions.value.bandings = []
         }
+      } catch (err) {
+        console.error('加载筛选选项失败:', err)
+        // 失败时不设置，使用空数组
+        filterOptions.value.districts = []
+        filterOptions.value.schoolNets = []
+        filterOptions.value.categories = []
+        filterOptions.value.bandings = []
+      } finally {
+        // 清除加载 Promise
+        loadingFilterOptionsPromise = null
       }
-    } catch (err) {
-      console.error('加载筛选选项失败:', err)
-      // 失败时不设置，使用空数组
-      filterOptions.value.districts = []
-      filterOptions.value.schoolNets = []
-      filterOptions.value.categories = []
-      filterOptions.value.bandings = []
-    }
+    })()
+    
+    return loadingFilterOptionsPromise
   }
   
   /**
@@ -720,6 +736,7 @@ export const useSchoolStore = defineStore('school', () => {
     searchKeyword,
     filters,
     filterOptions,
+    filterOptionsLoaded,
     allSchools,
     hasMore,
     loadingMore,

@@ -19,7 +19,13 @@
       <nav class="breadcrumb">
         <a href="/" class="nav-link">{{ convertIfNeeded('首页') }}</a>
         <span class="separator">/</span>
-        <a :href="`/${school?.type || 'primary'}`" class="nav-link">{{ school?.type === 'secondary' ? convertIfNeeded('中学') : convertIfNeeded('小学') }}{{ convertIfNeeded('列表') }}</a>
+        <a 
+          :href="`/${school?.type || 'primary'}`" 
+          class="nav-link"
+          @click.prevent="handleBreadcrumbClick(school?.type || 'primary')"
+        >
+          {{ school?.type === 'secondary' ? convertIfNeeded('中学') : convertIfNeeded('小学') }}{{ convertIfNeeded('列表') }}
+        </a>
         <span class="separator">/</span>
         <span class="current">{{ convertIfNeeded(displayName) }}</span>
       </nav>
@@ -47,7 +53,6 @@
         
         <!-- Banding信息（中学特有，SEO关键） -->
         <div v-if="school.type === 'secondary' && school.schoolGroup" class="banding-badge">
-          <span class="banding-label">Band</span>
           <span class="banding-value">{{ school.schoolGroup.replace('BAND', 'Band').trim() }}</span>
         </div>
         
@@ -538,6 +543,11 @@ const fetchDetail = async () => {
     school.value = await schoolStore.fetchSchoolDetail(Number(id), type as any)
     await loadRecommendations()
     
+    // 保存学校类型到 sessionStorage，用于返回时恢复
+    if (school.value?.type) {
+      sessionStorage.setItem('lastSchoolType', school.value.type)
+    }
+    
     // 更新标题
     if (school.value) {
       const name = convertIfNeeded(school.value.name)
@@ -560,6 +570,11 @@ const loadRecommendations = async () => {
 // 处理推荐点击 - 使用 window.location 进行硬跳转以触发服务器SEO
 const handleRecommendationClick = (school: School) => {
   window.location.href = `/school/${school.type}/${school.id}`
+}
+
+// 处理面包屑点击 - 使用 router 导航以保持状态
+const handleBreadcrumbClick = (schoolType: string) => {
+  router.push(`/${schoolType}`)
 }
 
 onMounted(() => {
@@ -962,7 +977,7 @@ const getCardStatus = (info: any, isTransfer = false): string => {
 
 const extractAdmissionDetails = (): string => {
   if (!school.value?.admissionInfo) return ''
-  return school.value.admissionInfo
+  return convertIfNeeded(school.value.admissionInfo)
 }
 
 const hasValidS1Info = (s1: any): boolean => {
@@ -1216,7 +1231,7 @@ const formatDateRangeForP1 = (start?: string, end?: string): string => {
   gap: 6px;
   margin-bottom: 12px;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3b82f6;
   border-radius: 20px;
   color: white;
   font-weight: 600;
@@ -1448,6 +1463,76 @@ table {
 th, td {
   border: 1px solid #dee2e6;
   padding: 8px;
+}
+
+/* 课程设置表格样式 */
+.curriculum-table-wrapper {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.curriculum-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.curriculum-table thead {
+  background: #f8f9fa;
+}
+
+.curriculum-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 14px;
+}
+
+.curriculum-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ecef;
+  color: #2c3e50;
+  font-size: 15px;
+}
+
+.curriculum-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.curriculum-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+/* 列宽设置 */
+.curriculum-table .lang-header,
+.curriculum-table .lang-cell {
+  width: 120px;
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+.curriculum-table .count-header,
+.curriculum-table .count-cell {
+  width: 100px;
+  min-width: 100px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.curriculum-table .subjects-header,
+.curriculum-table .subjects-cell {
+  width: auto;
+  min-width: 300px;
+}
+
+.subjects-list {
+  line-height: 1.8;
+  word-break: break-word;
 }
 
 /* 推荐模块样式 */

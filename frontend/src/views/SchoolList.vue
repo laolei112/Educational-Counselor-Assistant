@@ -462,6 +462,7 @@ const {
   searchKeyword,
   filters,
   filterOptions,
+  filterOptionsLoaded,
   isLoading,
   hasError,
   error,
@@ -476,7 +477,7 @@ const {
 // 本地状态
 const activeFilterDropdown = ref<string | null>(null)
 const showMobileFilters = ref(false)
-const searchTimeout = ref<NodeJS.Timeout | null>(null)
+const searchTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 
 // 计算属性
 const getText = (key: string) => {
@@ -533,6 +534,8 @@ const handleClearSearch = async () => {
 
 // 选择学校类型
 const selectSchoolType = async (type: 'primary' | 'secondary') => {
+  // 保存到 sessionStorage，用于从详情页返回时恢复
+  sessionStorage.setItem('lastSchoolType', type)
   await schoolStore.setSchoolType(type)
 }
 
@@ -566,6 +569,8 @@ const selectFilter = async (filterType: string, value: string, event?: Event) =>
 
 // 处理学校卡片点击
 const handleSchoolClick = (school: School) => {
+  // 保存学校类型到 sessionStorage，用于返回时恢复
+  sessionStorage.setItem('lastSchoolType', school.type)
   router.push({
     name: 'school-detail',
     params: { type: school.type, id: school.id.toString() }
@@ -599,23 +604,56 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 }
 
+// 根据路由确定学校类型的辅助函数
+const determineSchoolTypeFromRoute = (): 'primary' | 'secondary' => {
+  // 优先检查路由名称
+  if (route.name === 'primary') {
+    return 'primary'
+  } else if (route.name === 'secondary') {
+    return 'secondary'
+  }
+  
+  // 如果路由名称不确定，检查路径
+  const path = route.path
+  if (path === '/primary' || path.startsWith('/primary')) {
+    return 'primary'
+  } else if (path === '/secondary' || path.startsWith('/secondary')) {
+    return 'secondary'
+  }
+  
+  // 如果路由是首页 (/)，尝试从 sessionStorage 恢复之前的类型
+  if (path === '/') {
+    const lastType = sessionStorage.getItem('lastSchoolType') as 'primary' | 'secondary' | null
+    if (lastType === 'primary' || lastType === 'secondary') {
+      return lastType
+    }
+  }
+  
+  // 默认返回小学
+  return 'primary'
+}
+
 // 生命周期
 onMounted(async () => {
   // 初始化语言
   languageStore.initLanguage()
   
-  // 根据路由设置学校类型
-  if (route.name === 'primary') {
-    await schoolStore.setSchoolType('primary')
-  } else if (route.name === 'secondary') {
-    await schoolStore.setSchoolType('secondary')
+  // 根据路由设置学校类型（改进：同时检查name和path）
+  const schoolType = determineSchoolTypeFromRoute()
+  // 保存到 sessionStorage
+  sessionStorage.setItem('lastSchoolType', schoolType)
+  // 只有当类型不同时才设置，避免重复加载
+  if (schoolStore.currentType !== schoolType) {
+    // setSchoolType 内部已经会调用 loadFilterOptions，不需要再调用 initFilters
+    await schoolStore.setSchoolType(schoolType)
   } else {
-    // 默认加载小学数据
-    await schoolStore.setSchoolType('primary')
+    // 如果类型相同，只刷新数据（可能是从详情页返回）
+    await schoolStore.fetchSchools()
+    // 如果筛选选项未加载，才初始化筛选选项
+    if (!schoolStore.filterOptionsLoaded) {
+      schoolStore.initFilters()
+    }
   }
-  
-  // 初始化筛选选项（延迟加载）
-  schoolStore.initFilters()
   
   // 添加滚动监听
   window.addEventListener('scroll', handleScroll)
@@ -633,14 +671,16 @@ onUnmounted(() => {
   window.removeEventListener('click', handleClickOutside)
 })
 
-// 监听路由变化
-watch(() => route.name, async (newName) => {
-  if (newName === 'primary') {
-    await schoolStore.setSchoolType('primary')
-  } else if (newName === 'secondary') {
-    await schoolStore.setSchoolType('secondary')
+// 监听路由变化（改进：同时监听name和path，立即执行）
+watch([() => route.name, () => route.path], async ([newName, newPath]) => {
+  const schoolType = determineSchoolTypeFromRoute()
+  // 保存到 sessionStorage
+  sessionStorage.setItem('lastSchoolType', schoolType)
+  // 只有当类型真正改变时才更新，避免不必要的重新加载
+  if (schoolStore.currentType !== schoolType) {
+    await schoolStore.setSchoolType(schoolType)
   }
-})
+}, { immediate: false })
 </script>
 
 <style scoped>
