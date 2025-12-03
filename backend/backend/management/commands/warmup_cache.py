@@ -15,7 +15,8 @@ from django.db.models import Q, F
 from backend.models.tb_primary_schools import TbPrimarySchools
 from backend.models.tb_secondary_schools import TbSecondarySchools
 from backend.api.schools.primary_views import (
-    serialize_primary_school, 
+    serialize_primary_school,  # 用于详情页缓存
+    serialize_primary_school_for_list,  # 🔥 用于列表页缓存（精简版）
     get_cache_key_for_query,
     # get_primary_filters
 )
@@ -304,8 +305,9 @@ class Command(BaseCommand):
                 # 获取数据
                 schools = list(queryset[offset:offset + page_size])
                 
-                # 序列化
-                schools_data = [serialize_primary_school(s) for s in schools]
+                # 🔥 使用列表页精简序列化函数（与API接口保持一致）
+                # 这样可以减少缓存大小，提升性能
+                schools_data = [serialize_primary_school_for_list(s) for s in schools]
                 
                 # 构建响应数据 - 与 API 返回格式完全一致
                 result = {
@@ -324,8 +326,8 @@ class Command(BaseCommand):
                 # 生成缓存键 - 使用与 API 完全一致的参数格式
                 cache_key = get_cache_key_for_query(cache_params)
                 
-                # 缓存数据（30分钟）
-                cache.set(cache_key, result, timeout=1800)
+                # 🔥 缓存数据（10分钟）- 与 API 接口保持一致
+                cache.set(cache_key, result, timeout=600)
                 count += 1
                 
                 if self.verbose:
@@ -496,8 +498,8 @@ class Command(BaseCommand):
                 # 生成缓存键 - 使用与 API 完全一致的参数格式
                 cache_key = get_cache_key_for_secondary_query(cache_params)
                 
-                # 缓存数据（30分钟）
-                cache.set(cache_key, result, timeout=1800)
+                # 🔥 缓存数据（10分钟）- 与 API 接口保持一致
+                cache.set(cache_key, result, timeout=600)
                 count += 1
                 
                 if self.verbose:

@@ -3,6 +3,7 @@ import re
 import time
 import hashlib
 import traceback
+from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -218,8 +219,8 @@ def serialize_primary_school_for_list(school):
     卡片显示内容：
     - 基本信息：名称、类型、地区、校网、宗教、性别、学费
     - Band1比例：band1Rate (生成列)
-    - 联系中学：secondaryInfo (结龙、直属、联系中学)
-    - 申请状态：transferInfo (用于显示申请状态徽章)
+    - 联系中学：secondaryInfo (结龙、直属、联系中学) - 精简版
+    - 申请状态：transferInfo (用于显示申请状态徽章) - 精简版
     
     不包含详情页专用字段：
     - basicInfo (学校介绍)
@@ -230,6 +231,100 @@ def serialize_primary_school_for_list(school):
     """
     # 使用统一的函数获取 band1_rate（会检查 band1_rate_null 标志）
     band1_rate = get_band1_rate(school)
+    
+    # 🔥 优化：精简 secondaryInfo，保留必要的字符串值但限制大小
+    secondary_info = school.secondary_info or {}
+    secondary_info_minimal = {}
+    if isinstance(secondary_info, dict):
+        # 保留前端需要的字段，但限制字符串长度（避免过大的数据）
+        # 前端使用: through_train, direct, associated
+        # 数据库可能存储为: 结龙, 直属, 联系
+        for db_key, frontend_key in [('结龙', 'through_train'), ('直属', 'direct'), ('联系', 'associated')]:
+            value = secondary_info.get(db_key) or secondary_info.get(frontend_key)
+            if value:
+                # 如果是字符串，限制长度（避免过大的数据）
+                if isinstance(value, str) and len(value) > 200:
+                    value = value[:200] + '...'
+                secondary_info_minimal[frontend_key] = value
+    
+    # 🔥 优化：精简 transferInfo，只返回计算后的申请状态（不包含详细时间信息）
+    transfer_info = school.transfer_info or {}
+    transfer_info_minimal = {}
+    if isinstance(transfer_info, dict):
+        # 在后端计算申请状态，只返回状态标识，不返回详细时间信息
+        # 这样可以大幅减少数据大小，同时保持前端功能
+        now = datetime.now()
+        
+        # 计算小一申请状态
+        p1_info = transfer_info.get('小一')
+        if p1_info and isinstance(p1_info, dict):
+            start_str = p1_info.get('小一入学申请开始时间') or p1_info.get('入学申请开始时间')
+            end_str = p1_info.get('小一入学申请截至时间') or p1_info.get('小一入学申请截止时间') or p1_info.get('入学申请截至时间')
+            if start_str and end_str:
+                try:
+                    start = datetime.strptime(start_str, '%Y-%m-%d') if len(start_str) == 10 else datetime.strptime(start_str.split()[0], '%Y-%m-%d')
+                    end = datetime.strptime(end_str, '%Y-%m-%d') if len(end_str) == 10 else datetime.strptime(end_str.split()[0], '%Y-%m-%d')
+                    if start <= now <= end:
+                        days_left = (end - now).days
+                        if days_left <= 7:
+                            transfer_info_minimal['小一'] = {'application_status': 'deadline'}
+                        else:
+                            transfer_info_minimal['小一'] = {'application_status': 'open'}
+                    elif now < start:
+                        transfer_info_minimal['小一'] = {'application_status': 'closed'}
+                    else:
+                        transfer_info_minimal['小一'] = {'application_status': 'closed'}
+                except:
+                    # 如果解析失败，至少标记为有申请信息
+                    transfer_info_minimal['小一'] = {'application_status': 'open'}
+        
+        # 计算插班申请状态
+        transfer_data = transfer_info.get('插班')
+        if transfer_data and isinstance(transfer_data, dict):
+            # 检查是否有明确的"未开放"标记
+            if transfer_data.get('状态') == '未开放' or transfer_data.get('开放状态') == '未开放':
+                transfer_info_minimal['插班'] = {'application_status': 'closed'}
+            else:
+                # 检查两个时间段的截止时间
+                end1_str = transfer_data.get('插班申请截止时间1')
+                end2_str = transfer_data.get('插班申请截止时间2')
+                if end1_str or end2_str:
+                    try:
+                        ends = []
+                        if end1_str:
+                            end1 = datetime.strptime(end1_str, '%Y-%m-%d') if len(end1_str) == 10 else datetime.strptime(end1_str.split()[0], '%Y-%m-%d')
+                            if end1 >= now:
+                                ends.append(end1)
+                        if end2_str:
+                            end2 = datetime.strptime(end2_str, '%Y-%m-%d') if len(end2_str) == 10 else datetime.strptime(end2_str.split()[0], '%Y-%m-%d')
+                            if end2 >= now:
+                                ends.append(end2)
+                        
+                        if ends:
+                            nearest_end = min(ends)
+                            days_left = (nearest_end - now).days
+                            if days_left <= 7:
+                                transfer_info_minimal['插班'] = {'application_status': 'deadline'}
+                            else:
+                                transfer_info_minimal['插班'] = {'application_status': 'open'}
+                        else:
+                            transfer_info_minimal['插班'] = {'application_status': 'closed'}
+                    except:
+                        transfer_info_minimal['插班'] = {'application_status': 'open'}
+                else:
+                    # 如果没有时间信息，至少标记为有申请信息
+                    transfer_info_minimal['插班'] = {'application_status': 'open'}
+        
+        # 如果没有计算到任何状态，但原始数据存在，至少返回一个标识
+        if not transfer_info_minimal and transfer_info:
+            transfer_info_minimal = {'hasInfo': True}
+        
+        # 🔥 为了前端兼容性，在顶层添加 application_status
+        # 优先使用小一或插班的状态
+        if '小一' in transfer_info_minimal:
+            transfer_info_minimal['application_status'] = transfer_info_minimal['小一'].get('application_status')
+        elif '插班' in transfer_info_minimal:
+            transfer_info_minimal['application_status'] = transfer_info_minimal['插班'].get('application_status')
     
     return {
         # 基本信息
@@ -248,11 +343,11 @@ def serialize_primary_school_for_list(school):
         # 卡片显示：Band1比例（生成列，前端使用 school.band1Rate）
         "band1Rate": band1_rate,
         
-        # 卡片显示：联系中学信息（结龙、直属、联系中学）
-        "secondaryInfo": school.secondary_info or {},
+        # 🔥 优化：精简的联系中学信息（只保留类型标识）
+        "secondaryInfo": secondary_info_minimal,
         
-        # 卡片需要：申请状态信息
-        "transferInfo": school.transfer_info if school.transfer_info else {},
+        # 🔥 优化：精简的申请状态信息（只保留是否有申请）
+        "transferInfo": transfer_info_minimal,
     }
 
 

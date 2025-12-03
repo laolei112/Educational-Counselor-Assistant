@@ -121,17 +121,33 @@ const languageStore = useLanguageStore()
 
 // 计算申请状态
 const applicationStatus = computed(() => {
-  // 优先使用后端返回的状态
+  // 优先使用后端返回的状态（顶层字段）
   if (props.school.transferInfo?.application_status) {
     return props.school.transferInfo.application_status
   }
   
-  // 如果没有后端状态，则根据实际数据计算
+  // 🔥 优化：支持精简版状态（后端可能只返回子对象的状态）
+  // 小学：检查小一申请状态
+  if (props.school.type === 'primary' && props.school.transferInfo?.小一?.application_status) {
+    return props.school.transferInfo.小一.application_status
+  }
+  
+  // 中学：检查S1申请状态
+  if (props.school.type === 'secondary' && props.school.transferInfo?.S1?.application_status) {
+    return props.school.transferInfo.S1.application_status
+  }
+  
+  // 检查插班申请状态（小学和中学共用）
+  if (props.school.transferInfo?.插班?.application_status) {
+    return props.school.transferInfo.插班.application_status
+  }
+  
+  // 如果没有后端状态，则根据实际数据计算（兼容旧数据格式）
   if (props.school.transferInfo) {
     const transferInfo = props.school.transferInfo
     const now = new Date()
     
-    // 中学：检查S1申请
+    // 中学：检查S1申请（需要详细时间字段）
     if (props.school.type === 'secondary' && transferInfo.S1 && isCardOpen(transferInfo.S1, false)) {
       // 检查是否即将截止（7天内）
       const end = transferInfo.S1.入学申请截至时间 ? parseDate(transferInfo.S1.入学申请截至时间) : null
