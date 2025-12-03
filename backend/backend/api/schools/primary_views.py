@@ -265,7 +265,8 @@ def serialize_primary_school_for_list(school):
         # 计算插班申请状态
         transfer_data = transfer_info.get('插班')
         if transfer_data and isinstance(transfer_data, dict):
-            transfer_status = calculate_transfer_status(transfer_data)
+            # 🔥 传递学校ID用于调试（可选）
+            transfer_status = calculate_transfer_status(transfer_data, debug_school_id=school.id)
             if transfer_status:
                 transfer_info_minimal['插班'] = {'application_status': transfer_status}
         
