@@ -155,8 +155,18 @@ def secondary_schools_list(request):
         
         # 尝试从缓存获取数据
         cached_data = cache.get(cache_key)
-        step_times['cache_get'] = (time.time() - step_start) * 1000
+        cache_get_time = (time.time() - step_start) * 1000
+        step_times['cache_get'] = cache_get_time
         step_start = time.time()
+        
+        # 🔥 监控：如果缓存读取超过100ms，记录警告
+        if cache_get_time > 100:
+            loginfo(
+                f"[WARN] Slow cache read detected | "
+                f"CacheKey: {cache_key[:50]}... | "
+                f"CacheGet: {cache_get_time:.2f}ms | "
+                f"This may indicate Redis performance issues or network latency"
+            )
         
         if cached_data:
             # 兼容两种缓存格式：

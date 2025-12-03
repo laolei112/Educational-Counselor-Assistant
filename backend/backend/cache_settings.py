@@ -45,12 +45,20 @@ CACHES = {
         'LOCATION': f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'SOCKET_CONNECT_TIMEOUT': 5,  # 连接超时
-            'SOCKET_TIMEOUT': 5,  # 读写超时
+            # 🔥 优化超时设置：降低超时时间，快速失败而不是长时间等待
+            'SOCKET_CONNECT_TIMEOUT': 1,  # 连接超时1秒（快速失败）
+            'SOCKET_TIMEOUT': 1,  # 读写超时1秒（避免长时间阻塞）
             'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',  # 压缩
             'CONNECTION_POOL_KWARGS': {
-                'max_connections': 50,
-                'retry_on_timeout': True
+                # 🔥 优化连接池：增加连接数，减少等待时间
+                'max_connections': 100,  # 增加最大连接数（从50增加到100）
+                'retry_on_timeout': False,  # 🔥 关键：关闭超时重试，避免重复等待
+                'socket_keepalive': True,  # 保持连接活跃，减少连接重建
+                'socket_keepalive_options': {
+                    'TCP_KEEPIDLE': 1,  # 1秒后开始发送keepalive
+                    'TCP_KEEPINTVL': 3,  # keepalive间隔3秒
+                    'TCP_KEEPCNT': 5,  # 最多5次keepalive失败后断开
+                },
             },
             'IGNORE_EXCEPTIONS': True,  # 缓存异常时不影响主业务
         },
