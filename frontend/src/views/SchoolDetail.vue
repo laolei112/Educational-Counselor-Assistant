@@ -365,9 +365,24 @@
         </section>
 
         <!-- 升学数据部分（小学特有） -->
-        <section v-if="school.type === 'primary' && hasPromotionData" class="promotion-data">
+        <section v-if="school.type === 'primary' && (hasPromotionData || hasPromotionDescriptions)" class="promotion-data">
           <h3>📊 {{ convertIfNeeded('升学数据') }}</h3>
-          <div class="promotion-table-wrapper">
+          
+          <!-- 描述性升学信息 -->
+          <div v-if="hasPromotionDescriptions" class="promotion-descriptions">
+            <div class="description-list">
+              <div 
+                v-for="(desc, index) in promotionDescriptions" 
+                :key="index" 
+                class="description-item"
+              >
+                <div class="description-text">{{ convertIfNeeded(desc.text) }}</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 表格数据 -->
+          <div v-if="hasPromotionData && (hasYearlyData || promotionSummary)" class="promotion-table-wrapper">
             <table class="promotion-table">
               <thead>
                 <tr>
@@ -833,6 +848,30 @@ const promotionSummary = computed(() => {
     band1Rate: band1Rate !== undefined ? Number(band1Rate) : undefined,
     schools: convertedSchools
   }
+})
+
+const promotionDescriptions = computed(() => {
+  if (!school.value || !school.value.promotionInfo) return []
+  const promotionInfo = school.value.promotionInfo as any
+  const descriptions = promotionInfo.promotion_descriptions || []
+  console.log(descriptions)
+  if (!Array.isArray(descriptions)) return []
+  
+  return descriptions.map((desc: any) => {
+    if (typeof desc === 'string') {
+      return { text: desc, parsed: null }
+    } else if (typeof desc === 'object' && desc !== null) {
+      return {
+        text: desc.text || desc,
+        parsed: desc.parsed || null
+      }
+    }
+    return { text: String(desc), parsed: null }
+  })
+})
+
+const hasPromotionDescriptions = computed(() => {
+  return promotionDescriptions.value.length > 0
 })
 
 const getCategoryLabel = (category: string) => {
@@ -1592,6 +1631,63 @@ th, td {
 .rec-meta {
   font-size: 12px;
   color: #6c757d;
+}
+
+/* 描述性升学信息样式 */
+.promotion-descriptions {
+  margin-bottom: 24px;
+}
+
+.description-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.description-item {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.description-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.description-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.rate-badge,
+.relationship-badge,
+.band-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rate-badge {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.relationship-badge {
+  background: #fce7f3;
+  color: #9f1239;
+}
+
+.band-badge {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 /* 插班申请卡片样式 */
