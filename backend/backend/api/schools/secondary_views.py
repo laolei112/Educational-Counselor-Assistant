@@ -99,6 +99,9 @@ def serialize_secondary_school(school):
         except:
             curriculum_data = None
     
+    # 解析按教学语言分类的课程数据
+    curriculum_by_language = school.curriculum_by_language if school.curriculum_by_language else None
+    
     return {
         "id": school.id,
         "name": school.school_name,
@@ -138,7 +141,38 @@ def serialize_secondary_school(school):
         "updatedAt": school.updated_at.isoformat() if school.updated_at else None,
         
         # 为了兼容前端，添加一些默认字段
-        "band1Rate": 0,  
+        "band1Rate": 0,
+        
+        # ========== 新增字段 ==========
+        # 基本信息
+        "schoolArea": school.school_area,
+        "schoolSponsor": school.school_sponsor,
+        "foundedYear": school.founded_year,
+        "schoolMotto": school.school_motto,
+        
+        # 教师信息
+        "teacherCount": school.teacher_count,
+        "teacherInfo": school.teacher_info if school.teacher_info else None,
+        
+        # 班级信息
+        "classesByGrade": school.classes_by_grade if school.classes_by_grade else None,
+        
+        # 课程信息（按教学语言分类）
+        "curriculumByLanguage": curriculum_by_language,
+        
+        # 学校政策与特色
+        "languagePolicy": school.language_policy,
+        "teachingStrategy": school.teaching_strategy,
+        "schoolBasedCurriculum": school.school_based_curriculum,
+        "careerEducation": school.career_education,
+        "diversitySupport": school.diversity_support,
+        "assessmentAdaptation": school.assessment_adaptation,
+        "wholePersonLearning": school.whole_person_learning,
+        
+        # 设施与交通
+        "facilities": school.facilities,
+        "transportation": school.transportation,
+        "remarks": school.remarks,
     }
 
 
@@ -463,16 +497,16 @@ def secondary_school_recommendations(request, school_id):
         # 1. 同区推荐 (Same District) - 随机取4个
         related_schools = TbSecondarySchools.objects.filter(
             district=current_school.district
-        ).exclude(id=school_id).order_by('?')[:4]
+        ).exclude(id=school_id).order_by('?')[:6]
         
-        # 2. 热门推荐 (Popular) - 取 Band 1A/1B 学校中随机4个
+        # 2. 热门推荐 (Popular) - 取 Band 1A/1B 学校中随机6个
         popular_schools = TbSecondarySchools.objects.filter(
             school_group__in=['BAND 1A', 'BAND 1B', 'BAND 1C']
         ).exclude(
             id=school_id
         ).exclude(
             id__in=[s.id for s in related_schools]
-        ).order_by('?')[:4]
+        ).order_by('?')[:6]
         
         # 序列化函数 (精简版)
         def serialize_simple(school):

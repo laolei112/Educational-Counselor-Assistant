@@ -17,3 +17,4 @@ zope
 APScheduler  # 定时任务调度器，用于缓存预热
 PyJWT>=2.0.0  # JWT token生成和验证
 pycryptodome>=3.19.0  # AES数据加密 (新增)
+pandas

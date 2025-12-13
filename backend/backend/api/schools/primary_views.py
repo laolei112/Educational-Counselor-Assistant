@@ -90,7 +90,6 @@ def sort_yearly_stats(promotion_info):
             # 如果排序失败（例如键不是可比较的），返回原数据
             loginfo(f"sorted_stats failed, promotion_info: {promotion_info}")
             return promotion_info
-    loginfo(f"promotion_info: {promotion_info}")
     return promotion_info
 
 
@@ -193,6 +192,45 @@ def serialize_primary_school(school):
         "promotionInfo": promotion_info if promotion_info else {},
         # Band1比例
         "band1Rate": get_band1_rate(school),
+        
+        # ========== 新增字段 - 基本信息 ==========
+        "schoolSponsor": school.school_sponsor,
+        "foundedYear": school.founded_year,
+        "schoolMotto": school.school_motto,
+        "schoolArea": school.school_area,
+        
+        # ========== 新增字段 - 教师信息 ==========
+        "teacherCount": school.teacher_count,
+        "teacherInfo": school.teacher_info if school.teacher_info else {},
+        
+        # ========== 新增字段 - 设施信息 ==========
+        "classroomCount": school.classroom_count,
+        "hallCount": school.hall_count,
+        "playgroundCount": school.playground_count,
+        "libraryCount": school.library_count,
+        "specialRooms": school.special_rooms,
+        
+        # ========== 新增字段 - 交通信息 ==========
+        "schoolBus": school.school_bus,
+        "nannyBus": school.nanny_bus,
+        
+        # ========== 新增字段 - 班级信息 ==========
+        "classesByGrade": school.classes_by_grade if school.classes_by_grade else {},
+        "classTeachingMode": school.class_teaching_mode,
+        
+        # ========== 新增字段 - 评估与分班 ==========
+        "multiAssessment": school.multi_assessment,
+        "classArrangement": school.class_arrangement,
+        
+        # ========== 新增字段 - 学校生活 ==========
+        "lunchArrangement": school.lunch_arrangement,
+        "schoolLifeNotes": school.school_life_notes,
+        
+        # ========== 新增字段 - 学校特色 ==========
+        "wholePersonLearning": school.whole_person_learning,
+        "schoolMission": school.school_mission,
+        "diversitySupport": school.diversity_support,
+        
         # 其他
         "isFullDay": school.is_full_day(),
         "isCoed": school.is_coed(),
@@ -735,18 +773,18 @@ def primary_school_recommendations(request, school_id):
                 "data": None
             })
             
-        # 1. 同区推荐 (Same District) - 随机取4个
+        # 1. 同区推荐 (Same District) - 随机取6个
         related_schools = TbPrimarySchools.objects.filter(
             district=current_school.district
-        ).exclude(id=school_id).order_by('?')[:4]
+        ).exclude(id=school_id).order_by('?')[:6]
         
-        # 2. 热门推荐 (Popular/High Banding) - 取全港Band1率最高的4个
+        # 2. 热门推荐 (Popular/High Banding) - 取全港Band1率最高的6个
         # 注意：band1_rate 是生成列，可能为 None
         popular_schools = TbPrimarySchools.objects.exclude(
             id=school_id
         ).exclude(
             id__in=[s.id for s in related_schools]
-        ).order_by('-band1_rate')[:4]
+        ).order_by('-band1_rate')[:6]
         
         # 序列化函数 (精简版)
         def serialize_simple(school):

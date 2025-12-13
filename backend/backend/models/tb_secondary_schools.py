@@ -162,6 +162,142 @@ class TbSecondarySchools(models.Model, Base):
         help_text='学校官方网站'
     )
     
+    # ========== 新增字段 - 基本信息 ==========
+    school_area = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='学校占地面积',
+        help_text='学校占地面积'
+    )
+    
+    school_sponsor = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        verbose_name='办学团体',
+        help_text='办学团体名称'
+    )
+    
+    founded_year = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name='创校年份',
+        help_text='学校创办年份'
+    )
+    
+    school_motto = models.CharField(
+        max_length=500,
+        blank=True,
+        null=True,
+        verbose_name='校训',
+        help_text='学校校训'
+    )
+    
+    # ========== 新增字段 - 教师信息 ==========
+    teacher_count = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name='教师总人数',
+        help_text='学校教师总人数'
+    )
+    
+    teacher_info = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name='教师信息',
+        help_text='教师学历和经验比例信息，JSON格式'
+    )
+    
+    # ========== 新增字段 - 班级信息 ==========
+    classes_by_grade = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name='各年级班数',
+        help_text='各年级班级数量，JSON格式'
+    )
+    
+    # ========== 新增字段 - 课程信息 ==========
+    curriculum_by_language = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name='按教学语言分类的科目',
+        help_text='按教学语言分类的开设科目，JSON格式'
+    )
+    
+    # ========== 新增字段 - 学校政策与特色 ==========
+    language_policy = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='全校语文政策',
+        help_text='学校的语文政策'
+    )
+    
+    teaching_strategy = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='学习和教学策略',
+        help_text='学校的学习和教学策略'
+    )
+    
+    school_based_curriculum = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='校本课程',
+        help_text='学校的校本课程'
+    )
+    
+    career_education = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='生涯规划教育',
+        help_text='学校的生涯规划教育'
+    )
+    
+    diversity_support = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='照顾学生多样性',
+        help_text='全校参与照顾学生的多样性措施'
+    )
+    
+    assessment_adaptation = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='测考及学习调适措施',
+        help_text='学校的测考及学习调适措施'
+    )
+    
+    whole_person_learning = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='全方位学习',
+        help_text='学校的全方位学习活动'
+    )
+    
+    # ========== 新增字段 - 设施与交通 ==========
+    facilities = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='学校设施',
+        help_text='学校的设施介绍'
+    )
+    
+    transportation = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='公共交通',
+        help_text='直达学校的公共交通工具'
+    )
+    
+    remarks = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='备注',
+        help_text='其他备注信息'
+    )
+    
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='创建时间'
@@ -216,6 +352,24 @@ class TbSecondarySchools(models.Model, Base):
             'phone': self.phone,
             'email': self.email,
             'website': self.website,
+            # 新增字段
+            'school_sponsor': self.school_sponsor,
+            'founded_year': self.founded_year,
+            'school_motto': self.school_motto,
+            'teacher_count': self.teacher_count,
+            'teacher_info': self.teacher_info,
+            'classes_by_grade': self.classes_by_grade,
+            'curriculum_by_language': self.curriculum_by_language,
+            'language_policy': self.language_policy,
+            'teaching_strategy': self.teaching_strategy,
+            'school_based_curriculum': self.school_based_curriculum,
+            'career_education': self.career_education,
+            'diversity_support': self.diversity_support,
+            'assessment_adaptation': self.assessment_adaptation,
+            'whole_person_learning': self.whole_person_learning,
+            'facilities': self.facilities,
+            'transportation': self.transportation,
+            'remarks': self.remarks,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
         }

@@ -96,6 +96,14 @@ class TbPrimarySchools(models.Model, Base):
         help_text='资助/直资/私立/官立'
     )
     
+    school_category_2 = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name='学校类别2',
+        help_text='全日/半日'
+    )
+    
     student_gender = models.CharField(
         max_length=20,
         blank=True,
@@ -120,7 +128,182 @@ class TbPrimarySchools(models.Model, Base):
         help_text='教学语言（中文/英文/中英并重/其他）'
     )
     
-    # JSON 字段
+    # ========== 新增字段 - 基本信息 ==========
+    school_sponsor = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        verbose_name='办学团体',
+        help_text='办学团体名称'
+    )
+    
+    founded_year = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name='创校年份',
+        help_text='学校创办年份'
+    )
+    
+    school_motto = models.CharField(
+        max_length=500,
+        blank=True,
+        null=True,
+        verbose_name='校训',
+        help_text='学校校训'
+    )
+    
+    school_area = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='学校占地面积',
+        help_text='学校占地面积'
+    )
+    
+    # ========== 新增字段 - 教师信息 ==========
+    teacher_count = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name='教师总人数',
+        help_text='学校教师总人数'
+    )
+    
+    teacher_info = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name='教师信息',
+        help_text='教师学历和经验比例信息，JSON格式'
+    )
+    
+    # ========== 新增字段 - 设施信息 ==========
+    classroom_count = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name='课室数目',
+        help_text='学校课室数量'
+    )
+    
+    hall_count = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name='礼堂数目',
+        help_text='学校礼堂数量'
+    )
+    
+    playground_count = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name='操场数目',
+        help_text='学校操场数量'
+    )
+    
+    library_count = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name='图书馆数目',
+        help_text='学校图书馆数量'
+    )
+    
+    special_rooms = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='特别室',
+        help_text='学校特别室设施'
+    )
+    
+    # ========== 新增字段 - 交通信息 ==========
+    school_bus = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='校车',
+        help_text='校车服务'
+    )
+    
+    nanny_bus = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='保姆车',
+        help_text='保姆车服务'
+    )
+    
+    # ========== 新增字段 - 班级信息 ==========
+    classes_by_grade = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name='各年级班数',
+        help_text='各年级班级数量，JSON格式'
+    )
+    
+    class_teaching_mode = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='班级教学模式',
+        help_text='班级教学模式说明'
+    )
+    
+    # ========== 新增字段 - 评估信息 ==========
+    assessment_info = models.JSONField(
+        blank=True,
+        null=True,
+        verbose_name='学习评估信息',
+        help_text='测验考试安排、评估政策等信息'
+    )
+    
+    multi_assessment = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='多元学习评估',
+        help_text='多元学习评估方式'
+    )
+    
+    class_arrangement = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='分班安排',
+        help_text='学校分班安排说明'
+    )
+    
+    # ========== 新增字段 - 学校生活 ==========
+    lunch_arrangement = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='午膳安排',
+        help_text='学校午膳安排'
+    )
+    
+    school_life_notes = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='学校生活备注',
+        help_text='学校生活相关备注'
+    )
+    
+    # ========== 新增字段 - 学校特色 ==========
+    whole_person_learning = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='全方位学习',
+        help_text='学校的全方位学习活动'
+    )
+    
+    school_mission = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='办学宗旨',
+        help_text='学校的办学宗旨'
+    )
+    
+    diversity_support = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='照顾学生多样性',
+        help_text='全校参与照顾学生的多样性措施'
+    )
+    
+    # JSON 字段（保留原有）
     school_basic_info = models.JSONField(
         blank=True,
         null=True,
@@ -175,13 +358,6 @@ class TbPrimarySchools(models.Model, Base):
         null=True,
         verbose_name='班级教学信息',
         help_text='班级教学模式、分班安排等信息'
-    )
-    
-    assessment_info = models.JSONField(
-        blank=True,
-        null=True,
-        verbose_name='学习评估信息',
-        help_text='测验考试安排、评估政策等信息'
     )
     
     transfer_info = models.JSONField(
@@ -244,15 +420,40 @@ class TbPrimarySchools(models.Model, Base):
             'email': self.email,
             'website': self.website,
             'school_category': self.school_category,
+            'school_category_2': self.school_category_2,
             'student_gender': self.student_gender,
             'religion': self.religion,
             'teaching_language': self.teaching_language,
+            # 新增字段
+            'school_sponsor': self.school_sponsor,
+            'founded_year': self.founded_year,
+            'school_motto': self.school_motto,
+            'school_area': self.school_area,
+            'teacher_count': self.teacher_count,
+            'teacher_info': self.teacher_info,
+            'classroom_count': self.classroom_count,
+            'hall_count': self.hall_count,
+            'playground_count': self.playground_count,
+            'library_count': self.library_count,
+            'special_rooms': self.special_rooms,
+            'school_bus': self.school_bus,
+            'nanny_bus': self.nanny_bus,
+            'classes_by_grade': self.classes_by_grade,
+            'class_teaching_mode': self.class_teaching_mode,
+            'assessment_info': self.assessment_info,
+            'multi_assessment': self.multi_assessment,
+            'class_arrangement': self.class_arrangement,
+            'lunch_arrangement': self.lunch_arrangement,
+            'school_life_notes': self.school_life_notes,
+            'whole_person_learning': self.whole_person_learning,
+            'school_mission': self.school_mission,
+            'diversity_support': self.diversity_support,
+            # 原有字段
             'school_basic_info': self.school_basic_info,
             'secondary_info': self.secondary_info,
             'tuition': self.tuition,
             'total_classes_info': self.total_classes_info,
             'class_teaching_info': self.class_teaching_info,
-            'assessment_info': self.assessment_info,
             'transfer_info': self.transfer_info,
             'promotion_info': self.promotion_info,
             'created_at': self.created_at,
@@ -265,7 +466,7 @@ class TbPrimarySchools(models.Model, Base):
         """
         if self.total_classes_info and 'current_year_total_classes' in self.total_classes_info:
             return self.total_classes_info['current_year_total_classes']
-        return None
+        return self.total_classes
     
     def get_linked_secondary_schools(self):
         """
@@ -288,6 +489,8 @@ class TbPrimarySchools(models.Model, Base):
         """
         判断是否为全日制
         """
+        if self.school_category_2:
+            return self.school_category_2 == '全日'
         if self.school_basic_info and 'school_category_2' in self.school_basic_info:
             return self.school_basic_info['school_category_2'] == '全日'
         return False

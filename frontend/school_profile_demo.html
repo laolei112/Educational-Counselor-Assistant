@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學校概覽 - 拔萃男書院</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F0F2F5; }
+        
+        /* Base Colors */
+        .text-brand-blue { color: #4A80F0; }
+        .tag-yellow { background-color: #FCC419; color: white; }
+        
+        .card { 
+            @apply bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-gray-200 p-6 transition-all hover:shadow-md; 
+        }
+        
+        .section-title { 
+            @apply text-lg font-bold text-gray-800 mb-5 flex items-center pb-3 border-b border-gray-100; 
+        }
+
+        /* Gradient Header Styles */
+        .header-gradient {
+            background: linear-gradient(135deg, #2b58b5 0%, #4A80F0 100%);
+        }
+    </style>
+</head>
+<body class="text-gray-700">
+
+    <!-- Header Section with Visual Depth -->
+    <div class="header-gradient text-white pt-8 pb-24 relative overflow-hidden shadow-lg z-0">
+        
+        <!-- Decorative Background Elements (Abstract Shapes) -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-300/10 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+        <div class="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
+            <!-- Breadcrumb -->
+            <div class="flex items-center text-blue-100 text-sm mb-8">
+                <a href="#" class="hover:text-white transition flex items-center gap-1"><i class="fa-solid fa-house opacity-70"></i> 首頁</a>
+                <span class="mx-3 opacity-40"><i class="fa-solid fa-chevron-right text-xs"></i></span>
+                <span class="text-white/80">中學</span>
+                <span class="mx-3 opacity-40"><i class="fa-solid fa-chevron-right text-xs"></i></span>
+                <span class="text-white font-medium">拔萃男書院</span>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end">
+                <div>
+                    <div class="flex items-center gap-3 mb-3">
+                         <h1 class="text-3xl md:text-4xl font-bold tracking-wide text-white drop-shadow-sm">拔萃男書院</h1>
+                         <div class="bg-white/20 backdrop-blur-md p-1.5 rounded-lg border border-white/20 shadow-sm cursor-help" title="學校Logo">
+                             <i class="fa-solid fa-school text-xl"></i>
+                         </div>
+                    </div>
+                   
+                    <p class="text-blue-100 text-lg mb-6 font-medium flex items-center gap-2">
+                        Diocesan Boys' School
+                        <span class="text-xs bg-blue-800/30 px-2 py-0.5 rounded border border-blue-400/30 text-blue-200">EST. 1869</span>
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-2.5">
+                        <span class="px-3 py-1.5 rounded-lg text-sm font-bold tag-yellow shadow-md flex items-center gap-1.5">
+                            <i class="fa-solid fa-trophy text-yellow-600"></i> Band 1A
+                        </span>
+                        <span class="px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition cursor-default">
+                             <i class="fa-solid fa-map-pin mr-1 text-red-300"></i> 九龍城區
+                        </span>
+                        <span class="px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition cursor-default">
+                            <i class="fa-solid fa-sack-dollar mr-1 text-green-300"></i> 資助
+                        </span>
+                        <span class="px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition cursor-default">
+                            <i class="fa-solid fa-mars mr-1 text-blue-200"></i> 男校
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="mt-8 md:mt-0 flex gap-3 text-sm font-medium">
+                    <!-- Glassmorphism Action Buttons -->
+                     <button class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20 hover:bg-white/20 transition shadow-lg group">
+                        <i class="fa-regular fa-star text-yellow-300 group-hover:scale-110 transition-transform"></i> 
+                        <span>收藏學校</span>
+                    </button>
+                    <button class="flex items-center gap-2 bg-white text-brand-blue px-5 py-3 rounded-xl border border-transparent hover:bg-blue-50 transition shadow-lg font-bold">
+                        <i class="fa-solid fa-paper-plane"></i> 
+                        <span>聯絡諮詢</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 md:px-8 -mt-12 pb-12 relative z-10">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Column: Info & Stats (4 columns) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Teachers Stats -->
+                <div class="card">
+                    <h3 class="section-title">
+                        <div class="bg-blue-50 p-1.5 rounded text-brand-blue mr-2">
+                             <i class="fa-solid fa-chalkboard-user w-4 text-center"></i> 
+                        </div>
+                        師資概況
+                    </h3>
+                    
+                    <div class="flex items-end mb-6 bg-gradient-to-br from-blue-50 to-white p-5 rounded-xl border border-blue-100 shadow-inner">
+                        <span class="text-5xl font-bold text-brand-blue leading-none tracking-tighter">133</span>
+                        <div class="ml-3 flex flex-col">
+                             <span class="text-gray-900 font-bold text-sm">教師總數</span>
+                             <span class="text-gray-500 text-xs">師生比例 1:12</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6 px-1">
+                        <!-- Stats Items -->
+                        <div class="relative group">
+                            <div class="flex justify-between text-sm mb-2 font-medium">
+                                <span class="text-gray-600 flex items-center gap-1.5">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div> 學士學位
+                                </span>
+                                <span class="text-gray-900 font-bold">100%</span>
+                            </div>
+                            <div class="w-full bg-gray-100 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full shadow-[0_2px_4px_rgba(59,130,246,0.3)]" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="relative group">
+                            <div class="flex justify-between text-sm mb-2 font-medium">
+                                <span class="text-gray-600 flex items-center gap-1.5">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-purple-500"></div> 碩士/博士
+                                </span>
+                                <span class="text-gray-900 font-bold">45%</span>
+                            </div>
+                            <div class="w-full bg-gray-100 rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full shadow-[0_2px_4px_rgba(168,85,247,0.3)]" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <div class="relative group">
+                            <div class="flex justify-between text-sm mb-2 font-medium">
+                                <span class="text-gray-600 flex items-center gap-1.5">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div> 特殊培訓
+                                </span>
+                                <span class="text-gray-900 font-bold">59%</span>
+                            </div>
+                            <div class="w-full bg-gray-100 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full shadow-[0_2px_4px_rgba(34,197,94,0.3)]" style="width: 59%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <div class="flex items-center justify-between mb-3">
+                             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">年資分佈</h4>
+                             <i class="fa-solid fa-chart-pie text-gray-300"></i>
+                        </div>
+                       
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-blue-50/50 rounded-lg p-2 border border-blue-100/50">
+                                <div class="text-brand-blue font-bold text-lg">32%</div>
+                                <div class="text-[10px] text-gray-500 font-medium">0-4年</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2 border border-gray-100">
+                                <div class="text-gray-600 font-bold text-lg">20%</div>
+                                <div class="text-[10px] text-gray-500 font-medium">5-9年</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2 border border-gray-100">
+                                <div class="text-gray-600 font-bold text-lg">48%</div>
+                                <div class="text-[10px] text-gray-500 font-medium">10年以上</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admission Info -->
+                <div class="card">
+                    <h3 class="section-title">
+                        <div class="bg-orange-50 p-1.5 rounded text-orange-500 mr-2">
+                             <i class="fa-solid fa-file-signature w-4 text-center"></i>
+                        </div>
+                        收生標準
+                    </h3>
+                    <div class="bg-orange-50 text-orange-800 text-sm p-4 rounded-lg mb-5 border border-orange-100 flex items-start gap-3 shadow-sm">
+                        <i class="fa-solid fa-circle-exclamation mt-1 text-orange-500"></i>
+                        <span class="leading-relaxed font-medium">本校不參加中學學位分配辦法的統一派位。</span>
+                    </div>
+                    
+                    <div class="space-y-3">
+                         <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-100 shadow-sm hover:border-blue-200 transition">
+                            <span class="text-gray-700 font-medium text-sm">學業成績</span>
+                            <div class="flex items-center gap-3">
+                                <div class="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-500 w-[60%]"></div>
+                                </div>
+                                <span class="font-bold text-gray-900">60%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-100 shadow-sm hover:border-blue-200 transition">
+                            <span class="text-gray-700 font-medium text-sm">課外活動</span>
+                             <div class="flex items-center gap-3">
+                                <div class="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-400 w-[20%]"></div>
+                                </div>
+                                <span class="font-bold text-gray-900">20%</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-100 shadow-sm hover:border-blue-200 transition">
+                            <span class="text-gray-700 font-medium text-sm">面試表現</span>
+                             <div class="flex items-center gap-3">
+                                <div class="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-300 w-[15%]"></div>
+                                </div>
+                                <span class="font-bold text-gray-900">15%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Contact Card -->
+                 <div class="card">
+                    <h3 class="section-title">
+                        <div class="bg-gray-100 p-1.5 rounded text-gray-600 mr-2">
+                             <i class="fa-regular fa-address-card w-4 text-center"></i>
+                        </div>
+                        聯絡資訊
+                    </h3>
+                    <ul class="space-y-4 text-sm text-gray-600">
+                        <li class="flex gap-3 items-start group cursor-pointer">
+                            <div class="bg-gray-50 text-gray-400 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-blue-50 group-hover:text-blue-500 transition">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <span class="mt-1.5 leading-relaxed group-hover:text-gray-900">九龍旺角亞皆老街131號</span>
+                        </li>
+                         <li class="flex gap-3 items-center group cursor-pointer">
+                            <div class="bg-gray-50 text-gray-400 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-50 group-hover:text-green-500 transition">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <span class="font-mono text-gray-800 font-medium">2711 5191</span>
+                        </li>
+                        <li class="flex gap-3 items-center group">
+                             <div class="bg-gray-50 text-gray-400 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-purple-50 group-hover:text-purple-500 transition">
+                                <i class="fa-solid fa-globe"></i>
+                            </div>
+                            <a href="https://www.dbs.edu.hk" target="_blank" class="text-blue-600 hover:underline font-medium">www.dbs.edu.hk</a>
+                        </li>
+                    </ul>
+                 </div>
+            </div>
+
+            <!-- Right Column: Details (8 columns) -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- Class Structure -->
+                <div class="card">
+                     <h3 class="section-title">
+                        <div class="bg-blue-50 p-1.5 rounded text-brand-blue mr-2">
+                            <i class="fa-solid fa-layer-group w-4 text-center"></i> 
+                        </div>
+                        班級結構
+                    </h3>
+                    
+                    <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 mb-6 shadow-inner">
+                        <div class="grid grid-cols-6 gap-3 md:gap-4">
+                            <!-- Header Row -->
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider text-center mb-2">中一</div>
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider text-center mb-2">中二</div>
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider text-center mb-2">中三</div>
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider text-center mb-2">中四</div>
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider text-center mb-2">中五</div>
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider text-center mb-2">中六</div>
+
+                            <!-- Data Row -->
+                            <div class="bg-white rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.05)] border border-gray-200 py-4 text-center text-xl font-bold text-brand-blue hover:-translate-y-1 transition duration-300">6</div>
+                            <div class="bg-white rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.05)] border border-gray-200 py-4 text-center text-xl font-bold text-brand-blue hover:-translate-y-1 transition duration-300">6</div>
+                            <div class="bg-white rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.05)] border border-gray-200 py-4 text-center text-xl font-bold text-brand-blue hover:-translate-y-1 transition duration-300">6</div>
+                            <div class="bg-white rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.05)] border border-gray-200 py-4 text-center text-xl font-bold text-brand-blue hover:-translate-y-1 transition duration-300">6</div>
+                            <div class="bg-white rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.05)] border border-gray-200 py-4 text-center text-xl font-bold text-brand-blue hover:-translate-y-1 transition duration-300">6</div>
+                            <div class="bg-white rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.05)] border border-gray-200 py-4 text-center text-xl font-bold text-brand-blue hover:-translate-y-1 transition duration-300">6</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 p-4 bg-blue-50/50 rounded-lg border border-blue-100">
+                        <i class="fa-solid fa-circle-info text-brand-blue mt-1"></i>
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            本校在教育局「六班編制」的基礎上，投放更多資源在教與學，全面推行<strong>校本小班教學</strong>。在初中，每級細分為九班，主科中文、英文和數學更分為十組。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Curriculum -->
+                <div class="card">
+                    <h3 class="section-title">
+                        <div class="bg-purple-50 p-1.5 rounded text-purple-600 mr-2">
+                            <i class="fa-solid fa-book-open w-4 text-center"></i>
+                        </div>
+                         開設科目
+                    </h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Junior Section -->
+                        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-blue-300 transition-colors duration-300 shadow-sm group">
+                            <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 font-bold text-gray-800 flex items-center justify-between group-hover:bg-blue-50/50 transition">
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 rounded-full bg-brand-blue mr-2"></span>
+                                    初中課程
+                                </div>
+                                <span class="text-xs text-gray-400 font-normal">Form 1-3</span>
+                            </div>
+                            <div class="p-5 space-y-6">
+                                <div>
+                                    <div class="text-xs font-bold text-gray-400 mb-3 uppercase flex items-center tracking-wide">
+                                        <i class="fa-solid fa-font mr-1.5"></i>中文教學
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-sm hover:bg-white hover:shadow-sm transition">中國語文</span>
+                                        <span class="bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-sm hover:bg-white hover:shadow-sm transition">中國歷史</span>
+                                        <span class="bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-sm hover:bg-white hover:shadow-sm transition">普通話</span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="text-xs font-bold text-brand-blue mb-3 uppercase flex items-center tracking-wide">
+                                        <i class="fa-solid fa-globe mr-1.5"></i>英文教學
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">英國語文</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">數學</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">綜合科學</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">歷史</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">地理</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">電腦</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Senior Section -->
+                        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-green-300 transition-colors duration-300 shadow-sm group">
+                            <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 font-bold text-gray-800 flex items-center justify-between group-hover:bg-green-50/50 transition">
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                                    高中課程 (DSE)
+                                </div>
+                                <span class="text-xs text-gray-400 font-normal">Form 4-6</span>
+                            </div>
+                            <div class="p-5 space-y-6">
+                                <div>
+                                    <div class="text-xs font-bold text-gray-400 mb-3 uppercase flex items-center tracking-wide">
+                                        <i class="fa-solid fa-font mr-1.5"></i>中文教學
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-sm hover:bg-white hover:shadow-sm transition">中國語文</span>
+                                        <span class="bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-sm hover:bg-white hover:shadow-sm transition">中史</span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="text-xs font-bold text-brand-blue mb-3 uppercase flex items-center tracking-wide">
+                                        <i class="fa-solid fa-globe mr-1.5"></i>英文教學
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">英國語文</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">數學</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">物理</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">化學</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">生物</span>
+                                        <span class="bg-blue-50 border border-blue-100 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">經濟</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Policies & Features (Grid) -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="card h-full flex flex-col">
+                        <h3 class="section-title text-base">
+                            <div class="bg-indigo-50 p-1.5 rounded text-indigo-500 mr-2">
+                                <i class="fa-solid fa-comments w-4 text-center"></i>
+                            </div>
+                             語文政策
+                        </h3>
+                        <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 flex-1 relative overflow-hidden">
+                             <!-- Subtle decoration -->
+                             <i class="fa-solid fa-quote-right absolute bottom-2 right-2 text-6xl text-gray-200 opacity-50"></i>
+                             <p class="text-sm text-gray-600 leading-relaxed text-justify relative z-10">
+                                中一至中六皆實行英語教學。校內設有三間多媒體教學中心，加強語文教學。中一至中三皆設有普通話科，以培養學生的聆聽和說話能力。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card h-full flex flex-col">
+                         <h3 class="section-title text-base">
+                            <div class="bg-pink-50 p-1.5 rounded text-pink-500 mr-2">
+                                <i class="fa-solid fa-hand-holding-heart w-4 text-center"></i>
+                            </div>
+                             學生支援
+                        </h3>
+                         <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 flex-1 relative overflow-hidden">
+                            <i class="fa-solid fa-seedling absolute bottom-2 right-2 text-6xl text-green-100 opacity-50"></i>
+                            <p class="text-sm text-gray-600 leading-relaxed text-justify relative z-10">
+                                中、英、數三科均設有中一至中六級的輔導班。另有運動員精進班、週末補習班、週末拔尖班等。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Facilities -->
+                <div class="card">
+                    <h3 class="section-title">
+                        <div class="bg-green-50 p-1.5 rounded text-green-600 mr-2">
+                            <i class="fa-solid fa-school w-4 text-center"></i>
+                        </div>
+                         設施與交通
+                    </h3>
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="flex-1">
+                            <span class="font-bold text-gray-800 block mb-3 text-sm flex items-center">
+                                <i class="fa-solid fa-basketball mr-2 text-orange-500"></i> 主要設施
+                            </span>
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 text-sm text-gray-600 leading-7 hover:shadow-sm transition">
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li>田徑跑道、草地球場</li>
+                                    <li>游泳池、網球場、籃球場</li>
+                                    <li>室內體育館、大禮堂</li>
+                                    <li>多媒體教學中心3個、特別教室13個</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                             <span class="font-bold text-gray-800 block mb-3 text-sm flex items-center">
+                                <i class="fa-solid fa-train-subway mr-2 text-brand-blue"></i> 交通資訊
+                             </span>
+                             <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 text-sm text-gray-600 space-y-4 hover:shadow-sm transition">
+                                 <div class="flex gap-3">
+                                     <div class="w-8 h-8 rounded bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
+                                         <i class="fa-solid fa-train text-gray-400"></i>
+                                     </div>
+                                     <div>
+                                         <div class="font-bold text-gray-900 text-xs uppercase mb-0.5">MTR</div>
+                                         <div class="text-gray-600">旺角站、旺角東站</div>
+                                     </div>
+                                 </div>
+                                 <div class="border-t border-gray-200"></div>
+                                 <div class="flex gap-3">
+                                     <div class="w-8 h-8 rounded bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
+                                         <i class="fa-solid fa-bus text-gray-400"></i>
+                                     </div>
+                                      <div>
+                                         <div class="font-bold text-gray-900 text-xs uppercase mb-0.5">Bus</div>
+                                         <div class="text-gray-600">1、1A、3C、12A、24、27 等</div>
+                                     </div>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -81,7 +81,7 @@ def import_secondary_schools_from_excel(excel_file_path):
                 'tuition': clean_value(row['学费（相同的概括，不同的独立罗列）']),
                 'school_category': clean_value(row['学校类别']),
                 'school_group': f"Band {clean_value(row['学校组别'])}" if clean_value(row['学校组别']) else None,
-                'transfer_open_time': clean_value(row['插班开放时间']),
+                # 'transfer_open_time': clean_value(row['插班开放时间']),
                 'total_classes': int(row['全校总班数']) if pd.notna(row['全校总班数']) else None,
                 'admission_info': clean_value(row['中一入学']),
                 'address': clean_value(row['学校地址']),

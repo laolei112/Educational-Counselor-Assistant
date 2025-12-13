@@ -5,7 +5,7 @@ import { cssOptimizer } from './vite-plugin-css-optimizer'
 import { resourceHints } from './vite-plugin-resource-hints'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [vue(), cssOptimizer(), resourceHints()],
   resolve: {
     alias: {
@@ -17,7 +17,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://betterschool.hk',
+        target: mode === 'development' ? 'http://127.0.0.1:8080' : 'https://betterschool.hk',
         changeOrigin: true,
         secure: false
       }
@@ -93,4 +93,4 @@ export default defineConfig({
     // 代码分割阈值
     chunkSizeWarningLimit: 1000
   }
-}) 
+})) 

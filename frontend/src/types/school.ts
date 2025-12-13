@@ -53,6 +53,37 @@ export interface School {
   createdAt?: string
   updatedAt?: string
   
+  // ========== 中学新增字段 ==========
+  // 基本信息
+  schoolArea?: string  // 学校占地面积
+  schoolSponsor?: string  // 办学团体
+  foundedYear?: string  // 创校年份
+  schoolMotto?: string  // 校训
+  
+  // 教师信息
+  teacherCount?: number  // 教师总人数
+  teacherInfo?: TeacherInfo  // 教师学历和经验比例
+  
+  // 班级信息
+  classesByGrade?: ClassesByGrade  // 各年级班数
+  
+  // 课程信息（按教学语言分类）
+  curriculumByLanguage?: CurriculumByLanguage
+  
+  // 学校政策与特色
+  languagePolicy?: string  // 全校语文政策
+  teachingStrategy?: string  // 学习和教学策略
+  schoolBasedCurriculum?: string  // 校本课程
+  careerEducation?: string  // 生涯规划教育
+  diversitySupport?: string  // 照顾学生多样性
+  assessmentAdaptation?: string  // 测考及学习调适措施
+  wholePersonLearning?: string  // 全方位学习
+  
+  // 设施与交通
+  facilities?: string  // 学校设施
+  transportation?: string  // 公共交通
+  remarks?: string  // 备注
+  
   // 小学特有字段
   classTeachingInfo?: {
     class_teaching_mode?: string  // 班级教学模式
@@ -60,6 +91,41 @@ export interface School {
     class_structure_note?: string  // 班级结构备注
   }
   promotionInfo?: any  // 升学信息
+}
+
+// 教师信息类型
+export interface TeacherInfo {
+  bachelor_rate?: string  // 学士学位百分率
+  master_phd_rate?: string  // 碩士/博士百分率
+  special_education_rate?: string  // 特殊教育培训百分率
+  experience_0_4_years?: string  // 0-4年经验百分率
+  experience_5_9_years?: string  // 5-9年经验百分率
+  experience_10_plus_years?: string  // 10年以上经验百分率
+}
+
+// 各年级班数类型
+export interface ClassesByGrade {
+  S1?: number  // 中一班数
+  S2?: number  // 中二班数
+  S3?: number  // 中三班数
+  S4?: number  // 中四班数
+  S5?: number  // 中五班数
+  S6?: number  // 中六班数
+  total?: number  // 总班数
+}
+
+// 按教学语言分类的课程类型
+export interface CurriculumByLanguage {
+  junior?: {  // 中一至中三
+    chinese_medium?: string  // 中文授课科目
+    english_medium?: string  // 英文授课科目
+    mixed_medium?: string  // 按班别/组别订定教学语言
+  }
+  senior?: {  // 中四至中六
+    chinese_medium?: string
+    english_medium?: string
+    mixed_medium?: string
+  }
 }
 
 // 插班信息类型定义
